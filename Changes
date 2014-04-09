@@ -1,0 +1,66 @@
+Revision history for Artifactory-Client
+
+Version 0.0.21
+- Removing markdown syntax from README.md where needed
+
+Version 0.0.20
+- Added Item Properties API call to fetch properties of an artifact
+
+Version 0.0.19
+- Added deploy_artifact_by_checksum API call
+
+Version 0.0.18
+- Made user agent attribute read-write so that user can plug it without recreating the object
+
+Version 0.0.17
+- Updating POD and merging README into README.md
+
+Version 0.0.16
+- Adding JSON as prereq for build_requires
+
+Version 0.0.15
+- Added unit tests
+
+Version 0.0.14
+- Added recursive flag on set_item_properties if user doesn't want the default recursive behavior
+
+Version 0.0.13
+- Updating POD to be more descriptive on property requirements
+
+Version 0.0.12
+- Required properties to be key => [value] pairs to conform with Artifactory handling of properties
+
+Version 0.0.11
+- Handling matrix parameters vs non-matrix parameters to deal with inconsistent REST API
+
+Version 0.0.10
+- Updating copyright information
+
+Version 0.0.9
+- Making sure module works with CPAN-style set up
+
+Version 0.0.8
+- Commas in multi-valued properties are no longer uri_escaped
+
+Version 0.0.7
+- Changed directory layout
+
+Version 0.0.6
+- Support for multi-valued properties.  Note that, multi-value is only possible for set item properties and not
+during deploy artifact
+
+Version 0.0.5
+- Renamed 'resource' to 'path' per Artifactory API documentation
+
+Version 0.0.4
+- Took out the handling of property values being too big / URL too long.  The caller is responsible for constructing
+requests in ways Artifactory accepts them
+
+Version 0.0.3
+- Applying Moose best practices
+
+Version 0.0.2
+- Added set_item_properties method to update properties instead of dropping existing ones
+
+Version 0.0.1
+- Initial release
