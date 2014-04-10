@@ -14,11 +14,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.0.21
+Version 0.0.22
 
 =cut
 
-our $VERSION = '0.0.21';
+our $VERSION = '0.0.22';
 
 =head1 SYNOPSIS
 
@@ -141,8 +141,8 @@ sub _request {
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
 
-Takes path, properties and content then deploys artifact as specified in Deploy Artifact section of Artifactory REST API
-documentation.  Note that properties are a hashref with key-arrayref pairs, such as:
+Takes path, properties and content then deploys artifact.  Note that properties are a hashref with key-arrayref pairs,
+such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -166,8 +166,8 @@ sub deploy_artifact {
 
 =head2 deploy_artifact_by_checksum( path => $path, properties => { key => [ values ] }, content => $content, sha1 => $sha1 )
 
-Takes path, properties, content and sha1 then deploys artifact as specified in Deploy Artifact by checksum section of
-Artifactory REST API documentation.  Note that properties are a hashref with key-arrayref pairs, such as:
+Takes path, properties, content and sha1 then deploys artifact.  Note that properties are a hashref with key-arrayref
+pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -189,9 +189,8 @@ sub deploy_artifact_by_checksum {
 
 =head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => [0|1] )
 
-Takes path and properties then set item properties as specified in Set Item Properties section of Artifactory REST API
-documentation.  Supply recursive => 0 if you want to suppress propagation of properties downstream.  Note that
-properties are a hashref with key-arrayref pairs, such as:
+Takes path and properties then set item properties.  Supply recursive => 0 if you want to suppress propagation of
+properties downstream.  Note that properties are a hashref with key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -212,11 +211,9 @@ sub set_item_properties {
     return $self->put( $request );
 }
 
-=head2 item_properties( path => $path, properties => [ values ], recursive => [0|1] )
+=head2 item_properties( path => $path, properties => [ key_names ] )
 
-Takes path and properties then get item properties as specified in Item Properties section of Artifactory REST API
-documentation.
-
+Takes path and properties then get item properties.
 Returns HTTP::Response object.
 
 =cut
@@ -233,6 +230,20 @@ sub item_properties {
         my $str = join( ',', @{ $properties } );
         $url .= "=" . $str;
     }
+    return $self->get( $url );
+}
+
+=head2 retrieve_artifact( $path )
+
+Takes path and retrieves artifact on the path.
+Returns HTTP::Response object.
+
+=cut
+
+sub retrieve_artifact {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/$repository$path";
     return $self->get( $url );
 }
 

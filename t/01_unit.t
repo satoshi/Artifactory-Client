@@ -62,7 +62,8 @@ subtest 'deploy_artifact with properties and content', sub {
         }
     };
  
-    my $scalar = get_properties( $client, $path );
+    my $resp2 = $client->item_properties( path => $path );
+    my $scalar = from_json( $resp2->decoded_content );
     is_deeply( $scalar->{ properties }, $properties, 'properties are correct' );
     my $artifact_url = "$artifactory:$port/$repository$path";
     my $resp3 = $client->get( $artifact_url );
@@ -110,6 +111,16 @@ subtest 'deploy artifact by checksum', sub {
     my $resp = $client->deploy_artifact_by_checksum( path => $path, sha1 => $sha1 );
     is( $resp->request()->header( 'x-checksum-deploy' ), 'true', 'x-checksum-deploy set' );
     is( $resp->request()->header( 'x-checksum-sha1' ), $sha1, 'x-checksum-sha1 set' );
+    
+    local *{ 'LWP::UserAgent::put' } = sub {
+        return bless( {
+            '_rc' => 404,
+            '_headers' => bless( {}, 'HTTP::Headers' ),
+        }, 'HTTP::Response' );
+    };
+
+    my $resp2 = $client->deploy_artifact_by_checksum( path => $path ); # no sha-1 on purpose
+    is( $resp2->code, 404, 'got 404 since no sha1 was supplied' );
 };
 
 subtest 'item properties', sub {
@@ -129,7 +140,6 @@ subtest 'item properties', sub {
                     "that" : [ "one" ]
                 }
             }',
-            '_rc' => 200,
             '_headers' => bless( {}, 'HTTP::Headers' ),
         }, 'HTTP::Response' );
     };
@@ -137,6 +147,24 @@ subtest 'item properties', sub {
     my $resp = $client->item_properties( path => $path, properties => ['that'] );
     my $scalar = from_json( $resp->decoded_content );
     is_deeply( $scalar->{ properties }, { that => ['one'] }, 'property content is correct' );
+};
+
+subtest 'retrieve artifact', sub {
+    my $client = setup();
+    my $path = '/unique_path';
+    my $content = "content of artifact";
+
+    no strict 'refs';
+    no warnings 'redefine';
+    local *{ 'LWP::UserAgent::get' } = sub {
+        bless( {
+            '_content' => 'content of artifact',
+            '_headers' => bless( {}, 'HTTP::Headers' ),
+        }, 'HTTP::Response' );
+    };
+
+    my $resp = $client->retrieve_artifact( $path );
+    is( $resp->decoded_content, $content, 'artifact retrieved successfully' );
 };
 
 done_testing();
@@ -148,12 +176,4 @@ sub setup {
         repository => $repository,
     };
     return Artifactory::Client->new( $args );
-}
-
-sub get_properties {
-    my ( $client, $path ) = @_;
-
-    my $prop_url = "$artifactory:$port/api/storage/$repository$path?properties";
-    my $resp = $client->get( $prop_url );
-    return from_json( $resp->decoded_content );
 }

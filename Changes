@@ -1,10 +1,13 @@
 Revision history for Artifactory-Client
 
+Version 0.0.22
+- Added retrieve_artifact API call
+
 Version 0.0.21
 - Removing markdown syntax from README.md where needed
 
 Version 0.0.20
-- Added Item Properties API call to fetch properties of an artifact
+- Added item_properties API call to fetch properties of an artifact
 
 Version 0.0.19
 - Added deploy_artifact_by_checksum API call
