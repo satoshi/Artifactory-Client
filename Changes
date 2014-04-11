@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+Version 0.0.23
+- Added all_builds API call
+
 Version 0.0.22
 - Added retrieve_artifact API call
 

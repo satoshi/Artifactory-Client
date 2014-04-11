@@ -167,6 +167,20 @@ subtest 'retrieve artifact', sub {
     is( $resp->decoded_content, $content, 'artifact retrieved successfully' );
 };
 
+subtest 'all_builds API call', sub {
+    my $client = setup();
+
+    no strict 'refs';
+    no warnings 'redefine';
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_rc' => 200,
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->all_builds();
+    is( $resp->is_success, 1, 'fetched all builds' );
+};
+
 done_testing();
 
 sub setup {
