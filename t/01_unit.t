@@ -76,7 +76,6 @@ subtest 'set_item_properties on non-existing artifact', sub {
         one => [1],
         two => [2],
     };
-    my $path = '/unique_path';
 
     no strict 'refs';
     no warnings 'redefine';
@@ -86,7 +85,7 @@ subtest 'set_item_properties on non-existing artifact', sub {
             '_headers' => bless( {}, 'HTTP::Headers' ),
         }, 'HTTP::Response' );
     };
-    my $resp = $client->set_item_properties( path => $path, properties => $properties );
+    my $resp = $client->set_item_properties( path => '/unique_path', properties => $properties );
     is( $resp->code, 404, 'got 404 for attempting to set props on non-existent artifact' );
 };
 
@@ -125,7 +124,6 @@ subtest 'deploy artifact by checksum', sub {
 
 subtest 'item properties', sub {
     my $client = setup();
-    my $path = '/unique_path';
     my $properties = {
         this => ['here', 'there'],
         that => ['one'],
@@ -144,14 +142,13 @@ subtest 'item properties', sub {
         }, 'HTTP::Response' );
     };
 
-    my $resp = $client->item_properties( path => $path, properties => ['that'] );
+    my $resp = $client->item_properties( path => '/unique_path', properties => ['that'] );
     my $scalar = from_json( $resp->decoded_content );
     is_deeply( $scalar->{ properties }, { that => ['one'] }, 'property content is correct' );
 };
 
 subtest 'retrieve artifact', sub {
     my $client = setup();
-    my $path = '/unique_path';
     my $content = "content of artifact";
 
     no strict 'refs';
@@ -163,7 +160,7 @@ subtest 'retrieve artifact', sub {
         }, 'HTTP::Response' );
     };
 
-    my $resp = $client->retrieve_artifact( $path );
+    my $resp = $client->retrieve_artifact( '/unique_path' );
     is( $resp->decoded_content, $content, 'artifact retrieved successfully' );
 };
 
@@ -179,6 +176,20 @@ subtest 'all_builds API call', sub {
     };
     my $resp = $client->all_builds();
     is( $resp->is_success, 1, 'fetched all builds' );
+};
+
+subtest 'delete_item API call', sub {
+    my $client = setup();
+
+    no strict 'refs';
+    no warnings 'redefine';
+    local *{ 'LWP::UserAgent::delete' } = sub {
+        return bless( {
+            '_rc' => 204,
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->delete_item( '/unique_path' );
+    is( $resp->code, 204, 'deleted item' );
 };
 
 done_testing();
