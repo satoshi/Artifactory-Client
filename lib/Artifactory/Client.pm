@@ -14,11 +14,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.0.24
+Version 0.0.25
 
 =cut
 
-our $VERSION = '0.0.24';
+our $VERSION = '0.0.25';
 
 =head1 SYNOPSIS
 
@@ -256,9 +256,26 @@ Returns HTTP::Response object.
 
 sub all_builds {
     my $self = shift;
+    return $self->_get_build('');
+}
+
+=head2 build_runs( $build_name )
+
+Retrieves information of a particular build from artifactory.
+Returns HTTP::Response object.
+   
+=cut
+
+sub build_runs {
+    my ( $self, $build ) = @_;
+    return $self->_get_build( $build );
+}
+
+sub _get_build {
+    my ( $self, $path ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = "$artifactory:$port/artifactory/api/build";
-    return $self->get( $url );
+    my $url = "$artifactory:$port/artifactory/api/build/$path";
+    return $self->get( $url ); 
 }
 
 =head2 delete_item( $path )

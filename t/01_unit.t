@@ -192,6 +192,20 @@ subtest 'delete_item API call', sub {
     is( $resp->code, 204, 'deleted item' );
 };
 
+subtest 'build_runs API call', sub {
+    my $client = setup();
+
+    no strict 'refs';
+    no warnings 'redefine';
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_rc' => 200,
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->build_runs( 'api-test' );
+    is( $resp->code, 200, 'got build info' );
+};
+
 done_testing();
 
 sub setup {
