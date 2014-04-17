@@ -13,6 +13,13 @@ my $artifactory = 'http://example.com';
 my $port = 7777;
 my $repository = 'repository';
 
+my %mock_responses = (
+    http_201 => bless( { '_rc' => 201 }, 'HTTP::Response' ),
+    http_404 => bless( { '_rc' => 404, '_headers' => bless( {}, 'HTTP::Headers' ) }, 'HTTP::Response' ),
+    http_200 => bless( { '_rc' => 200 }, 'HTTP::Response' ),
+    http_204 => bless( { '_rc' => 204 }, 'HTTP::Response' ),
+);
+
 subtest 'check if ua is LWP::UserAgent', sub {
     my $client = setup();
     isa_ok( $client->{ ua }, 'LWP::UserAgent' );
@@ -30,9 +37,7 @@ subtest 'deploy_artifact with properties and content', sub {
     no strict 'refs';
     no warnings 'redefine';
     local *{ 'LWP::UserAgent::put' } = sub {
-        return bless( {
-            '_rc' => 201,
-        }, 'HTTP::Response' );
+        return $mock_responses{ http_201 };
     };
 
     my $resp = $client->deploy_artifact( path => $path, properties => $properties, content => $content );
@@ -80,10 +85,7 @@ subtest 'set_item_properties on non-existing artifact', sub {
     no strict 'refs';
     no warnings 'redefine';
     local *{ 'LWP::UserAgent::put' } = sub {
-        return bless( {
-            '_rc' => 404,
-            '_headers' => bless( {}, 'HTTP::Headers' ),
-        }, 'HTTP::Response' );
+        return $mock_responses{ http_404 }
     };
     my $resp = $client->set_item_properties( path => '/unique_path', properties => $properties );
     is( $resp->code, 404, 'got 404 for attempting to set props on non-existent artifact' );
@@ -112,10 +114,7 @@ subtest 'deploy artifact by checksum', sub {
     is( $resp->request()->header( 'x-checksum-sha1' ), $sha1, 'x-checksum-sha1 set' );
     
     local *{ 'LWP::UserAgent::put' } = sub {
-        return bless( {
-            '_rc' => 404,
-            '_headers' => bless( {}, 'HTTP::Headers' ),
-        }, 'HTTP::Response' );
+        return $mock_responses{ http_404 }
     };
 
     my $resp2 = $client->deploy_artifact_by_checksum( path => $path ); # no sha-1 on purpose
@@ -170,9 +169,7 @@ subtest 'all_builds API call', sub {
     no strict 'refs';
     no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
-        return bless( {
-            '_rc' => 200,
-        }, 'HTTP::Response' );
+        return $mock_responses{ http_200 };
     };
     my $resp = $client->all_builds();
     is( $resp->is_success, 1, 'fetched all builds' );
@@ -184,9 +181,7 @@ subtest 'delete_item API call', sub {
     no strict 'refs';
     no warnings 'redefine';
     local *{ 'LWP::UserAgent::delete' } = sub {
-        return bless( {
-            '_rc' => 204,
-        }, 'HTTP::Response' );
+        return $mock_responses{ http_204 };
     };
     my $resp = $client->delete_item( '/unique_path' );
     is( $resp->code, 204, 'deleted item' );
@@ -198,9 +193,7 @@ subtest 'build_runs API call', sub {
     no strict 'refs';
     no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
-        return bless( {
-            '_rc' => 200,
-        }, 'HTTP::Response' );
+        return $mock_responses{ http_200 };
     };
     my $resp = $client->build_runs( 'api-test' );
     is( $resp->code, 200, 'got build runs' );
@@ -212,12 +205,22 @@ subtest 'build_info API call', sub {
     no strict 'refs';
     no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
-        return bless( {
-            '_rc' => 200,
-        }, 'HTTP::Response' );
+        return $mock_responses{ http_200 };
     };
     my $resp = $client->build_info( 'api-test', 14 );
     is( $resp->code, 200, 'got build info' );
+};
+
+subtest 'builds_diff API call', sub {
+    my $client = setup();
+
+    no strict 'refs';
+    no warnings 'redefine';
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->builds_diff( 'api-test', 14, 10 );
+    is( $resp->code, 200, 'got builds diff' );
 };
 
 done_testing();

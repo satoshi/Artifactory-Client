@@ -1,9 +1,15 @@
 Revision history for Artifactory-Client
 
-0.0.26 2014/4/15
+0.0.28  2014/4/16
+        Refactored mock responses for unit tests
+
+0.0.27  2014/4/16
+        Added builds_diff API call
+
+0.0.26  2014/4/15
         Added build_info API call
 
-0.0.25 2014/4/14
+0.0.25  2014/4/14
         Added build_runs API call
 
 0.0.24  2014/4/11

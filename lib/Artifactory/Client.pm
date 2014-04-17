@@ -14,11 +14,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.0.26
+Version 0.0.28
 
 =cut
 
-our $VERSION = '0.0.26';
+our $VERSION = '0.0.28';
 
 =head1 SYNOPSIS
 
@@ -281,6 +281,18 @@ Returns HTTP::Response object.
 sub build_info {
     my ( $self, $build, $number ) = @_;
     return $self->_get_build( "$build/$number" );
+}
+
+=head2 builds_diff( $build_name, $new_build_number, $old_build_number )
+
+Retrieves diff of 2 builds
+Returns HTTP::Response object.
+
+=cut
+
+sub builds_diff {
+    my ( $self, $build, $new, $old ) = @_;
+    return $self->_get_build( "$build/$new?diff=$old" );
 }
 
 sub _get_build {
