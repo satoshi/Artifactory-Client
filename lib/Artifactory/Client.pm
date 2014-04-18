@@ -7,6 +7,7 @@ use LWP::UserAgent;
 use Data::Dumper;
 use URI::Escape;
 use namespace::autoclean;
+use JSON;
 
 =head1 NAME
 
@@ -14,11 +15,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.0.28
+Version 0.0.29
 
 =cut
 
-our $VERSION = '0.0.28';
+our $VERSION = '0.0.29';
 
 =head1 SYNOPSIS
 
@@ -293,6 +294,20 @@ Returns HTTP::Response object.
 sub builds_diff {
     my ( $self, $build, $new, $old ) = @_;
     return $self->_get_build( "$build/$new?diff=$old" );
+}
+
+=head2 build_promotion( $build_name, $build_number, $payload )
+
+Promotes a build by POSTing payload
+Returns HTTP::Response object.
+
+=cut
+
+sub build_promotion {
+    my ( $self, $build, $number, $payload ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/build/promote/$build/$number";
+    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
 }
 
 sub _get_build {

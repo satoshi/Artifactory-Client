@@ -223,6 +223,21 @@ subtest 'builds_diff API call', sub {
     is( $resp->code, 200, 'got builds diff' );
 };
 
+subtest 'build_promotion API call', sub {
+    my $client = setup();
+    my $payload = {
+        status => "staged",
+    };
+
+    no strict 'refs';
+    no warnings 'redefine';
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->build_promotion( 'api-test', 10, $payload );
+    is( $resp->code, 200, 'build_promotion succeeded' );
+};
+
 done_testing();
 
 sub setup {

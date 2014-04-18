@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.0.29  2014/4/17
+        Added build_promotion API call
+
 0.0.28  2014/4/16
         Refactored mock responses for unit tests
 
