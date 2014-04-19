@@ -8,6 +8,7 @@ use JSON;
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 use Artifactory::Client;
+use URI::http;
 
 my $artifactory = 'http://example.com';
 my $port = 7777;
@@ -153,7 +154,7 @@ subtest 'retrieve artifact', sub {
     no strict 'refs';
     no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
-        bless( {
+        return bless( {
             '_content' => 'content of artifact',
             '_headers' => bless( {}, 'HTTP::Headers' ),
         }, 'HTTP::Response' );
@@ -236,6 +237,26 @@ subtest 'build_promotion API call', sub {
     };
     my $resp = $client->build_promotion( 'api-test', 10, $payload );
     is( $resp->code, 200, 'build_promotion succeeded' );
+};
+
+subtest 'delete_build API call', sub {
+    my $client = setup();
+
+    no strict 'refs';
+    no warnings 'redefine';
+    local *{ 'LWP::UserAgent::delete' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/api/build/api-test?buildNumbers=1&artifacts=0&deleteAll=0')}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+
+    my $resp = $client->delete_build( name => 'api-test', buildnumbers => [1],  artifacts => 0, deleteall => 0 );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr/buildNumbers=1/, 'buildNumbers showed up' );
+    like( $url_in_response, qr/artifacts=0/, 'artifacts showed up' );
+    like( $url_in_response, qr/deleteAll=0/, 'deleteAll showed up' );
 };
 
 done_testing();

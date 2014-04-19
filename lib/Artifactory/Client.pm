@@ -15,11 +15,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.0.29
+Version 0.0.30
 
 =cut
 
-our $VERSION = '0.0.29';
+our $VERSION = '0.0.30';
 
 =head1 SYNOPSIS
 
@@ -188,7 +188,7 @@ sub deploy_artifact_by_checksum {
     return $self->deploy_artifact( %args );
 }
 
-=head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => [0|1] )
+=head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => 0,1 )
 
 Takes path and properties then set item properties.  Supply recursive => 0 if you want to suppress propagation of
 properties downstream.  Note that properties are a hashref with key-arrayref pairs, such as:
@@ -308,6 +308,45 @@ sub build_promotion {
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port/artifactory/api/build/promote/$build/$number";
     return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
+}
+
+=head2 delete_build( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
+
+Promotes a build by POSTing payload
+Returns HTTP::Response object.
+
+=cut
+
+sub delete_build {
+    my ( $self, %args ) = @_;
+    my $build = $args{ name };
+    my $buildnumbers = $args{ buildnumbers };
+    my $artifacts = $args{ artifacts };
+    my $deleteall = $args{ deleteall };
+
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/build/$build";
+    my @params;
+
+    if ( ref( $buildnumbers ) eq 'ARRAY' ) {
+        my $str = "buildNumbers=";
+        $str .= join( ",", @{ $buildnumbers } );
+        push @params, $str;
+    }
+
+    if ( defined $artifacts ) {
+        push @params, "artifacts=$artifacts";
+    }
+
+    if ( defined $deleteall ) {
+        push @params, "deleteAll=$deleteall";
+    }
+
+    if ( @params ) {
+        $url .= "?";
+        $url .= join( "&", @params );
+    }
+    return $self->delete( $url );
 }
 
 sub _get_build {
