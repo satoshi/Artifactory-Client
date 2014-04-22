@@ -15,11 +15,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.0.30
+Version 0.0.31
 
 =cut
 
-our $VERSION = '0.0.30';
+our $VERSION = '0.0.31';
 
 =head1 SYNOPSIS
 
@@ -78,14 +78,9 @@ has 'repository' => (
     required => 1
 );
 
-=head1 SUBROUTINES/METHODS
+=head1 GENERIC METHODS
 
 =cut
-
-sub _build_ua {
-    my $self = shift;
-    $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
-}
 
 =head2 get
 
@@ -135,9 +130,123 @@ sub delete {
     return $self->_request( 'delete', @args );
 }
 
-sub _request {
-    my ( $self, $method, @args ) = @_;
-    return $self->{ ua }->$method( @args );
+=head1 BUILDS
+
+=cut
+
+=head2 all_builds
+
+Retrieves information on all builds from artifactory.
+Returns HTTP::Response object.
+
+=cut
+
+sub all_builds {
+    my $self = shift;
+    return $self->_get_build('');
+}
+
+=head2 build_runs( $build_name )
+
+Retrieves information of a particular build from artifactory.
+Returns HTTP::Response object.
+
+=cut
+
+sub build_runs {
+    my ( $self, $build ) = @_;
+    return $self->_get_build( $build );
+}
+
+=head2 build_info( $build_name, $build_number )
+
+Retrieves information of a particular build number.
+Returns HTTP::Response object.
+
+=cut
+
+sub build_info {
+    my ( $self, $build, $number ) = @_;
+    return $self->_get_build( "$build/$number" );
+}
+
+=head2 builds_diff( $build_name, $new_build_number, $old_build_number )
+
+Retrieves diff of 2 builds
+Returns HTTP::Response object.
+
+=cut
+
+sub builds_diff {
+    my ( $self, $build, $new, $old ) = @_;
+    return $self->_get_build( "$build/$new?diff=$old" );
+}
+
+=head2 build_promotion( $build_name, $build_number, $payload )
+
+Promotes a build by POSTing payload
+Returns HTTP::Response object.
+
+=cut
+
+sub build_promotion {
+    my ( $self, $build, $number, $payload ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/build/promote/$build/$number";
+    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
+}
+
+=head2 delete_build( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
+
+Promotes a build by POSTing payload
+Returns HTTP::Response object.
+
+=cut
+
+sub delete_build {
+    my ( $self, %args ) = @_;
+    my $build = $args{ name };
+    my $buildnumbers = $args{ buildnumbers };
+    my $artifacts = $args{ artifacts };
+    my $deleteall = $args{ deleteall };
+
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/build/$build";
+    my @params;
+
+    if ( ref( $buildnumbers ) eq 'ARRAY' ) {
+        my $str = "buildNumbers=";
+        $str .= join( ",", @{ $buildnumbers } );
+        push @params, $str;
+    }
+
+    if ( defined $artifacts ) {
+        push @params, "artifacts=$artifacts";
+    }
+
+    if ( defined $deleteall ) {
+        push @params, "deleteAll=$deleteall";
+    }
+
+    if ( @params ) {
+        $url .= "?";
+        $url .= join( "&", @params );
+    }
+    return $self->delete( $url );
+}
+
+=head2 build_rename( $build_name, $new_build_name )
+
+Renames a build
+Returns HTTP::Response object.
+
+=cut
+
+sub build_rename {
+    my ( $self, $build, $new_build ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/build/rename/$build?to=$new_build";
+    return $self->post( $url );
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
@@ -248,114 +357,6 @@ sub retrieve_artifact {
     return $self->get( $url );
 }
 
-=head2 all_builds
-
-Retrieves information on all builds from artifactory.
-Returns HTTP::Response object.
-
-=cut
-
-sub all_builds {
-    my $self = shift;
-    return $self->_get_build('');
-}
-
-=head2 build_runs( $build_name )
-
-Retrieves information of a particular build from artifactory.
-Returns HTTP::Response object.
-
-=cut
-
-sub build_runs {
-    my ( $self, $build ) = @_;
-    return $self->_get_build( $build );
-}
-
-=head2 build_info( $build_name, $build_number )
-
-Retrieves information of a particular build number.
-Returns HTTP::Response object.
-
-=cut
-
-sub build_info {
-    my ( $self, $build, $number ) = @_;
-    return $self->_get_build( "$build/$number" );
-}
-
-=head2 builds_diff( $build_name, $new_build_number, $old_build_number )
-
-Retrieves diff of 2 builds
-Returns HTTP::Response object.
-
-=cut
-
-sub builds_diff {
-    my ( $self, $build, $new, $old ) = @_;
-    return $self->_get_build( "$build/$new?diff=$old" );
-}
-
-=head2 build_promotion( $build_name, $build_number, $payload )
-
-Promotes a build by POSTing payload
-Returns HTTP::Response object.
-
-=cut
-
-sub build_promotion {
-    my ( $self, $build, $number, $payload ) = @_;
-    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = "$artifactory:$port/artifactory/api/build/promote/$build/$number";
-    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
-}
-
-=head2 delete_build( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
-
-Promotes a build by POSTing payload
-Returns HTTP::Response object.
-
-=cut
-
-sub delete_build {
-    my ( $self, %args ) = @_;
-    my $build = $args{ name };
-    my $buildnumbers = $args{ buildnumbers };
-    my $artifacts = $args{ artifacts };
-    my $deleteall = $args{ deleteall };
-
-    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = "$artifactory:$port/artifactory/api/build/$build";
-    my @params;
-
-    if ( ref( $buildnumbers ) eq 'ARRAY' ) {
-        my $str = "buildNumbers=";
-        $str .= join( ",", @{ $buildnumbers } );
-        push @params, $str;
-    }
-
-    if ( defined $artifacts ) {
-        push @params, "artifacts=$artifacts";
-    }
-
-    if ( defined $deleteall ) {
-        push @params, "deleteAll=$deleteall";
-    }
-
-    if ( @params ) {
-        $url .= "?";
-        $url .= join( "&", @params );
-    }
-    return $self->delete( $url );
-}
-
-sub _get_build {
-    my ( $self, $path ) = @_;
-    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = "$artifactory:$port/artifactory/api/build/$path";
-    return $self->get( $url ); 
-}
-
 =head2 delete_item( $path )
 
 Delete $path on artifactory.
@@ -370,6 +371,16 @@ sub delete_item {
     return $self->delete( $url );
 }
 
+sub _build_ua {
+    my $self = shift;
+    $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
+}
+
+sub _request {
+    my ( $self, $method, @args ) = @_;
+    return $self->{ ua }->$method( @args );
+}
+
 sub _unpack_attributes {
     my ( $self, @args ) = @_;
     my @result;
@@ -378,6 +389,13 @@ sub _unpack_attributes {
         push @result, $self->{ $attr };
     }
     return @result;
+}
+
+sub _get_build {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/build/$path";
+    return $self->get( $url );
 }
 
 sub _attach_properties {

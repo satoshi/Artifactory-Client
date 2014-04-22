@@ -10,6 +10,10 @@ use lib "$Bin/../lib";
 use Artifactory::Client;
 use URI::http;
 
+# it became silly to do this in every subtest
+no strict 'refs';
+no warnings 'redefine';
+
 my $artifactory = 'http://example.com';
 my $port = 7777;
 my $repository = 'repository';
@@ -35,8 +39,6 @@ subtest 'deploy_artifact with properties and content', sub {
     my $path = '/unique_path';
     my $content = "content of artifact";
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::put' } = sub {
         return $mock_responses{ http_201 };
     };
@@ -83,8 +85,6 @@ subtest 'set_item_properties on non-existing artifact', sub {
         two => [2],
     };
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::put' } = sub {
         return $mock_responses{ http_404 }
     };
@@ -97,8 +97,6 @@ subtest 'deploy artifact by checksum', sub {
     my $path = '/unique_path';
     my $sha1 = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'; # sha-1 of 0 byte file
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::put' } = sub {
         return bless( {
             '_request' => bless( { 
@@ -129,8 +127,6 @@ subtest 'item properties', sub {
         that => ['one'],
     };
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
         return bless( {
             '_content' => '{
@@ -151,8 +147,6 @@ subtest 'retrieve artifact', sub {
     my $client = setup();
     my $content = "content of artifact";
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
         return bless( {
             '_content' => 'content of artifact',
@@ -167,8 +161,6 @@ subtest 'retrieve artifact', sub {
 subtest 'all_builds API call', sub {
     my $client = setup();
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
         return $mock_responses{ http_200 };
     };
@@ -179,8 +171,6 @@ subtest 'all_builds API call', sub {
 subtest 'delete_item API call', sub {
     my $client = setup();
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::delete' } = sub {
         return $mock_responses{ http_204 };
     };
@@ -191,8 +181,6 @@ subtest 'delete_item API call', sub {
 subtest 'build_runs API call', sub {
     my $client = setup();
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
         return $mock_responses{ http_200 };
     };
@@ -203,8 +191,6 @@ subtest 'build_runs API call', sub {
 subtest 'build_info API call', sub {
     my $client = setup();
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
         return $mock_responses{ http_200 };
     };
@@ -215,8 +201,6 @@ subtest 'build_info API call', sub {
 subtest 'builds_diff API call', sub {
     my $client = setup();
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::get' } = sub {
         return $mock_responses{ http_200 };
     };
@@ -230,8 +214,6 @@ subtest 'build_promotion API call', sub {
         status => "staged",
     };
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::post' } = sub {
         return $mock_responses{ http_200 };
     };
@@ -242,8 +224,6 @@ subtest 'build_promotion API call', sub {
 subtest 'delete_build API call', sub {
     my $client = setup();
 
-    no strict 'refs';
-    no warnings 'redefine';
     local *{ 'LWP::UserAgent::delete' } = sub {
         return bless( {
             '_request' => bless( {
@@ -257,6 +237,16 @@ subtest 'delete_build API call', sub {
     like( $url_in_response, qr/buildNumbers=1/, 'buildNumbers showed up' );
     like( $url_in_response, qr/artifacts=0/, 'artifacts showed up' );
     like( $url_in_response, qr/deleteAll=0/, 'deleteAll showed up' );
+};
+
+subtest 'build_rename API call', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->build_rename( 'api-test', 'something' );
+    is( $resp->code, 200, 'build_rename succeeded' );
 };
 
 done_testing();

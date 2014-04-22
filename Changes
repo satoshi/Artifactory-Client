@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.0.31  2014/4/21
+        Added build_rename API call, sorted POD and code in the order of JFrog documentation
+
 0.0.30  2014/4/18
         Added delete_build API call
 
