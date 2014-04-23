@@ -15,18 +15,19 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.0.31
+Version 0.1.0
 
 =cut
 
-our $VERSION = '0.0.31';
+our $VERSION = '0.1.0';
 
 =head1 SYNOPSIS
 
 This is a Perl client for Artifactory REST API: https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API
+Every public method provided in this module returns a HTTP::Response object.
 
     use Artifactory::Client;
-    
+
     my $args = {
         artifactory => 'http://artifactory.server.com',
         port => 8080,
@@ -36,7 +37,7 @@ This is a Perl client for Artifactory REST API: https://www.jfrog.com/confluence
 
     my $client = Artifactory::Client->new( $args );
     my $path = '/foo'; # path on artifactory
-    
+
     # Properties are a hashref of key-arrayref pairs.  Note that value must be an arrayref even for a single element.
     # This is to conform with Artifactory which treats property values as a list.
     my $properties = {
@@ -82,10 +83,9 @@ has 'repository' => (
 
 =cut
 
-=head2 get
+=head2 get( @args )
 
 Invokes GET request on LWP::UserAgent-like object; params are passed through.
-Returns HTTP::Response object.
 
 =cut
 
@@ -94,10 +94,9 @@ sub get {
     return $self->_request( 'get', @args );
 }
 
-=head2 post
+=head2 post( @args )
 
 nvokes POST request on LWP::UserAgent-like object; params are passed through.
-Returns HTTP::Response object.
 
 =cut
 
@@ -106,10 +105,9 @@ sub post {
     return $self->_request( 'post', @args );
 }
 
-=head2 put
+=head2 put( @args )
 
 Invokes PUT request on LWP::UserAgent-like object; params are passed through.
-Returns HTTP::Response object.
 
 =cut
 
@@ -118,10 +116,9 @@ sub put {
     return $self->_request( 'put', @args );
 }
 
-=head2 delete
+=head2 delete( @args )
 
 Invokes DELETE request on LWP::UserAgent-like object; params are passed through.
-Returns HTTP::Response object.
 
 =cut
 
@@ -137,7 +134,6 @@ sub delete {
 =head2 all_builds
 
 Retrieves information on all builds from artifactory.
-Returns HTTP::Response object.
 
 =cut
 
@@ -149,7 +145,6 @@ sub all_builds {
 =head2 build_runs( $build_name )
 
 Retrieves information of a particular build from artifactory.
-Returns HTTP::Response object.
 
 =cut
 
@@ -161,7 +156,6 @@ sub build_runs {
 =head2 build_info( $build_name, $build_number )
 
 Retrieves information of a particular build number.
-Returns HTTP::Response object.
 
 =cut
 
@@ -173,7 +167,6 @@ sub build_info {
 =head2 builds_diff( $build_name, $new_build_number, $old_build_number )
 
 Retrieves diff of 2 builds
-Returns HTTP::Response object.
 
 =cut
 
@@ -185,7 +178,6 @@ sub builds_diff {
 =head2 build_promotion( $build_name, $build_number, $payload )
 
 Promotes a build by POSTing payload
-Returns HTTP::Response object.
 
 =cut
 
@@ -199,7 +191,6 @@ sub build_promotion {
 =head2 delete_build( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
 
 Promotes a build by POSTing payload
-Returns HTTP::Response object.
 
 =cut
 
@@ -238,7 +229,6 @@ sub delete_build {
 =head2 build_rename( $build_name, $new_build_name )
 
 Renames a build
-Returns HTTP::Response object.
 
 =cut
 
@@ -249,14 +239,29 @@ sub build_rename {
     return $self->post( $url );
 }
 
+=head1 ARTIFACTS & STORAGE
+
+=cut
+
+=head2 folder_info( $path )
+
+Returns folder info
+
+=cut
+
+sub folder_info {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/storage/$repository$path";
+    return $self->get( $url );
+}
+
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
 
 Takes path, properties and content then deploys artifact.  Note that properties are a hashref with key-arrayref pairs,
 such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
-
-Returns HTTP::Response object.
 
 =cut
 
@@ -281,8 +286,6 @@ pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
-Returns HTTP::Response object.
-
 =cut
 
 sub deploy_artifact_by_checksum {
@@ -304,8 +307,6 @@ properties downstream.  Note that properties are a hashref with key-arrayref pai
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
-Returns HTTP::Response object.
-
 =cut
 
 sub set_item_properties {
@@ -324,7 +325,6 @@ sub set_item_properties {
 =head2 item_properties( path => $path, properties => [ key_names ] )
 
 Takes path and properties then get item properties.
-Returns HTTP::Response object.
 
 =cut
 
@@ -346,7 +346,6 @@ sub item_properties {
 =head2 retrieve_artifact( $path )
 
 Takes path and retrieves artifact on the path.
-Returns HTTP::Response object.
 
 =cut
 
@@ -360,7 +359,6 @@ sub retrieve_artifact {
 =head2 delete_item( $path )
 
 Delete $path on artifactory.
-Returns HTTP::Response object.
 
 =cut
 

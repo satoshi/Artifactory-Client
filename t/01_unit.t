@@ -158,7 +158,7 @@ subtest 'retrieve artifact', sub {
     is( $resp->decoded_content, $content, 'artifact retrieved successfully' );
 };
 
-subtest 'all_builds API call', sub {
+subtest 'all_builds', sub {
     my $client = setup();
 
     local *{ 'LWP::UserAgent::get' } = sub {
@@ -168,7 +168,7 @@ subtest 'all_builds API call', sub {
     is( $resp->is_success, 1, 'fetched all builds' );
 };
 
-subtest 'delete_item API call', sub {
+subtest 'delete_item', sub {
     my $client = setup();
 
     local *{ 'LWP::UserAgent::delete' } = sub {
@@ -178,7 +178,7 @@ subtest 'delete_item API call', sub {
     is( $resp->code, 204, 'deleted item' );
 };
 
-subtest 'build_runs API call', sub {
+subtest 'build_runs', sub {
     my $client = setup();
 
     local *{ 'LWP::UserAgent::get' } = sub {
@@ -188,7 +188,7 @@ subtest 'build_runs API call', sub {
     is( $resp->code, 200, 'got build runs' );
 };
 
-subtest 'build_info API call', sub {
+subtest 'build_info', sub {
     my $client = setup();
 
     local *{ 'LWP::UserAgent::get' } = sub {
@@ -198,7 +198,7 @@ subtest 'build_info API call', sub {
     is( $resp->code, 200, 'got build info' );
 };
 
-subtest 'builds_diff API call', sub {
+subtest 'builds_diff', sub {
     my $client = setup();
 
     local *{ 'LWP::UserAgent::get' } = sub {
@@ -208,7 +208,7 @@ subtest 'builds_diff API call', sub {
     is( $resp->code, 200, 'got builds diff' );
 };
 
-subtest 'build_promotion API call', sub {
+subtest 'build_promotion', sub {
     my $client = setup();
     my $payload = {
         status => "staged",
@@ -221,7 +221,7 @@ subtest 'build_promotion API call', sub {
     is( $resp->code, 200, 'build_promotion succeeded' );
 };
 
-subtest 'delete_build API call', sub {
+subtest 'delete_build', sub {
     my $client = setup();
 
     local *{ 'LWP::UserAgent::delete' } = sub {
@@ -239,7 +239,7 @@ subtest 'delete_build API call', sub {
     like( $url_in_response, qr/deleteAll=0/, 'deleteAll showed up' );
 };
 
-subtest 'build_rename API call', sub {
+subtest 'build_rename', sub {
     my $client = setup();
 
     local *{ 'LWP::UserAgent::post' } = sub {
@@ -247,6 +247,17 @@ subtest 'build_rename API call', sub {
     };
     my $resp = $client->build_rename( 'api-test', 'something' );
     is( $resp->code, 200, 'build_rename succeeded' );
+};
+
+subtest 'folder_info', sub {
+    my $client = setup();
+    my $dir = "/some_dir";
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->folder_info( "/some_dir" );
+    is( $resp->code, 200, 'folder_info succeeded' );
 };
 
 done_testing();

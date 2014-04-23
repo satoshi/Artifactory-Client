@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.0   2014/4/22
+        Added folder_info API call.  Bumped minor version as BUILDS section is done
+
 0.0.31  2014/4/21
         Added build_rename API call, sorted POD and code in the order of JFrog documentation
 
