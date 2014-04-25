@@ -15,11 +15,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.1.1
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.1.1';
 
 =head1 SYNOPSIS
 
@@ -254,6 +254,17 @@ sub folder_info {
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/api/storage/$repository$path";
     return $self->get( $url );
+}
+
+=head2 file_info( $path )
+
+Returns file info
+
+=cut
+
+sub file_info {
+    my ( $self, $path ) = @_;
+    return $self->folder_info( $path ); # should be OK to do this
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )

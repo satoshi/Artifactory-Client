@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.1   2014/4/23
+        Added file_info API call.
+
 0.1.0   2014/4/22
         Added folder_info API call.  Bumped minor version as BUILDS section is done
 

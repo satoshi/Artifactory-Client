@@ -251,13 +251,22 @@ subtest 'build_rename', sub {
 
 subtest 'folder_info', sub {
     my $client = setup();
-    my $dir = "/some_dir";
 
     local *{ 'LWP::UserAgent::get' } = sub {
         return $mock_responses{ http_200 };
     };
     my $resp = $client->folder_info( "/some_dir" );
     is( $resp->code, 200, 'folder_info succeeded' );
+};
+
+subtest 'file_info', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->file_info( "/somefile" );
+    is( $resp->code, 200, 'file_info succeeded' );
 };
 
 done_testing();
