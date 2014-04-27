@@ -269,6 +269,16 @@ subtest 'file_info', sub {
     is( $resp->code, 200, 'file_info succeeded' );
 };
 
+subtest 'item_last_modified', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->item_last_modified( '/unique_path' );
+    is( $resp->code, 200, 'item_last_modified succeeded' );
+};
+
 done_testing();
 
 sub setup {

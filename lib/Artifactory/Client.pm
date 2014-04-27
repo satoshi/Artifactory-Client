@@ -15,11 +15,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.1
+Version 0.1.2
 
 =cut
 
-our $VERSION = '0.1.1';
+our $VERSION = '0.1.2';
 
 =head1 SYNOPSIS
 
@@ -265,6 +265,19 @@ Returns file info
 sub file_info {
     my ( $self, $path ) = @_;
     return $self->folder_info( $path ); # should be OK to do this
+}
+
+=head2 item_last_modified( $path )
+
+Returns item_last_modified for a given path
+
+=cut
+
+sub item_last_modified {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/storage/$repository$path?lastModified";
+    return $self->get( $url );
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
