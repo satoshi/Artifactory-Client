@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.3   2014/4/26
+        Added file_statistics API call
+
 0.1.2   2014/4/25
         Added item_last_modified API call.
 

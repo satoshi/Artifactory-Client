@@ -279,6 +279,16 @@ subtest 'item_last_modified', sub {
     is( $resp->code, 200, 'item_last_modified succeeded' );
 };
 
+subtest 'file_statistics', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->file_statistics( '/unique_path' );
+    is( $resp->code, 200, 'file_statistics succeeded' );
+};
+
 done_testing();
 
 sub setup {

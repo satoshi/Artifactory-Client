@@ -15,11 +15,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.2
+Version 0.1.3
 
 =cut
 
-our $VERSION = '0.1.2';
+our $VERSION = '0.1.3';
 
 =head1 SYNOPSIS
 
@@ -280,6 +280,62 @@ sub item_last_modified {
     return $self->get( $url );
 }
 
+=head2 file_statistics( $path )
+
+Returns file_statistics for a given path
+
+=cut
+
+sub file_statistics {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/storage/$repository$path?stats";
+    return $self->get( $url );
+}
+
+=head2 item_properties( path => $path, properties => [ key_names ] )
+
+Takes path and properties then get item properties.
+
+=cut
+
+sub item_properties {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+
+    my $path = $args{ path };
+    my $properties = $args{ properties };
+    my $url = "$artifactory:$port/api/storage/$repository$path?properties";
+
+    if ( ref( $properties ) eq 'ARRAY' ) {
+        my $str = join( ',', @{ $properties } );
+        $url .= "=" . $str;
+    }
+    return $self->get( $url );
+}
+
+=head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => 0,1 )
+
+Takes path and properties then set item properties.  Supply recursive => 0 if you want to suppress propagation of
+properties downstream.  Note that properties are a hashref with key-arrayref pairs, such as:
+
+    $prop = { key1 => ['a'], key2 => ['a', 'b'] }
+
+=cut
+
+sub set_item_properties {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+
+    my $path = $args{ path };
+    my $properties = $args{ properties };
+    my $recursive = $args{ recursive };
+    my $url = "$artifactory:$port/api/storage/$repository$path?properties=";
+    my $request = $self->_attach_properties( url => $url, properties => $properties );
+    $request .= "&recursive=$recursive" if ( defined $recursive );
+    return $self->put( $request );
+}
+
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
 
 Takes path, properties and content then deploys artifact.  Note that properties are a hashref with key-arrayref pairs,
@@ -322,49 +378,6 @@ sub deploy_artifact_by_checksum {
     };
     $args{ header } = $header;
     return $self->deploy_artifact( %args );
-}
-
-=head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => 0,1 )
-
-Takes path and properties then set item properties.  Supply recursive => 0 if you want to suppress propagation of
-properties downstream.  Note that properties are a hashref with key-arrayref pairs, such as:
-
-    $prop = { key1 => ['a'], key2 => ['a', 'b'] }
-
-=cut
-
-sub set_item_properties {
-    my ( $self, %args ) = @_;
-    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-
-    my $path = $args{ path };
-    my $properties = $args{ properties };
-    my $recursive = $args{ recursive };
-    my $url = "$artifactory:$port/api/storage/$repository$path?properties=";
-    my $request = $self->_attach_properties( url => $url, properties => $properties );
-    $request .= "&recursive=$recursive" if ( defined $recursive );
-    return $self->put( $request );
-}
-
-=head2 item_properties( path => $path, properties => [ key_names ] )
-
-Takes path and properties then get item properties.
-
-=cut
-
-sub item_properties {
-    my ( $self, %args ) = @_;
-    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-
-    my $path = $args{ path };
-    my $properties = $args{ properties };
-    my $url = "$artifactory:$port/api/storage/$repository$path?properties";
-
-    if ( ref( $properties ) eq 'ARRAY' ) {
-        my $str = join( ',', @{ $properties } );
-        $url .= "=" . $str;
-    }
-    return $self->get( $url );
 }
 
 =head2 retrieve_artifact( $path )
