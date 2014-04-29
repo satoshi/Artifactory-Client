@@ -15,11 +15,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.3
+Version 0.1.5
 
 =cut
 
-our $VERSION = '0.1.3';
+our $VERSION = '0.1.5';
 
 =head1 SYNOPSIS
 
@@ -336,6 +336,38 @@ sub set_item_properties {
     return $self->put( $request );
 }
 
+=head2 delete_item_properties( path => $path, properties => [ key_names ], recursive => 0,1 )
+
+Takes path and properties then delete item properties.  Supply recursive => 0 if you want to suppress propagation of
+properties downstream.
+
+=cut
+
+sub delete_item_properties {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+
+    my $path = $args{ path };
+    my $properties = $args{ properties };
+    my $recursive = $args{ recursive };
+    my $url = "$artifactory:$port/api/storage/$repository$path?properties=" . join( ",", @{ $properties } );
+    $url .= "&recursive=$recursive" if ( defined $recursive );
+    return $self->delete( $url );
+}
+
+=head2 retrieve_artifact( $path )
+
+Takes path and retrieves artifact on the path.
+
+=cut
+
+sub retrieve_artifact {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/$repository$path";
+    return $self->get( $url );
+}
+
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
 
 Takes path, properties and content then deploys artifact.  Note that properties are a hashref with key-arrayref pairs,
@@ -378,19 +410,6 @@ sub deploy_artifact_by_checksum {
     };
     $args{ header } = $header;
     return $self->deploy_artifact( %args );
-}
-
-=head2 retrieve_artifact( $path )
-
-Takes path and retrieves artifact on the path.
-
-=cut
-
-sub retrieve_artifact {
-    my ( $self, $path ) = @_;
-    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-    my $url = "$artifactory:$port/artifactory/$repository$path";
-    return $self->get( $url );
 }
 
 =head2 delete_item( $path )

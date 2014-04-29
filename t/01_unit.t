@@ -289,6 +289,16 @@ subtest 'file_statistics', sub {
     is( $resp->code, 200, 'file_statistics succeeded' );
 };
 
+subtest 'delete_item_properties', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::delete' } = sub {
+        return $mock_responses{ http_204 };
+    };
+    my $resp = $client->delete_item_properties( path => '/unique_path', properties => ['first'] );
+    is( $resp->code, 204, 'delete_item_properties succeeded' );
+};
+
 done_testing();
 
 sub setup {

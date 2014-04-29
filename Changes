@@ -1,13 +1,19 @@
 Revision history for Artifactory-Client
 
+0.1.5   2014/4/28
+        Organized retrieve_artifact API call to comply with upstream documentation
+
+0.1.4   2014/4/28
+        Added delete_item_properties API call
+
 0.1.3   2014/4/26
         Added file_statistics API call
 
 0.1.2   2014/4/25
-        Added item_last_modified API call.
+        Added item_last_modified API call
 
 0.1.1   2014/4/23
-        Added file_info API call.
+        Added file_info API call
 
 0.1.0   2014/4/22
         Added folder_info API call.  Bumped minor version as BUILDS section is done
