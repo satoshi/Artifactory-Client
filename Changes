@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.6   2014/4/29
+        Added retrieve_latest_artifact API call
+
 0.1.5   2014/4/28
         Organized retrieve_artifact API call to comply with upstream documentation
 

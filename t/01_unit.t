@@ -299,6 +299,44 @@ subtest 'delete_item_properties', sub {
     is( $resp->code, 204, 'delete_item_properties succeeded' );
 };
 
+subtest 'retrieve_latest_artifact', sub {
+    my $client = setup();
+    my $path = '/unique_path';
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/dist-packages/unique_path/0.9.9-snapshot/unique_path-0.9.9-snapshot.jar')}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->retrieve_latest_artifact( path => $path, snapshot => 'snapshot', version => '0.9.9' );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr/\Qunique_path-0.9.9-snapshot.jar\E/, 'snapshot URL looks sane' );
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/dist-packages/unique_path/release/unique_path-release.jar')}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    $resp = $client->retrieve_latest_artifact( path => $path, release => 'release' );
+    my $url_in_response2 = $resp->request->uri;
+    like( $url_in_response2, qr/\Qunique_path-release.jar\E/, 'release URL looks sane' );
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/dist-packages/unique_path/1.0-integration/unique_path-1.0-integration.jar')}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    $resp = $client->retrieve_latest_artifact( path => $path, version => '1.0', integration => 'integration' );
+    my $url_in_response3 = $resp->request->uri;
+    like( $url_in_response3, qr/\Qunique_path-1.0-integration.jar\E/, 'integration URL looks sane' );
+};
+
 done_testing();
 
 sub setup {

@@ -8,6 +8,7 @@ use Data::Dumper;
 use URI::Escape;
 use namespace::autoclean;
 use JSON;
+use File::Basename;
 
 =head1 NAME
 
@@ -15,11 +16,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.5
+Version 0.1.6
 
 =cut
 
-our $VERSION = '0.1.5';
+our $VERSION = '0.1.6';
 
 =head1 SYNOPSIS
 
@@ -366,6 +367,38 @@ sub retrieve_artifact {
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path";
     return $self->get( $url );
+}
+
+=head2 retrieve_latest_artifact( path => $path, snapshot => $snapshot, release => $release, integration => $integration,
+    version => $version )
+
+Takes path, version, snapshot / release / integration and makes a GET request
+
+=cut
+
+sub retrieve_latest_artifact {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $path = $args{ path };
+    my $snapshot = $args{ snapshot };
+    my $release = $args{ release };
+    my $integration = $args{ integration };
+    my $version = $args{ version };
+
+    my $base_url = "$artifactory:$port/artifactory/$repository$path";
+    my $basename = basename( $path );
+
+    if( $snapshot && $version ) {
+        return $self->get( "$base_url/$version-$snapshot/$basename-$version-$snapshot.jar" );
+    }
+
+    if( $release ) {
+        return $self->get( "$base_url/$release/$basename-$release.jar" );
+    }
+
+    if( $integration && $version ) {
+        return $self->get( "$base_url/$version-$integration/$basename-$version-$integration.jar" );
+    }
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
