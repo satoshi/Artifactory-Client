@@ -16,11 +16,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.6
+Version 0.1.7
 
 =cut
 
-our $VERSION = '0.1.6';
+our $VERSION = '0.1.7';
 
 =head1 SYNOPSIS
 
@@ -399,6 +399,19 @@ sub retrieve_latest_artifact {
     if( $integration && $version ) {
         return $self->get( "$base_url/$version-$integration/$basename-$version-$integration.jar" );
     }
+}
+
+=head2 retrieve_build_artifacts_archive( $payload )
+
+Takes payload (hashref) then retrieve build artifacts archive.
+
+=cut
+
+sub retrieve_build_artifacts_archive {
+    my ( $self, $payload ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/archive/buildArtifacts";
+    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )

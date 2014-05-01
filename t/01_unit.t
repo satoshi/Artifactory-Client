@@ -337,6 +337,21 @@ subtest 'retrieve_latest_artifact', sub {
     like( $url_in_response3, qr/\Qunique_path-1.0-integration.jar\E/, 'integration URL looks sane' );
 };
 
+subtest 'retrieve_build_artifacts_archive', sub {
+   my $client = setup();
+   my $payload = {
+       buildName => 'api-test',
+       buildNumber => 10,
+       archiveType => 'zip',
+   };
+
+   local *{ 'LWP::UserAgent::post' } = sub {
+        return $mock_responses{ http_200 };
+   };
+   my $resp = $client->retrieve_build_artifacts_archive( $payload );
+   is( $resp->code, 200, 'retrieve_build_artifacts_archive succeeded' );
+};
+
 done_testing();
 
 sub setup {
