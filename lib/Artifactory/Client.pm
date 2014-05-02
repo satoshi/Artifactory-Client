@@ -16,11 +16,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.7
+Version 0.1.8
 
 =cut
 
-our $VERSION = '0.1.7';
+our $VERSION = '0.1.8';
 
 =head1 SYNOPSIS
 
@@ -53,6 +53,11 @@ Every public method provided in this module returns a HTTP::Response object.
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
+
+Note on testing:
+This module is developed using Test-Driven Development.  I have functional tests making real API calls, however they
+contain proprietary information and I am not allowed to open source them.  The unit tests included are dumbed-down
+version of my functional tests.  They should serve as a detailed guide on how to make API calls.
 
 =cut
 
@@ -412,6 +417,19 @@ sub retrieve_build_artifacts_archive {
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port/artifactory/api/archive/buildArtifacts";
     return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
+}
+
+=head2 trace_artifact_retrieval( $path )
+
+Takes path and traces artifact retrieval
+
+=cut
+
+sub trace_artifact_retrieval {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/$repository$path?trace";
+    return $self->get( $url );
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )

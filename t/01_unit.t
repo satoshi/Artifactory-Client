@@ -352,6 +352,16 @@ subtest 'retrieve_build_artifacts_archive', sub {
    is( $resp->code, 200, 'retrieve_build_artifacts_archive succeeded' );
 };
 
+subtest 'trace_artifact_retrieval', sub {
+    my $client = setup();
+
+   local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+   };
+    my $resp = $client->trace_artifact_retrieval( '/unique_path' );
+    is( $resp->code, 200, 'trace_artifact_retrieval succeeded' );
+};
+
 done_testing();
 
 sub setup {
