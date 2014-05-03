@@ -306,7 +306,7 @@ subtest 'retrieve_latest_artifact', sub {
     local *{ 'LWP::UserAgent::get' } = sub {
         return bless( {
             '_request' => bless( {
-            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/dist-packages/unique_path/0.9.9-snapshot/unique_path-0.9.9-snapshot.jar')}, 'URI::http' ),
+            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/repository/unique_path/0.9.9-snapshot/unique_path-0.9.9-snapshot.jar')}, 'URI::http' ),
             }, 'HTTP::Request' )
         }, 'HTTP::Response' );
     };
@@ -317,7 +317,7 @@ subtest 'retrieve_latest_artifact', sub {
     local *{ 'LWP::UserAgent::get' } = sub {
         return bless( {
             '_request' => bless( {
-            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/dist-packages/unique_path/release/unique_path-release.jar')}, 'URI::http' ),
+            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/repository/unique_path/release/unique_path-release.jar')}, 'URI::http' ),
             }, 'HTTP::Request' )
         }, 'HTTP::Response' );
     };
@@ -328,7 +328,7 @@ subtest 'retrieve_latest_artifact', sub {
     local *{ 'LWP::UserAgent::get' } = sub {
         return bless( {
             '_request' => bless( {
-            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/dist-packages/unique_path/1.0-integration/unique_path-1.0-integration.jar')}, 'URI::http' ),
+            '_uri' => bless( do{\(my $o = 'http://example.com:7777/artifactory/repository/unique_path/1.0-integration/unique_path-1.0-integration.jar')}, 'URI::http' ),
             }, 'HTTP::Request' )
         }, 'HTTP::Response' );
     };
@@ -360,6 +360,23 @@ subtest 'trace_artifact_retrieval', sub {
    };
     my $resp = $client->trace_artifact_retrieval( '/unique_path' );
     is( $resp->code, 200, 'trace_artifact_retrieval succeeded' );
+};
+
+subtest 'archive_entry_download', sub {
+    my $client = setup();
+    my $path = '/unique_path';
+    my $archive_path = '/archive_path';
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/repo$path!$archive_path")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->archive_entry_download( $path, $archive_path );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr/$path!$archive_path/, 'archive_entry_download succeeded' );
 };
 
 done_testing();

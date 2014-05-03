@@ -16,11 +16,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.8
+Version 0.1.9
 
 =cut
 
-our $VERSION = '0.1.8';
+our $VERSION = '0.1.9';
 
 =head1 SYNOPSIS
 
@@ -429,6 +429,19 @@ sub trace_artifact_retrieval {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path?trace";
+    return $self->get( $url );
+}
+
+=head2 archive_entry_download( $path, $archive_path )
+
+Takes path and archive_path, retrieves an archived resource from the specified archive destination.
+
+=cut
+
+sub archive_entry_download {
+    my ( $self, $path, $archive_path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/$repository$path!$archive_path";
     return $self->get( $url );
 }
 
