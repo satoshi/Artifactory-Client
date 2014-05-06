@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.10  2014/5/5
+        Added create_directory API call
+
 0.1.9   2014/5/2
         Added archive_entry_download API call
 

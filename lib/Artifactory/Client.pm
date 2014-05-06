@@ -16,11 +16,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.9
+Version 0.1.10
 
 =cut
 
-our $VERSION = '0.1.9';
+our $VERSION = '0.1.10';
 
 =head1 SYNOPSIS
 
@@ -53,6 +53,10 @@ Every public method provided in this module returns a HTTP::Response object.
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
+
+    # drop in a different UserAgent:
+    my $ua = WWW::Mechanize->new();
+    $client->ua( $ua ); # now uses WWW::Mechanize to make requests
 
 Note on testing:
 This module is developed using Test-Driven Development.  I have functional tests making real API calls, however they
@@ -392,18 +396,20 @@ sub retrieve_latest_artifact {
 
     my $base_url = "$artifactory:$port/artifactory/$repository$path";
     my $basename = basename( $path );
+    my $url;
 
     if( $snapshot && $version ) {
-        return $self->get( "$base_url/$version-$snapshot/$basename-$version-$snapshot.jar" );
+        $url = "$base_url/$version-$snapshot/$basename-$version-$snapshot.jar";
     }
 
     if( $release ) {
-        return $self->get( "$base_url/$release/$basename-$release.jar" );
+        $url = "$base_url/$release/$basename-$release.jar";
     }
 
     if( $integration && $version ) {
-        return $self->get( "$base_url/$version-$integration/$basename-$version-$integration.jar" );
+        $url = "$base_url/$version-$integration/$basename-$version-$integration.jar";
     }
+    return $self->get( $url );
 }
 
 =head2 retrieve_build_artifacts_archive( $payload )
@@ -443,6 +449,17 @@ sub archive_entry_download {
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path!$archive_path";
     return $self->get( $url );
+}
+
+=head2 create_directory( path => $path, properties => { key => [ values ] } )
+
+Takes path, properties then create a directory.  Directory needs to end with a /, such as "/some_dir/".
+
+=cut
+
+sub create_directory {
+    my ( $self, %args ) = @_;
+    return $self->deploy_artifact( %args );
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )

@@ -6,6 +6,7 @@ use Test::More;
 use Data::Dumper;
 use JSON;
 use FindBin qw($Bin);
+use WWW::Mechanize;
 use lib "$Bin/../lib";
 use Artifactory::Client;
 use URI::http;
@@ -28,6 +29,10 @@ my %mock_responses = (
 subtest 'check if ua is LWP::UserAgent', sub {
     my $client = setup();
     isa_ok( $client->{ ua }, 'LWP::UserAgent' );
+
+    my $ua = WWW::Mechanize->new();
+    $client->ua( $ua );
+    isa_ok( $client->{ ua }, 'WWW::Mechanize' );
 };
 
 subtest 'deploy_artifact with properties and content', sub {
@@ -377,6 +382,17 @@ subtest 'archive_entry_download', sub {
     my $resp = $client->archive_entry_download( $path, $archive_path );
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr/$path!$archive_path/, 'archive_entry_download succeeded' );
+};
+
+subtest 'create_directory', sub {
+    my $client = setup();
+    my $dir = '/unique_dir/';
+
+    local *{ 'LWP::UserAgent::put' } = sub {
+        return $mock_responses{ http_201 };
+    };
+    my $resp = $client->create_directory( path => $dir );
+    is( $resp->code, 201, 'create_directory succeeded' );
 };
 
 done_testing();

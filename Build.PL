@@ -12,8 +12,10 @@ my $builder = Module::Build->new(
         'Module::Build' => 0,
     },
     build_requires => {
-        'Test::More' => 0,
-        'JSON' => 0,
+        'Test::More'        => 0,
+        'JSON'              => 0,
+        'LWP::UserAgent'    => 0,
+        'WWW::Mechanize'    => 0,
     },
     requires => {
         'Moose'                 => 2.0604,
