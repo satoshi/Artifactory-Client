@@ -7,9 +7,9 @@ use Data::Dumper;
 use JSON;
 use FindBin qw($Bin);
 use WWW::Mechanize;
+use URI::http;
 use lib "$Bin/../lib";
 use Artifactory::Client;
-use URI::http;
 
 # it became silly to do this in every subtest
 no strict 'refs';
@@ -393,6 +393,23 @@ subtest 'create_directory', sub {
     };
     my $resp = $client->create_directory( path => $dir );
     is( $resp->code, 201, 'create_directory succeeded' );
+};
+
+subtest 'deploy_artifacts_from_archive', sub {
+    my $client = setup();
+    my $dir = '/some_path';
+    my $path = "$dir/test.zip";
+    my $file = "$Bin/data/test.zip";
+
+    local *{ 'LWP::UserAgent::put' } = sub {
+        return $mock_responses{ http_200 };
+    };
+
+    local *{ 'File::Slurp::read_file' } = sub {
+        # no-op, unit test reads no file
+    };
+    my $resp = $client->deploy_artifacts_from_archive( file => 'test.zip', path => '/some_path/test.zip' );
+    is( $resp->code, 200, 'deploy_artifacts_from_archive worked' );
 };
 
 done_testing();

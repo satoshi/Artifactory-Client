@@ -9,6 +9,7 @@ use URI::Escape;
 use namespace::autoclean;
 use JSON;
 use File::Basename;
+use File::Slurp;
 
 =head1 NAME
 
@@ -16,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.10
+Version 0.1.11
 
 =cut
 
-our $VERSION = '0.1.10';
+our $VERSION = '0.1.11';
 
 =head1 SYNOPSIS
 
@@ -504,6 +505,28 @@ sub deploy_artifact_by_checksum {
     };
     $args{ header } = $header;
     return $self->deploy_artifact( %args );
+}
+
+=head2 deploy_artifacts_from_archive( path => $path, file => $file )
+
+Path is the path on Artifactory, file is path to local archive.  Will deploy $file to $path.
+
+=cut
+
+sub deploy_artifacts_from_archive {
+    my ( $self, %args ) = @_;
+
+    my $path = $args{ path };
+    my $file = $args{ file };
+    my %header = (
+        'X-Explode-Archive' => 'true',
+    );
+
+    # need to use fully-qualified name here so that I can mock from unit tests
+    my $bin = File::Slurp::read_file( $file, { binmode => ':raw' } );
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/$repository$path";
+    return $self->put( $url, %header, content => $bin );
 }
 
 =head2 delete_item( $path )
