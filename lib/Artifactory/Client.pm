@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.11
+Version 0.1.12
 
 =cut
 
-our $VERSION = '0.1.11';
+our $VERSION = '0.1.12';
 
 =head1 SYNOPSIS
 
@@ -527,6 +527,19 @@ sub deploy_artifacts_from_archive {
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path";
     return $self->put( $url, %header, content => $bin );
+}
+
+=head2 file_compliance_info( $path )
+
+Retrieves file compliance info of a given path.
+
+=cut
+
+sub file_compliance_info {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/compliance/$repository$path";
+    return $self->get( $url );
 }
 
 =head2 delete_item( $path )

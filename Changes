@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.12  2014/5/7
+        Added file_compliance_info API call
+
 0.1.11  2014/5/6
         Added deploy_artifacts_from_archive API call
 

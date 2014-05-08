@@ -397,9 +397,6 @@ subtest 'create_directory', sub {
 
 subtest 'deploy_artifacts_from_archive', sub {
     my $client = setup();
-    my $dir = '/some_path';
-    my $path = "$dir/test.zip";
-    my $file = "$Bin/data/test.zip";
 
     local *{ 'LWP::UserAgent::put' } = sub {
         return $mock_responses{ http_200 };
@@ -410,6 +407,21 @@ subtest 'deploy_artifacts_from_archive', sub {
     };
     my $resp = $client->deploy_artifacts_from_archive( file => 'test.zip', path => '/some_path/test.zip' );
     is( $resp->code, 200, 'deploy_artifacts_from_archive worked' );
+};
+
+subtest 'file_compliance_info', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/compliance/repo/some_path")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->file_compliance_info( '/some_path' );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/compliance|, 'requsted URL looks sane' );
 };
 
 done_testing();
