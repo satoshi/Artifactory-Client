@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.12
+Version 0.1.14
 
 =cut
 
-our $VERSION = '0.1.12';
+our $VERSION = '0.1.14';
 
 =head1 SYNOPSIS
 
@@ -555,6 +555,34 @@ sub delete_item {
     return $self->delete( $url );
 }
 
+=head2 copy_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
+
+Copies an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
+names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
+failFast values as specified in the documentation.
+
+=cut
+
+sub copy_item {
+    my ( $self, %args ) = @_;
+    $args{ method } = 'copy';
+    return $self->_handle_item( %args );
+}
+
+=head2 move_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
+
+Moves an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
+names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
+failFast values as specified in the documentation.
+
+=cut
+
+sub move_item {
+    my ( $self, %args ) = @_;
+    $args{ method } = 'move';
+    return $self->_handle_item( %args );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -609,6 +637,19 @@ sub _handle_prop_multivalue {
     }
     $str .= ( $matrix ) ? '' : "|";
     return $str;
+}
+
+sub _handle_item {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my ( $from, $to, $dry, $suppress_layouts, $fail_fast, $method ) = ( $args{ from }, $args{ to }, $args{ dry },
+        $args{ suppress_layouts }, $args{ fail_fast }, $args{ method } );
+
+    my $url = "$artifactory:$port/artifactory/api/$method$from?to=$to";
+    $url .= "&dry=$dry" if ( defined $dry );
+    $url .= "&suppressLayouts=$suppress_layouts" if ( defined $suppress_layouts );
+    $url .= "&failFast=$fail_fast" if ( defined $fail_fast );
+    return $self->post( $url );
 }
 
 __PACKAGE__->meta->make_immutable;

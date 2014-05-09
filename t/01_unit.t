@@ -424,6 +424,26 @@ subtest 'file_compliance_info', sub {
     like( $url_in_response, qr|/api/compliance|, 'requsted URL looks sane' );
 };
 
+subtest 'copy_item', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->copy_item( from => "/repo/some_path", to => "/repo2/some_path2" );
+    is( $resp->code, 200, 'copy_item worked' );
+};
+
+subtest 'move_item', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->move_item( from => "/repo/some_path", to => "/repo2/some_path2" );
+    is( $resp->code, 200, 'move_item worked' );
+};
+
 done_testing();
 
 sub setup {

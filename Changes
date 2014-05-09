@@ -1,5 +1,11 @@
 Revision history for Artifactory-Client
 
+0.1.14  2014/5/8
+        Added move_item API call
+
+0.1.13  2014/5/8
+        Added copy_item API call
+
 0.1.12  2014/5/7
         Added file_compliance_info API call
 
