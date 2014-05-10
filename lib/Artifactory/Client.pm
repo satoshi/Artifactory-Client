@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.14
+Version 0.1.15
 
 =cut
 
-our $VERSION = '0.1.14';
+our $VERSION = '0.1.15';
 
 =head1 SYNOPSIS
 
@@ -581,6 +581,19 @@ sub move_item {
     my ( $self, %args ) = @_;
     $args{ method } = 'move';
     return $self->_handle_item( %args );
+}
+
+=head2 get_repository_replication_configuration
+
+Returns repository's replication configuration
+
+=cut
+
+sub get_repository_replication_configuration {
+    my $self = shift;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/replication/$repository";
+    return $self->get( $url );
 }
 
 sub _build_ua {
