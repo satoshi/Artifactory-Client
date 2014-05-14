@@ -583,19 +583,6 @@ sub move_item {
     return $self->_handle_item( %args );
 }
 
-=head2 get_repository_replication_configuration
-
-Returns repository's replication configuration
-
-=cut
-
-sub get_repository_replication_configuration {
-    my $self = shift;
-    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-    my $url = "$artifactory:$port/artifactory/api/replication/$repository";
-    return $self->get( $url );
-}
-
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );

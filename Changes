@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.16  2014/5/13
+        Removing get_repository_replication_configuration as it is not working
+
 0.1.15  2014/5/9
         Added get_repository_replication_configuration API call
 
