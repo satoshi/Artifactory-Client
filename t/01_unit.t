@@ -8,6 +8,7 @@ use JSON;
 use FindBin qw($Bin);
 use WWW::Mechanize;
 use URI::http;
+use HTTP::Request;
 use lib "$Bin/../lib";
 use Artifactory::Client;
 
@@ -442,6 +443,17 @@ subtest 'move_item', sub {
     };
     my $resp = $client->move_item( from => "/repo/some_path", to => "/repo2/some_path2" );
     is( $resp->code, 200, 'move_item worked' );
+};
+
+subtest 'request method call', sub {
+    my $client = setup();
+    my $req = HTTP::Request->new( GET => 'http://www.example.com/' );
+
+    local *{ 'LWP::UserAgent::request' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->request( $req );
+    is( $resp->code, 200, 'request method call worked' );
 };
 
 done_testing();

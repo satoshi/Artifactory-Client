@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.15
+Version 0.1.18
 
 =cut
 
-our $VERSION = '0.1.15';
+our $VERSION = '0.1.18';
 
 =head1 SYNOPSIS
 
@@ -69,7 +69,6 @@ version of my functional tests.  They should serve as a detailed guide on how to
 has 'artifactory' => (
     is => 'ro',
     isa => 'Str',
-    required => 1
 );
 
 has 'port' => (
@@ -87,7 +86,6 @@ has 'ua' => (
 has 'repository' => (
     is => 'ro',
     isa => 'Str',
-    required => 1
 );
 
 =head1 GENERIC METHODS
@@ -136,6 +134,17 @@ Invokes DELETE request on LWP::UserAgent-like object; params are passed through.
 sub delete {
     my ( $self, @args ) = @_;
     return $self->_request( 'delete', @args );
+}
+
+=head2 request( @args )
+
+Invokes request() on LWP::UserAgent-like object; params are passed through.
+
+=cut
+
+sub request {
+    my ( $self, @args ) = @_;
+    return $self->_request( 'request', @args );
 }
 
 =head1 BUILDS
