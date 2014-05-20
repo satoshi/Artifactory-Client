@@ -456,6 +456,15 @@ subtest 'request method call', sub {
     is( $resp->code, 200, 'request method call worked' );
 };
 
+subtest 'scheduled_replication_status', sub {
+    my $client = setup();
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->scheduled_replication_status();
+    is( $resp->code, 200, 'scheduled_replication_status succeeded' );
+};
+
 done_testing();
 
 sub setup {

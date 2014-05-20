@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.19  2014/5/19
+        Added scheduled_replication_status API call
+
 0.1.18  2014/5/16
         No longer requires 'artifactory' and 'repository'
 
