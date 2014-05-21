@@ -465,6 +465,21 @@ subtest 'scheduled_replication_status', sub {
     is( $resp->code, 200, 'scheduled_replication_status succeeded' );
 };
 
+subtest 'get_repository_replication_configuration', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/replications/foobar")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->get_repository_replication_configuration();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/replications|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {
