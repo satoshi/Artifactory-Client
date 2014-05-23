@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.21
+Version 0.1.22
 
 =cut
 
-our $VERSION = '0.1.21';
+our $VERSION = '0.1.22';
 
 =head1 SYNOPSIS
 
@@ -600,9 +600,7 @@ Get repository replication configuration
 
 sub get_repository_replication_configuration {
     my $self = shift;
-    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-    my $url = "$artifactory:$port/artifactory/api/replications/$repository";
-    return $self->get( $url );
+    return $self->_handle_repository_replication_configuration( 'get' );
 }
 
 =head2 set_repository_replication_configuration( $payload )
@@ -613,9 +611,18 @@ Set repository replication configuration
 
 sub set_repository_replication_configuration {
     my ( $self, $payload ) = @_;
-    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-    my $url = "$artifactory:$port/artifactory/api/replications/$repository";
-    return $self->put( $url, 'Content-Type' => 'application/json', content => $payload );
+    return $self->_handle_repository_replication_configuration( 'put', $payload );
+}
+
+=head2 update_repository_replication_configuration( $payload )
+
+Update repository replication configuration
+
+=cut
+
+sub update_repository_replication_configuration {
+    my ( $self, $payload ) = @_;
+    return $self->_handle_repository_replication_configuration( 'post', $payload );
 }
 
 =head2 scheduled_replication_status
@@ -698,6 +705,13 @@ sub _handle_item {
     $url .= "&suppressLayouts=$suppress_layouts" if ( defined $suppress_layouts );
     $url .= "&failFast=$fail_fast" if ( defined $fail_fast );
     return $self->post( $url );
+}
+
+sub _handle_repository_replication_configuration {
+    my ( $self, $method, $payload ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/replications/$repository";
+    ( $payload ) ? $self->$method( $url, 'Content-Type' => 'application/json', content => $payload ) : $self->$method( $url ); 
 }
 
 __PACKAGE__->meta->make_immutable;

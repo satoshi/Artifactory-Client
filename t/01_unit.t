@@ -498,6 +498,24 @@ subtest 'set_repository_replication_configuration', sub {
     like( $url_in_response, qr|/api/replications|, 'requsted URL looks sane' );
 };
 
+subtest 'update_repository_replication_configuration', sub {
+    my $client = setup();
+    my $payload = {
+        username => "admin",
+    };
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/replications/foobar")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->update_repository_replication_configuration( $payload );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/replications|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {

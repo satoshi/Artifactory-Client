@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.1.22  2014/5/22
+        Added update_repository_replication_configuration API call
+
 0.1.21  2014/5/21
         Added set_repository_replication_configuration API call
 
