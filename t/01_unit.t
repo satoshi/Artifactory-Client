@@ -516,6 +516,67 @@ subtest 'update_repository_replication_configuration', sub {
     like( $url_in_response, qr|/api/replications|, 'requsted URL looks sane' );
 };
 
+subtest 'pull_push_replication', sub {
+    my $client = setup();
+    my $payload = {
+        username => 'replicator',
+    };
+    my $path = '/foo/bar';
+    
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/replication/foobar")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->pull_push_replication( payload => $payload, path => $path );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/replication|, 'requsted URL looks sane' );
+};
+
+subtest 'file_list', sub {
+    my $client = setup();
+    my %opts = (
+        deep => 1,
+        depth => 1,
+        listFolders => 1,
+        mdTimestamps => 1,
+        includeRootPath => 1,
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->file_list( '/some_dir/', %opts );
+    is( $resp->code, 200, 'got 200 back' );
+};
+
+subtest 'artifact_search', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->artifact_search( name => 'some_file', repos => [ 'foobar' ] );
+    is( $resp->code, 200, 'got 200 back' );
+};
+
+subtest 'archive_entry_search', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/archive")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->archive_entry_search( name => 'archive', repos => [ 'dist-packages' ] );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/archive|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {

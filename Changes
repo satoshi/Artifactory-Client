@@ -1,5 +1,11 @@
 Revision history for Artifactory-Client
 
+0.2.1   2014/5/27
+        Added archive_entry_search API call
+
+0.2.0   2014/5/27
+        Added delete_repository_replication_configuration, push_pull_replication, file_list, artifact_search
+
 0.1.22  2014/5/22
         Added update_repository_replication_configuration API call
 

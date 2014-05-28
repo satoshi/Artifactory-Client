@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.1.22
+Version 0.2.1
 
 =cut
 
-our $VERSION = '0.1.22';
+our $VERSION = '0.2.1';
 
 =head1 SYNOPSIS
 
@@ -625,6 +625,17 @@ sub update_repository_replication_configuration {
     return $self->_handle_repository_replication_configuration( 'post', $payload );
 }
 
+=head2 delete_repository_replication_configuration
+
+Delete repository replication configuration
+
+=cut
+
+sub delete_repository_replication_configuration {
+    my $self = shift;
+    return $self->_handle_repository_replication_configuration( 'delete' );
+}
+
 =head2 scheduled_replication_status
 
 Gets scheduled replication status of a repository
@@ -636,6 +647,65 @@ sub scheduled_replication_status {
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/api/replication/$repository";
     return $self->get( $url );
+}
+
+=head2 pull_push_replication( payload => $payload, path => $path )
+
+Schedules immediate content replication between two Artifactory instances
+
+=cut
+
+sub pull_push_replication {
+    my ( $self, %args ) = @_;
+    my $payload = $args{ payload };
+    my $path = $args{ path };
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/replication/$repository$path";
+    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
+}
+
+=head2 file_list( $dir, %opts )
+
+Get a flat (the default) or deep listing of the files and folders (not included by default) within a folder
+
+=cut
+
+sub file_list {
+    my ( $self, $dir, %opts ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/storage/$repository$dir?list";
+    
+    for my $opt ( keys %opts ) {
+        my $val = $opts{ $opt };
+        $url .= "&${opt}=$val";
+    }
+    return $self->get( $url );
+}
+
+=head1 SEARCHES
+
+=cut
+
+=head2 artifact_search( name => $name, repos => [ @repos ] )
+
+Artifact search by part of file name
+
+=cut
+
+sub artifact_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search( 'artifact', %args );
+}
+
+=head2 archive_entry_search( name => $name, repos => [ @repos ] )
+
+Search archive entries for classes or any other jar resources
+
+=cut
+
+sub archive_entry_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search( 'archive', %args );
 }
 
 sub _build_ua {
@@ -712,6 +782,22 @@ sub _handle_repository_replication_configuration {
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/api/replications/$repository";
     ( $payload ) ? $self->$method( $url, 'Content-Type' => 'application/json', content => $payload ) : $self->$method( $url ); 
+}
+
+sub _handle_search {
+    my ( $self, $api, %args ) = @_;
+    my $name = $args{ name };
+    my $repos = $args{ repos };
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/search/$api?name=$name";
+    
+    if ( ref( $repos ) eq 'ARRAY' ) {
+        $url .= "&repos=";
+        for my $item( @{ $repos } ) {
+            $url .= "$item,";
+        }
+    }
+    return $self->get( $url );
 }
 
 __PACKAGE__->meta->make_immutable;
