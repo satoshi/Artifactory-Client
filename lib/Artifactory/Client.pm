@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.2.1
+Version 0.2.2
 
 =cut
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.2.2';
 
 =head1 SYNOPSIS
 
@@ -708,6 +708,61 @@ sub archive_entry_search {
     return $self->_handle_search( 'archive', %args );
 }
 
+=head2 gavc_search( groupId => 'foo', classifier => 'bar' )
+
+Search by Maven coordinates: groupId, artifactId, version & classifier
+
+=cut
+
+sub gavc_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'gavc', %args );
+}
+
+=head2 property_search( p => [ 'v1', 'v2' ], repos => [ 'repo1', repo2' ]  )
+
+Search by properties
+
+=cut
+
+sub property_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'prop', %args );
+}
+
+=head2 checksum_search( md5sum => '12345', repos => [ 'repo1', repo2' ]  )
+
+Artifact search by checksum (md5 or sha1)
+
+=cut
+
+sub checksum_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'checksum', %args );
+}
+
+=head2 bad_checksum_search( type => 'md5', repos => [ 'repo1', repo2' ]  )
+
+Find all artifacts that have a bad or missing client checksum values (md5 or sha1)
+
+=cut
+
+sub bad_checksum_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'badChecksum', %args );
+}
+
+=head2 artifacts_not_downloaded_since( notUsedSince => 12345, createdBefore => 12345, repos => [ 'repo1', repo2' ] )
+
+Retrieve all artifacts not downloaded since the specified Java epoch in msec.
+
+=cut
+
+sub artifacts_not_downloaded_since {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'usage', %args );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -797,6 +852,24 @@ sub _handle_search {
             $url .= "$item,";
         }
     }
+    return $self->get( $url );
+}
+
+sub _handle_search_props {
+    my ( $self, $method, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/search/$method?";
+    
+    my @strs;
+    for my $key ( keys %args ) {
+        my $val = $args{ $key };
+        
+        if ( ref( $val ) eq 'ARRAY' ) {
+            $val = join( ",", @{ $val } );
+        }
+        push @strs, "$key=$val";
+    }
+    $url .= join( "&", @strs );
     return $self->get( $url );
 }
 

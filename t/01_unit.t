@@ -572,9 +572,98 @@ subtest 'archive_entry_search', sub {
             }, 'HTTP::Request' )
         }, 'HTTP::Response' );
     };
-    my $resp = $client->archive_entry_search( name => 'archive', repos => [ 'dist-packages' ] );
+    my $resp = $client->archive_entry_search( name => 'archive', repos => [ 'repo' ] );
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr|/api/search/archive|, 'requsted URL looks sane' );
+};
+
+subtest 'gavc_search', sub {
+    my $client = setup();
+    my %args = (
+        g => 'foo',
+        a => 'bar',
+        v => '1.0',
+        c => 'abc',
+        repos => [ 'repo', 'abc' ],
+    );
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->gavc_search( %args );
+    is( $resp->code, 200, 'got 200 back' );
+};
+
+subtest 'property_search', sub {
+    my $client = setup();
+    my %args = (
+        key => [ 'val1', 'val2' ],
+        repos => [ 'repo', 'abc' ],
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->property_search( %args );
+    is( $resp->code, 200, 'got 200 back' );
+};
+
+subtest 'checksum_search', sub {
+    my $client = setup();
+    my %args = (
+        md5sum => '12345',
+        repos => [ 'repo', 'abc' ],
+    );
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/checksum")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->checksum_search( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/checksum|, 'requsted URL looks sane' );
+};
+
+subtest 'bad_checksum_search', sub {
+    my $client = setup();
+    my %args = (
+        type => 'md5',
+        repos => [ 'repo', 'abc' ],
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/badChecksum")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->bad_checksum_search( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/badChecksum|, 'requsted URL looks sane' );
+};
+
+subtest 'artifacts_not_downloaded_since', sub {
+    my $client = setup();
+    my %args = (
+        notUsedSince => 12345,
+        createdBefore => 12345,
+        repos => [ 'repo', 'abc' ],
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/usage")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->artifacts_not_downloaded_since( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/usage|, 'requsted URL looks sane' );
 };
 
 done_testing();

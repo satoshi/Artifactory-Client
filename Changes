@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.2.2   2014/5/28
+        Added gavc_search, property_search, checksum_search, bad_checksum_search, artifacts_not_downloaded_since
+
 0.2.1   2014/5/27
         Added archive_entry_search API call
 
