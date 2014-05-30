@@ -666,6 +666,100 @@ subtest 'artifacts_not_downloaded_since', sub {
     like( $url_in_response, qr|/api/search/usage|, 'requsted URL looks sane' );
 };
 
+subtest 'artifacts_created_in_date_range', sub {
+    my $client = setup();
+    my %args = (
+        from => 12345,
+        repos => [ 'repo', 'abc' ],
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/creation")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->artifacts_created_in_date_range( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/creation|, 'requsted URL looks sane' );
+};
+
+subtest 'pattern_search', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->pattern_search( 'killer/*/ninja/*/*.jar' );
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'builds_for_dependency', sub {
+    my $client = setup();
+    my %args = (
+        sha1 => 'abcde',
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/dependency")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->builds_for_dependency( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/dependency|, 'requsted URL looks sane' );
+};
+
+subtest 'license_search', sub {
+    my $client = setup();
+    my %args = (
+        unapproved => 1,
+        unknown => 1,
+        notfound => 0,
+        neutral => 0,
+        approved => 0,
+        autofind => 0,
+        repos => [ 'foo' ],
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/license")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->license_search( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/license|, 'requsted URL looks sane' );
+};
+
+subtest 'artifact_version_search', sub {
+    my $client = setup();
+    my %args = (
+        g => 'foo',
+        a => 'bar',
+        v => '1.0',
+        remote => 1,
+        repos => [ 'dist-packages' ],
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/versions")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->artifact_version_search( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/versions|, 'requsted URL looks sane' );
+};
+
+
 done_testing();
 
 sub setup {

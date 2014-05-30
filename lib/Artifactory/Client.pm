@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.2.2
+Version 0.2.3
 
 =cut
 
-our $VERSION = '0.2.2';
+our $VERSION = '0.2.3';
 
 =head1 SYNOPSIS
 
@@ -761,6 +761,63 @@ Retrieve all artifacts not downloaded since the specified Java epoch in msec.
 sub artifacts_not_downloaded_since {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'usage', %args );
+}
+
+=head2 artifacts_created_in_date_range( from => 12345, to => 12345, repos => [ 'repo1', repo2' ] )
+
+Get all artifacts created in date range
+
+=cut
+
+sub artifacts_created_in_date_range {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'creation', %args );
+}
+
+=head2 pattern_search( $pattern )
+
+Get all artifacts matching the given Ant path pattern
+
+=cut
+
+sub pattern_search {
+    my ( $self, $pattern ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/search/pattern?pattern=$repository:$pattern";
+    return $self->get( $url );
+}
+
+=head2 builds_for_dependency( sha1 => 'abcde' )
+
+Find all the builds an artifact is a dependency of (where the artifact is included in the build-info dependencies)
+
+=cut
+
+sub builds_for_dependency {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'dependency', %args );
+}
+
+=head2 license_search( unapproved => 1, unknown => 1, notfound => 0, neutral => 0, repos => [ 'foo', 'bar' ] )
+
+Search for artifacts with specified statuses
+
+=cut
+
+sub license_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'license', %args );
+}
+
+=head2 artifact_version_search( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
+
+Search for all available artifact versions by GroupId and ArtifactId in local, remote or virtual repositories
+
+=cut
+
+sub artifact_version_search {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'versions', %args );
 }
 
 sub _build_ua {
