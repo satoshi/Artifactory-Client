@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.2.4   2014/5/30
+        Added artifact_latest_version_search_based_on_layout, artifact_latest_version_search_based_on_properties
+
 0.2.3   2014/5/29
         Added artifacts_created_in_range, pattern_search, builds_for_dependency, license_search, artifact_version_search
 

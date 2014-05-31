@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.2.3
+Version 0.2.4
 
 =cut
 
-our $VERSION = '0.2.3';
+our $VERSION = '0.2.4';
 
 =head1 SYNOPSIS
 
@@ -820,6 +820,33 @@ sub artifact_version_search {
     return $self->_handle_search_props( 'versions', %args );
 }
 
+=head2 artifact_latest_version_search_based_on_layout( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
+
+Search for the latest artifact version by groupId and artifactId, based on the layout defined in the repository 
+
+=cut
+
+sub artifact_latest_version_search_based_on_layout {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'latestVersion', %args );
+}
+
+=head2 artifact_latest_version_search_based_on_properties( repo => '_any', path => '/a/b', listFiles => 1 )
+
+Search for artifacts with the latest value in the "version" property
+
+=cut
+
+sub artifact_latest_version_search_based_on_properties {
+    my ( $self, %args ) = @_;
+    my $repo = delete $args{ repo };
+    my $path = delete $args{ path };
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/versions/$repo$path?";
+    $url .= $self->_stringify_hash( %args );
+    return $self->get( $url );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -916,7 +943,14 @@ sub _handle_search_props {
     my ( $self, $method, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port/artifactory/api/search/$method?";
-    
+
+    $url .= $self->_stringify_hash( %args );
+    return $self->get( $url );
+}
+
+sub _stringify_hash {
+    my ( $self, %args ) = @_;
+
     my @strs;
     for my $key ( keys %args ) {
         my $val = $args{ $key };
@@ -926,8 +960,7 @@ sub _handle_search_props {
         }
         push @strs, "$key=$val";
     }
-    $url .= join( "&", @strs );
-    return $self->get( $url );
+    return join( "&", @strs );
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -759,6 +759,47 @@ subtest 'artifact_version_search', sub {
     like( $url_in_response, qr|/api/search/versions|, 'requsted URL looks sane' );
 };
 
+subtest 'artifact_latest_version_search_based_on_layout', sub {
+    my $client = setup();
+    my %args = (
+        g => 'foo',
+        a => 'bar',
+        v => '1.0',
+        remote => 1,
+        repos => [ 'foo' ],
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/search/latestVersion")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->artifact_latest_version_search_based_on_layout( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/latestVersion|, 'requsted URL looks sane' );
+};
+
+subtest 'artifact_latest_version_search_based_on_properties', sub {
+    my $client = setup();
+    my %args = (
+        repo => '_any',
+        path => '/a/b',
+        listFiles => 1,
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/versions")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->artifact_latest_version_search_based_on_properties( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/versions|, 'requsted URL looks sane' );
+};
 
 done_testing();
 
