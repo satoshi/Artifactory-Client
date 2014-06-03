@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.2.4
+Version 0.3.0
 
 =cut
 
-our $VERSION = '0.2.4';
+our $VERSION = '0.3.0';
 
 =head1 SYNOPSIS
 
@@ -847,6 +847,67 @@ sub artifact_latest_version_search_based_on_properties {
     return $self->get( $url );
 }
 
+=head2 build_artifacts_search( buildNumber => 15, buildName => 'foobar' )
+
+Find all the artifacts related to a specific build
+
+=cut
+
+sub build_artifacts_search {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/search/buildArtifacts";
+    return $self->post( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
+}
+
+=head1 SECURITY
+
+=cut
+
+=head2 get_users
+
+Get the users list
+
+=cut
+
+sub get_users {
+    my $self = shift;
+    return $self->_handle_get_user();
+}
+
+=head2 get_user_details( $user )
+
+Get the details of an Artifactory user
+
+=cut
+
+sub get_user_details {
+    my ( $self, $user ) = @_;
+    return $self->_handle_get_user( $user );
+}
+
+=head2 create_or_replace_user( $user, %args )
+
+Creates a new user in Artifactory or replaces an existing user
+
+=cut
+
+sub create_or_replace_user {
+    my ( $self, $user, %args ) = @_;
+    return $self->_handle_update_user( $user, 'put', %args );
+}
+
+=head2 update_user( $user, %args )
+
+Updates an exiting user in Artifactory with the provided user details
+
+=cut
+
+sub update_user {
+    my ( $self, $user, %args ) = @_;
+    return $self->_handle_update_user( $user, 'post', %args );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -961,6 +1022,20 @@ sub _stringify_hash {
         push @strs, "$key=$val";
     }
     return join( "&", @strs );
+}
+
+sub _handle_get_user {
+    my ( $self, $user ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = ( $user ) ? "$artifactory:$port/artifactory/api/security/users/$user" : "$artifactory:$port/artifactory/api/security/users";
+    return $self->get( $url );
+}
+
+sub _handle_update_user {
+    my ( $self, $user, $method, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/security/users/$user";
+    return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.3.0   2014/6/2
+        Added build_artifacts_search, get_users, get_user_details, create_or_replace_user, update_user
+
 0.2.4   2014/5/30
         Added artifact_latest_version_search_based_on_layout, artifact_latest_version_search_based_on_properties
 

@@ -801,6 +801,89 @@ subtest 'artifact_latest_version_search_based_on_properties', sub {
     like( $url_in_response, qr|/api/versions|, 'requsted URL looks sane' );
 };
 
+subtest 'build_artifacts_search', sub {
+    my $client = setup();
+    my %args = (
+        buildName => 'api-test',
+        buildNumber => 14,
+    );
+    
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return return $mock_responses{ http_200 };
+    };
+    my $resp = $client->build_artifacts_search( %args );
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'get_users', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/users")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->get_users();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/users|, 'requsted URL looks sane' );
+};
+
+subtest 'get_user_details', sub {
+    my $client = setup();
+    my $user = 'foo';
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/users/$user")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->get_user_details( $user );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
+};
+
+subtest 'create_or_replace_user', sub {
+    my $client = setup();
+    my $user = 'foo';
+    my %args = (
+        name => 'foo',
+    );
+
+    local *{ 'LWP::UserAgent::put' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/users/$user")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->create_or_replace_user( $user, %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
+};
+
+subtest 'update_user', sub {
+    my $client = setup();
+    my $user = 'foo';
+    my %args = (
+        name => 'foo',
+    );
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/users/$user")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->update_user( $user, %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {
