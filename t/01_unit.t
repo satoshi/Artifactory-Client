@@ -884,6 +884,91 @@ subtest 'update_user', sub {
     like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
 };
 
+subtest 'delete_user', sub {
+    my $client = setup();
+    my $user = 'foo';
+    
+    local *{ 'LWP::UserAgent::delete' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/users/$user")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->delete_user( $user );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
+};
+
+subtest 'get_groups', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/groups")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->get_groups();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/groups|, 'requsted URL looks sane' );
+};
+
+subtest 'get_group_details', sub {
+    my $client = setup();
+    my $group = 'dev-leads';
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/groups/$group")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->get_group_details( $group );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/groups/$group|, 'requsted URL looks sane' );
+};
+
+subtest 'create_or_replace_group', sub {
+    my $client = setup();
+    my $group = 'dev-leads';
+    my %args = (
+        name => 'dev-leads',
+    );
+
+    local *{ 'LWP::UserAgent::put' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/groups/$group")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->create_or_replace_group( $group, %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/groups/$group|, 'requsted URL looks sane' );
+};
+
+subtest 'update_group', sub {
+    my $client = setup();
+    my $group = 'dev-leads';
+    my %args = (
+        name => 'dev-leads',
+    );
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/groups/$group")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->update_group( $group, %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/groups/$group|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {

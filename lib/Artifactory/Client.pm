@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.3.0
+Version 0.3.1
 
 =cut
 
-our $VERSION = '0.3.0';
+our $VERSION = '0.3.1';
 
 =head1 SYNOPSIS
 
@@ -872,7 +872,7 @@ Get the users list
 
 sub get_users {
     my $self = shift;
-    return $self->_handle_get_user();
+    return $self->_handle_user( undef, 'get' );
 }
 
 =head2 get_user_details( $user )
@@ -883,7 +883,7 @@ Get the details of an Artifactory user
 
 sub get_user_details {
     my ( $self, $user ) = @_;
-    return $self->_handle_get_user( $user );
+    return $self->_handle_user( $user, 'get' );
 }
 
 =head2 create_or_replace_user( $user, %args )
@@ -894,7 +894,7 @@ Creates a new user in Artifactory or replaces an existing user
 
 sub create_or_replace_user {
     my ( $self, $user, %args ) = @_;
-    return $self->_handle_update_user( $user, 'put', %args );
+    return $self->_handle_user( $user, 'put', %args );
 }
 
 =head2 update_user( $user, %args )
@@ -905,7 +905,62 @@ Updates an exiting user in Artifactory with the provided user details
 
 sub update_user {
     my ( $self, $user, %args ) = @_;
-    return $self->_handle_update_user( $user, 'post', %args );
+    return $self->_handle_user( $user, 'post', %args );
+}
+
+=head2 delete_user( $user )
+
+Removes an Artifactory user
+
+=cut
+
+sub delete_user {
+    my ( $self, $user ) = @_;
+    return $self->_handle_user( $user, 'delete' );
+}
+
+=head2 get_groups
+
+Get the groups list
+
+=cut
+
+sub get_groups {
+    my $self = shift;
+    return $self->_handle_group( undef, 'get' );
+}
+
+=head2 get_group_details( $group )
+
+Get the details of an Artifactory Group
+
+=cut
+
+sub get_group_details {
+    my ( $self, $group ) = @_;
+    return $self->_handle_group( $group, 'get' );
+}
+
+=head2 create_or_replace_group( $group, %args )
+
+Creates a new group in Artifactory or replaces an existing group
+
+=cut
+
+sub create_or_replace_group {
+    my ( $self, $group, %args ) = @_;
+    return $self->_handle_group( $group, 'put', %args );
+}
+
+=head2 update_group( $group, %args )
+
+Updates an exiting group in Artifactory with the provided group details
+
+=cut
+
+sub update_group {
+    my ( $self, $group, %args ) = @_;
+    return $self->_handle_group( $group, 'post', %args );
 }
 
 sub _build_ua {
@@ -1024,18 +1079,26 @@ sub _stringify_hash {
     return join( "&", @strs );
 }
 
-sub _handle_get_user {
-    my ( $self, $user ) = @_;
-    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( $user ) ? "$artifactory:$port/artifactory/api/security/users/$user" : "$artifactory:$port/artifactory/api/security/users";
-    return $self->get( $url );
-}
-
-sub _handle_update_user {
+sub _handle_user {
     my ( $self, $user, $method, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = "$artifactory:$port/artifactory/api/security/users/$user";
-    return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
+    my $url = ( $user ) ? "$artifactory:$port/artifactory/api/security/users/$user" : "$artifactory:$port/artifactory/api/security/users";
+
+    if ( %args ) {
+        return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
+    }
+    return $self->$method( $url );
+}
+
+sub _handle_group {
+    my ( $self, $group, $method, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = ( $group ) ? "$artifactory:$port/artifactory/api/security/groups/$group" : "$artifactory:$port/artifactory/api/security/groups";
+    
+    if( %args ) {
+        return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
+    }
+    return $self->$method( $url );
 }
 
 __PACKAGE__->meta->make_immutable;

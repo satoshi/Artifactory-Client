@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.3.1   2014/6/3
+        Added delete_user, get_groups, get_group_details, create_or_replace_group, update_group
+
 0.3.0   2014/6/2
         Added build_artifacts_search, get_users, get_user_details, create_or_replace_user, update_user
 
