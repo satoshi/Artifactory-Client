@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.3.1
+Version 0.3.2
 
 =cut
 
-our $VERSION = '0.3.1';
+our $VERSION = '0.3.2';
 
 =head1 SYNOPSIS
 
@@ -872,7 +872,7 @@ Get the users list
 
 sub get_users {
     my $self = shift;
-    return $self->_handle_user( undef, 'get' );
+    return $self->_handle_security( undef, 'get', 'users' );
 }
 
 =head2 get_user_details( $user )
@@ -883,7 +883,7 @@ Get the details of an Artifactory user
 
 sub get_user_details {
     my ( $self, $user ) = @_;
-    return $self->_handle_user( $user, 'get' );
+    return $self->_handle_security( $user, 'get', 'users' );
 }
 
 =head2 create_or_replace_user( $user, %args )
@@ -894,7 +894,7 @@ Creates a new user in Artifactory or replaces an existing user
 
 sub create_or_replace_user {
     my ( $self, $user, %args ) = @_;
-    return $self->_handle_user( $user, 'put', %args );
+    return $self->_handle_security( $user, 'put', 'users', %args );
 }
 
 =head2 update_user( $user, %args )
@@ -905,7 +905,7 @@ Updates an exiting user in Artifactory with the provided user details
 
 sub update_user {
     my ( $self, $user, %args ) = @_;
-    return $self->_handle_user( $user, 'post', %args );
+    return $self->_handle_security( $user, 'post', 'users', %args );
 }
 
 =head2 delete_user( $user )
@@ -916,7 +916,7 @@ Removes an Artifactory user
 
 sub delete_user {
     my ( $self, $user ) = @_;
-    return $self->_handle_user( $user, 'delete' );
+    return $self->_handle_security( $user, 'delete', 'users' );
 }
 
 =head2 get_groups
@@ -927,7 +927,7 @@ Get the groups list
 
 sub get_groups {
     my $self = shift;
-    return $self->_handle_group( undef, 'get' );
+    return $self->_handle_security( undef, 'get', 'groups' );
 }
 
 =head2 get_group_details( $group )
@@ -938,7 +938,7 @@ Get the details of an Artifactory Group
 
 sub get_group_details {
     my ( $self, $group ) = @_;
-    return $self->_handle_group( $group, 'get' );
+    return $self->_handle_security( $group, 'get', 'groups' );
 }
 
 =head2 create_or_replace_group( $group, %args )
@@ -949,7 +949,7 @@ Creates a new group in Artifactory or replaces an existing group
 
 sub create_or_replace_group {
     my ( $self, $group, %args ) = @_;
-    return $self->_handle_group( $group, 'put', %args );
+    return $self->_handle_security( $group, 'put', 'groups', %args );
 }
 
 =head2 update_group( $group, %args )
@@ -960,7 +960,51 @@ Updates an exiting group in Artifactory with the provided group details
 
 sub update_group {
     my ( $self, $group, %args ) = @_;
-    return $self->_handle_group( $group, 'post', %args );
+    return $self->_handle_security( $group, 'post', 'groups', %args );
+}
+
+=head2 delete_group( $group )
+
+Removes an Artifactory group
+
+=cut
+
+sub delete_group {
+    my ( $self, $group ) = @_;
+    return $self->_handle_security( $group, 'delete', 'groups' );
+}
+
+=head2 get_permission_targets
+
+Get the permission targets list
+
+=cut
+
+sub get_permission_targets {
+    my $self = shift;
+    return $self->_handle_security( undef, 'get', 'permissions' );
+}
+
+=head2 get_permission_target_details( $name )
+
+Get the details of an Artifactory Permission Target
+
+=cut
+
+sub get_permission_target_details {
+    my ( $self, $name ) = @_;
+    return $self->_handle_security( $name, 'get', 'permissions' );
+}
+
+=head2 create_or_replace_permission_target( $name, %args )
+
+Creates a new permission target in Artifactory or replaces an existing permission target
+
+=cut
+
+sub create_or_replace_permission_target {
+    my ( $self, $name, %args ) = @_;
+    return $self->_handle_security( $name, 'put', 'permissions', %args );
 }
 
 sub _build_ua {
@@ -1079,23 +1123,12 @@ sub _stringify_hash {
     return join( "&", @strs );
 }
 
-sub _handle_user {
-    my ( $self, $user, $method, %args ) = @_;
+sub _handle_security {
+    my ( $self, $label, $method, $element, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( $user ) ? "$artifactory:$port/artifactory/api/security/users/$user" : "$artifactory:$port/artifactory/api/security/users";
+    my $url = ( $label ) ? "$artifactory:$port/artifactory/api/security/$element/$label" : "$artifactory:$port/artifactory/api/security/$element";
 
     if ( %args ) {
-        return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
-    }
-    return $self->$method( $url );
-}
-
-sub _handle_group {
-    my ( $self, $group, $method, %args ) = @_;
-    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( $group ) ? "$artifactory:$port/artifactory/api/security/groups/$group" : "$artifactory:$port/artifactory/api/security/groups";
-    
-    if( %args ) {
         return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
     }
     return $self->$method( $url );

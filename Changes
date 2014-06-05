@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.3.2   2014/6/4
+        Added delete_group, get_permission_targets, get_permission_target_details, create_or_replace_permission_target
+
 0.3.1   2014/6/3
         Added delete_user, get_groups, get_group_details, create_or_replace_group, update_group
 

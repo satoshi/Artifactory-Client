@@ -969,6 +969,72 @@ subtest 'update_group', sub {
     like( $url_in_response, qr|/api/security/groups/$group|, 'requsted URL looks sane' );
 };
 
+subtest 'delete_group', sub {
+    my $client = setup();
+    my $group = 'dev-leads';
+    
+    local *{ 'LWP::UserAgent::delete' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/groups/$group")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->delete_group( $group );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/groups/$group|, 'requsted URL looks sane' );
+};
+
+subtest 'get_permission_targets', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/permissions")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->get_permission_targets();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/permissions|, 'requsted URL looks sane' );
+};
+
+subtest 'get_permission_target_details', sub {
+    my $client = setup();
+    my $name = 'populateCaches';
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/permissions/$name")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->get_permission_target_details( $name );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/permissions/$name|, 'requsted URL looks sane' );
+};
+
+subtest 'create_or_replace_permission_target', sub {
+    my $client = setup();
+    my $name = 'populateCaches';
+    my %args = (
+        name => 'populateCaches',
+    );
+    
+    local *{ 'LWP::UserAgent::put' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/permissions/$name")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->create_or_replace_permission_target( $name, %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/permissions/$name|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {
