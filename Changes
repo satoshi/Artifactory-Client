@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.4.1   2014/6/5
+        Fixing a test, mock at a wrong place
+
 0.4.0   2014/6/5
         Added delete_permission_target, effective_item_permissions, security_configuration, get_repositories
 

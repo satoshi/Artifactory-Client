@@ -1079,11 +1079,11 @@ subtest 'security_configuration', sub {
 
 subtest 'get_repositories', sub {
     my $client = setup();
-    my $resp = $client->get_repositories();
 
     local *{ 'LWP::UserAgent::get' } = sub {
         return $mock_responses{ http_200 };
-    };
+    }; 
+    my $resp = $client->get_repositories();
     is( $resp->code, 200, 'got repositories' );
 };
 
