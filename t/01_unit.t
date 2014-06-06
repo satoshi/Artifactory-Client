@@ -1035,6 +1035,58 @@ subtest 'create_or_replace_permission_target', sub {
     like( $url_in_response, qr|/api/security/permissions/$name|, 'requsted URL looks sane' );
 };
 
+subtest 'delete_permission_target', sub {
+    my $client = setup();
+    my $permission = 'populateCaches';
+    
+    local *{ 'LWP::UserAgent::delete' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/security/permissions/$permission")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->delete_permission_target( $permission );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/permissions/$permission|, 'requsted URL looks sane' );
+};
+
+subtest 'effective_item_permissions', sub {
+    my $client = setup();
+    my $path = '/foobar';
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->effective_item_permissions( $path );
+    is( $resp->code, 200, 'request came back successfully' );
+};
+
+subtest 'security_configuration', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/system/security")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->security_configuration();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/security|, 'requsted URL looks sane' );
+};
+
+subtest 'get_repositories', sub {
+    my $client = setup();
+    my $resp = $client->get_repositories();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    is( $resp->code, 200, 'got repositories' );
+};
+
 done_testing();
 
 sub setup {

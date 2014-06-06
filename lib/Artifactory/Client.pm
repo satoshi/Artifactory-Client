@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.4.0';
 
 =head1 SYNOPSIS
 
@@ -1005,6 +1005,60 @@ Creates a new permission target in Artifactory or replaces an existing permissio
 sub create_or_replace_permission_target {
     my ( $self, $name, %args ) = @_;
     return $self->_handle_security( $name, 'put', 'permissions', %args );
+}
+
+=head2 delete_permission_target( $name )
+
+Deletes an Artifactory permission target
+
+=cut
+
+sub delete_permission_target {
+    my ( $self, $name ) = @_;
+    return $self->_handle_security( $name, 'delete', 'permissions' );
+}
+
+=head2 effective_item_permissions( $path )
+
+Returns a list of effective permissions for the specified item (file or folder)
+
+=cut
+
+sub effective_item_permissions {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/storage/$repository$path";
+    return $self->get( $url );
+}
+
+=head2 security_configuration
+
+Retrieve the security configuration (security.xml)
+
+=cut
+
+sub security_configuration {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/system/security";
+    return $self->get( $url );
+}
+
+=head1 REPOSITORIES
+
+=cut
+
+=head2 get_repositories
+
+Returns a list of minimal repository details for all repositories of the specified type
+
+=cut
+
+sub get_repositories {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/repositories";
+    return $self->get( $url );
 }
 
 sub _build_ua {
