@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.4.2   2014/6/6
+        Added repository_configuration, create_or_replace_repository_configuration, update_repository_configuration
+
 0.4.1   2014/6/5
         Fixing a test, mock at a wrong place
 

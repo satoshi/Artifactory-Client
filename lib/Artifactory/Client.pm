@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.4.1
+Version 0.4.2
 
 =cut
 
-our $VERSION = '0.4.1';
+our $VERSION = '0.4.2';
 
 =head1 SYNOPSIS
 
@@ -1061,6 +1061,43 @@ sub get_repositories {
     return $self->get( $url );
 }
 
+=head2 repository_configuration( $name, %args )
+
+Retrieves the current configuration of a repository
+
+=cut
+
+sub repository_configuration {
+    my ( $self, $repo, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = ( %args ) ? "$artifactory:$port/artifactory/api/repositories/$repo?" : "$artifactory:$port/artifactory/api/repositories/$repo";
+    $url .= $self->_stringify_hash( %args ) if ( %args );
+    return $self->get( $url );
+}
+
+=head2 create_or_replace_repository_configuration( $name, $payload, %args )
+
+Creates a new repository in Artifactory with the provided configuration or replaces the configuration of an existing
+repository
+
+=cut
+
+sub create_or_replace_repository_configuration {
+    my ( $self, $repo, $payload, %args ) = @_;
+    return $self->_handle_repositories( $repo, $payload, 'put', %args );
+}
+
+=head2 update_repository_configuration( $name, %payload )
+
+Updates an exiting repository configuration in Artifactory with the provided configuration elements
+
+=cut
+
+sub update_repository_configuration {
+    my ( $self, $repo, $payload ) = @_;
+    return $self->_handle_repositories( $repo, $payload, 'post' );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -1186,6 +1223,14 @@ sub _handle_security {
         return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
     }
     return $self->$method( $url );
+}
+
+sub _handle_repositories {
+    my ( $self, $repo, $payload, $method, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = ( %args ) ? "$artifactory:$port/artifactory/api/repositories/$repo?" : "$artifactory:$port/artifactory/api/repositories/$repo";
+    $url .= $self->_stringify_hash( %args ) if ( %args );
+    return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( $payload ) );
 }
 
 __PACKAGE__->meta->make_immutable;

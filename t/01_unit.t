@@ -1087,6 +1087,66 @@ subtest 'get_repositories', sub {
     is( $resp->code, 200, 'got repositories' );
 };
 
+subtest 'repository_configuration', sub {
+    my $client = setup();
+    my $repo = 'dist-packages';
+    my %args = (
+        type => 'local',
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/repositories/$repo")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->repository_configuration( $repo, %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/repositories/$repo|, 'requsted URL looks sane' );
+};
+
+subtest 'create_or_replace_repository_configuration', sub {
+    my $client = setup();
+    my $repo = 'foo';
+    my $payload = {
+        key => "local-repo1",
+    };
+    my %args = (
+        pos => 2,
+    );
+
+    local *{ 'LWP::UserAgent::put' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/repositories/$repo")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->create_or_replace_repository_configuration( $repo, $payload, %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/repositories/$repo|, 'requsted URL looks sane' );
+};
+
+subtest 'update_repository_configuration', sub {
+    my $client = setup();
+    my $repo = 'foo';
+    my $payload = {
+        key => "local-repo1",
+    };
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/repositories/$repo")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->update_repository_configuration( $repo, $payload );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/repositories/$repo|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {
