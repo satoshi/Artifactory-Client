@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.4.3   2014/6/9
+        Added delete_repository, calculate_yum_repository_metadata, calculate_nuget_repository_metadata
+
 0.4.2   2014/6/6
         Added repository_configuration, create_or_replace_repository_configuration, update_repository_configuration
 

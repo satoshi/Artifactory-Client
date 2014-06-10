@@ -1147,6 +1147,58 @@ subtest 'update_repository_configuration', sub {
     like( $url_in_response, qr|/api/repositories/$repo|, 'requsted URL looks sane' );
 };
 
+subtest 'delete_repository', sub {
+    my $client = setup();
+    my $repo = 'dist-packages';
+
+    local *{ 'LWP::UserAgent::delete' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/repositories/$repo")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->delete_repository( $repo );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/repositories/$repo|, 'requsted URL looks sane' );
+};
+
+subtest 'calculate_yum_repository_metadata', sub {
+    my $client = setup();
+    my %args = (
+        async => 1,    
+    );
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/yum/$repository?async=1")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->calculate_yum_repository_metadata( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/yum/$repository\?async=1|, 'requsted URL looks sane' );
+};
+
+subtest 'calculate_nuget_repository_metadata', sub {
+    my $client = setup();
+    my %args = (
+        async => 1,    
+    );
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/nuget/$repository/reindex")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->calculate_nuget_repository_metadata( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/nuget/$repository/reindex|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {

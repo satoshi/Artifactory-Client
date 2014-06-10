@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.4.2
+Version 0.4.3
 
 =cut
 
-our $VERSION = '0.4.2';
+our $VERSION = '0.4.3';
 
 =head1 SYNOPSIS
 
@@ -1098,6 +1098,45 @@ sub update_repository_configuration {
     return $self->_handle_repositories( $repo, $payload, 'post' );
 }
 
+=head2 delete_repository( $name )
+
+Removes a repository configuration together with the whole repository content
+
+=cut
+
+sub delete_repository {
+    my ( $self, $repo ) = @_;
+    return $self->_handle_repositories( $repo, undef, 'delete' );
+}
+
+=head2 calculate_yum_repository_metadata( async => 0/1 )
+
+Calculates/recalculates the YUM metdata for this repository, based on the RPM package currently hosted in the repository
+
+=cut
+
+sub calculate_yum_repository_metadata {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = ( %args ) ? "$artifactory:$port/artifactory/api/yum/$repository?" : "$artifactory:$port/artifactory/api/yum/$repository";
+    $url .= $self->_stringify_hash( %args ) if ( %args );
+    return $self->post( $url );
+}
+
+=head2 calculate_nuget_repository_metadata
+
+Recalculates all the NuGet packages for this repository (local/cache/virtual), and re-annotate the NuGet properties for
+each NuGet package according to it's internal nuspec file
+
+=cut
+
+sub calculate_nuget_repository_metadata {
+    my ( $self ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/nuget/$repository/reindex";
+    return $self->post( $url );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -1230,7 +1269,11 @@ sub _handle_repositories {
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = ( %args ) ? "$artifactory:$port/artifactory/api/repositories/$repo?" : "$artifactory:$port/artifactory/api/repositories/$repo";
     $url .= $self->_stringify_hash( %args ) if ( %args );
-    return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( $payload ) );
+    
+    if ( $payload ) {
+        return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( $payload ) );
+    }
+    return $self->$method( $url );
 }
 
 __PACKAGE__->meta->make_immutable;
