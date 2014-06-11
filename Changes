@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.5.0   2014/6/10
+        Added calculate_maven_index, calculate_maven_metadata, system_info, system_health_ping, general_configuration
+
 0.4.3   2014/6/9
         Added delete_repository, calculate_yum_repository_metadata, calculate_nuget_repository_metadata
 

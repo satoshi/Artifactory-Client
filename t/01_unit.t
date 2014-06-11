@@ -1199,6 +1199,80 @@ subtest 'calculate_nuget_repository_metadata', sub {
     like( $url_in_response, qr|/api/nuget/$repository/reindex|, 'requsted URL looks sane' );
 };
 
+subtest 'calculate_maven_index', sub {
+    my $client = setup();
+    my %args = (
+        repos => [ 'dist-packages', 'foo' ],
+        force => 1,
+    );
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/maven?")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->calculate_maven_index( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/maven?|, 'requsted URL looks sane' );
+};
+
+subtest 'calculate_maven_metadata', sub {
+    my $client = setup();
+    my $path = '/foo/bar';
+    
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/maven/calculateMetadata")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->calculate_maven_metadata( $path );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/maven/calculateMetadata|, 'requsted URL looks sane' );
+};
+
+subtest 'system_info', sub {
+    my $client = setup();
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/system")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->system_info();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system|, 'requsted URL looks sane' );
+};
+
+subtest 'system_health_ping', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->system_health_ping();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'general_configuration', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/system/configuration")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->general_configuration();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/configuration|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {

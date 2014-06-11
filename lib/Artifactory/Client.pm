@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.4.3
+Version 0.5.0
 
 =cut
 
-our $VERSION = '0.4.3';
+our $VERSION = '0.5.0';
 
 =head1 SYNOPSIS
 
@@ -1137,6 +1137,70 @@ sub calculate_nuget_repository_metadata {
     return $self->post( $url );
 }
 
+=head2 calculate_maven_index( repos => [ 'repo1', 'repo2' ], force => 0/1 )
+
+Calculates/caches a Maven index for the specified repositories
+
+=cut
+
+sub calculate_maven_index {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/maven?";
+    $url .= $self->_stringify_hash( %args );
+    return $self->post( $url );
+}
+
+=head2 calculate_maven_metadata( $path )
+
+Calculates Maven metadata on the specified path (local repositories only)
+
+=cut
+
+sub calculate_maven_metadata {
+    my ( $self, $path ) = @_;
+    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
+    my $url = "$artifactory:$port/artifactory/api/maven/calculateMetadata/$repository$path";
+    return $self->post( $url );
+}
+
+=head1 SYSTEM & CONFIGURATION
+
+=cut
+
+=head2 system_info
+
+Get general system information
+
+=cut
+
+sub system_info {
+    my $self = shift;
+    return $self->_handle_system();
+}
+
+=head2 system_health_ping
+
+Get a simple status response about the state of Artifactory
+
+=cut
+
+sub system_health_ping {
+    my $self = shift;
+    return $self->_handle_system( 'ping' );
+}
+
+=head2 general_configuration
+
+Get the general configuration (artifactory.config.xml)
+
+=cut
+
+sub general_configuration {
+    my $self = shift;
+    return $self->_handle_system( 'configuration' );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -1274,6 +1338,13 @@ sub _handle_repositories {
         return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( $payload ) );
     }
     return $self->$method( $url );
+}
+
+sub _handle_system {
+    my ( $self, $arg ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = ( $arg ) ? "$artifactory:$port/artifactory/api/system/$arg" : "$artifactory:$port/artifactory/api/system";
+    return $self->get( $url );
 }
 
 __PACKAGE__->meta->make_immutable;
