@@ -21,9 +21,10 @@ my $port = 7777;
 my $repository = 'repository';
 
 my %mock_responses = (
-    http_201 => bless( { '_rc' => 201 }, 'HTTP::Response' ),
     http_404 => bless( { '_rc' => 404, '_headers' => bless( {}, 'HTTP::Headers' ) }, 'HTTP::Response' ),
     http_200 => bless( { '_rc' => 200 }, 'HTTP::Response' ),
+    http_201 => bless( { '_rc' => 201 }, 'HTTP::Response' ),
+    http_202 => bless( { '_rc' => 202 }, 'HTTP::Response' ),
     http_204 => bless( { '_rc' => 204 }, 'HTTP::Response' ),
 );
 
@@ -1271,6 +1272,53 @@ subtest 'general_configuration', sub {
     my $resp = $client->general_configuration();
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr|/api/system/configuration|, 'requsted URL looks sane' );
+};
+
+subtest 'save_general_configuration', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/system/configuration")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    
+    local *{ 'File::Slurp::read_file' } = sub {
+        # no-op, unit test reads no file
+    };
+    my $resp = $client->save_general_configuration( 'test.xml' );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/configuration|, 'requsted URL looks sane' );
+};
+
+subtest 'version_and_addons_information', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->version_and_addons_information();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'execute_plugin_code', sub {
+    my $client = setup();
+    my $execution_name = 'cleanup';
+    my $params = {
+        suffix => [ 'SNAPSHOT' ],
+        types => [ 'jar', 'war', 'zip' ],
+    };
+    my $async = {
+        async => 1
+    };
+    
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return $mock_responses{ http_202 };
+    };
+    my $resp = $client->execute_plugin_code( $execution_name, $params, $async );
+    is( $resp->code, 202, 'request succeeded' );
 };
 
 done_testing();

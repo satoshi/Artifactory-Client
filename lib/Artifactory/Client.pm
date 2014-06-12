@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.5.0
+Version 0.6.0
 
 =cut
 
-our $VERSION = '0.5.0';
+our $VERSION = '0.6.0';
 
 =head1 SYNOPSIS
 
@@ -843,7 +843,7 @@ sub artifact_latest_version_search_based_on_properties {
     my $path = delete $args{ path };
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port/artifactory/api/versions/$repo$path?";
-    $url .= $self->_stringify_hash( %args );
+    $url .= $self->_stringify_hash( '&', %args );
     return $self->get( $url );
 }
 
@@ -1071,7 +1071,7 @@ sub repository_configuration {
     my ( $self, $repo, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = ( %args ) ? "$artifactory:$port/artifactory/api/repositories/$repo?" : "$artifactory:$port/artifactory/api/repositories/$repo";
-    $url .= $self->_stringify_hash( %args ) if ( %args );
+    $url .= $self->_stringify_hash( '&', %args ) if ( %args );
     return $self->get( $url );
 }
 
@@ -1119,7 +1119,7 @@ sub calculate_yum_repository_metadata {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = ( %args ) ? "$artifactory:$port/artifactory/api/yum/$repository?" : "$artifactory:$port/artifactory/api/yum/$repository";
-    $url .= $self->_stringify_hash( %args ) if ( %args );
+    $url .= $self->_stringify_hash( '&', %args ) if ( %args );
     return $self->post( $url );
 }
 
@@ -1147,7 +1147,7 @@ sub calculate_maven_index {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port/artifactory/api/maven?";
-    $url .= $self->_stringify_hash( %args );
+    $url .= $self->_stringify_hash( '&', %args );
     return $self->post( $url );
 }
 
@@ -1199,6 +1199,54 @@ Get the general configuration (artifactory.config.xml)
 sub general_configuration {
     my $self = shift;
     return $self->_handle_system( 'configuration' );
+}
+
+=head2 save_general_configuration( $file )
+
+Save the general configuration (artifactory.config.xml)
+
+=cut
+
+sub save_general_configuration {
+    my ( $self, $xml ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $file = File::Slurp::read_file( $xml );
+    my $url = "$artifactory:$port/artifactory/api/system/configuration";
+    return $self->post( $url, 'Content-Type' => 'application/xml', content => $file );
+}
+
+=head2 version_and_addons_information( $file )
+
+Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
+
+=cut
+
+sub version_and_addons_information {
+    my $self = shift;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port/artifactory/api/system/version";
+    return $self->get( $url );
+}
+
+=head1 PLUGINS
+
+=cut
+
+=head2 execute_plugin_code( $execution_name, $params, $async )
+
+Executes a named execution closure found in the executions section of a user plugin
+
+=cut
+
+sub execute_plugin_code {
+    my ( $self, $execution_name, $params, $async ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = ( $params ) ? "$artifactory:$port/artifactory/api/plugins/execute/$execution_name?params=" :
+        "$artifactory:$port/artifactory/api/plugins/execute/$execution_name";
+        
+    $url = $self->_attach_properties( url => $url, properties => $params );
+    $url .= "&" . $self->_stringify_hash( '&', %{ $async } ) if ( $async );
+    return $self->post( $url );
 }
 
 sub _build_ua {
@@ -1298,12 +1346,12 @@ sub _handle_search_props {
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port/artifactory/api/search/$method?";
 
-    $url .= $self->_stringify_hash( %args );
+    $url .= $self->_stringify_hash( '&', %args );
     return $self->get( $url );
 }
 
 sub _stringify_hash {
-    my ( $self, %args ) = @_;
+    my ( $self, $delimiter, %args ) = @_;
 
     my @strs;
     for my $key ( keys %args ) {
@@ -1314,7 +1362,7 @@ sub _stringify_hash {
         }
         push @strs, "$key=$val";
     }
-    return join( "&", @strs );
+    return join( $delimiter, @strs );
 }
 
 sub _handle_security {
@@ -1332,7 +1380,7 @@ sub _handle_repositories {
     my ( $self, $repo, $payload, $method, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = ( %args ) ? "$artifactory:$port/artifactory/api/repositories/$repo?" : "$artifactory:$port/artifactory/api/repositories/$repo";
-    $url .= $self->_stringify_hash( %args ) if ( %args );
+    $url .= $self->_stringify_hash( '&', %args ) if ( %args );
     
     if ( $payload ) {
         return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( $payload ) );
