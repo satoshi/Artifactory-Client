@@ -1321,6 +1321,26 @@ subtest 'execute_plugin_code', sub {
     is( $resp->code, 202, 'request succeeded' );
 };
 
+subtest 'retrieve_all_available_plugin_info', sub {
+    my $client = setup();
+
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->retrieve_all_available_plugin_info();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'retrieve_plugin_info_of_a_certain_type', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->retrieve_plugin_info_of_a_certain_type( 'staging' );
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 done_testing();
 
 sub setup {

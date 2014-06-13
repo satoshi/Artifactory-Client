@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.6.1   2014/6/12
+        Added retrieve_all_available_plugin_info, retrieve_plugin_info_of_a_certain_type
+
 0.6.0   2014/6/11
         Added save_general_configuration, version_and_addons_information, execute_plugin_code
 

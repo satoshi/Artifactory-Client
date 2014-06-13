@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.6.0
+Version 0.6.1
 
 =cut
 
-our $VERSION = '0.6.0';
+our $VERSION = '0.6.1';
 
 =head1 SYNOPSIS
 
@@ -1249,6 +1249,29 @@ sub execute_plugin_code {
     return $self->post( $url );
 }
 
+=head2 retrieve_all_available_plugin_info
+
+Retrieves all available user plugin information (subject to the permissions of the provided credentials)
+
+=cut
+
+sub retrieve_all_available_plugin_info {
+    my $self = shift;
+    return $self->_handle_plugins();
+}
+
+=head2 retrieve_plugin_info_of_a_certain_type( $type )
+
+Retrieves all available user plugin information (subject to the permissions of the provided credentials) of the
+specified type
+
+=cut
+
+sub retrieve_plugin_info_of_a_certain_type {
+    my ( $self, $type ) = @_;
+    return $self->_handle_plugins( $type );
+}
+
 sub _build_ua {
     my $self = shift;
     $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
@@ -1392,6 +1415,13 @@ sub _handle_system {
     my ( $self, $arg ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = ( $arg ) ? "$artifactory:$port/artifactory/api/system/$arg" : "$artifactory:$port/artifactory/api/system";
+    return $self->get( $url );
+}
+
+sub _handle_plugins {
+    my ( $self, $type ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = ( $type ) ? "$artifactory:$port/artifactory/api/plugins/$type" : "$artifactory:$port/artifactory/api/plugins";
     return $self->get( $url );
 }
 
