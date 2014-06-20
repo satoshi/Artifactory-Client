@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.6.2   2014/6/19
+        Updated contact info, fixed paths that resulted in errors on some Artifactory instances
+
 0.6.1   2014/6/12
         Added retrieve_all_available_plugin_info, retrieve_plugin_info_of_a_certain_type
 

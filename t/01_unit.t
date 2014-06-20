@@ -52,11 +52,11 @@ subtest 'deploy_artifact with properties and content', sub {
 
     my $resp = $client->deploy_artifact( path => $path, properties => $properties, content => $content );
     is( $resp->is_success, 1, 'request came back successfully' );
-   
+
     local *{ 'LWP::UserAgent::get' } = sub {
         my ( $self, $url ) = @_;
 
-        if ( $url eq "$artifactory:$port/api/storage/$repository/unique_path?properties" ) {
+        if ( $url eq "$artifactory:$port/artifactory/api/storage/$repository/unique_path?properties" ) {
             return bless( {
                 '_content' => '{
                     "properties" : {
