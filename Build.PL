@@ -22,7 +22,7 @@ my $builder = Module::Build->new(
         'LWP::UserAgent'        => 0,
         'URI::Escape'           => 0,
         'namespace::autoclean'  => 0,
-        'File::Slurp'           => 0,
+        'Path::Tiny'            => 0,
     },
     add_to_cleanup     => [ 'Artifactory-Client-*' ],
     create_makefile_pl => 'traditional',

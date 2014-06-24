@@ -1,5 +1,9 @@
 Revision history for Artifactory-Client
 
+0.7.0   2014/6/23
+        Added retrieve_build_staging_strategy, execute_build_promotion, import_repository_content, uses Path::Tiny
+        instead of File::Slurp (although out of memory error persists on uploading a large archive)
+
 0.6.2   2014/6/19
         Updated contact info, fixed paths that resulted in errors on some Artifactory instances
 

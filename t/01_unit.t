@@ -11,6 +11,7 @@ use URI::http;
 use HTTP::Request;
 use lib "$Bin/../lib";
 use Artifactory::Client;
+use Path::Tiny;
 
 # it became silly to do this in every subtest
 no strict 'refs';
@@ -404,7 +405,7 @@ subtest 'deploy_artifacts_from_archive', sub {
         return $mock_responses{ http_200 };
     };
 
-    local *{ 'File::Slurp::read_file' } = sub {
+    local *{ 'Path::Tiny::slurp' } = sub {
         # no-op, unit test reads no file
     };
     my $resp = $client->deploy_artifacts_from_archive( file => 'test.zip', path => '/some_path/test.zip' );
@@ -1285,7 +1286,7 @@ subtest 'save_general_configuration', sub {
         }, 'HTTP::Response' );
     };
     
-    local *{ 'File::Slurp::read_file' } = sub {
+    local *{ 'Path::Tiny::slurp' } = sub {
         # no-op, unit test reads no file
     };
     my $resp = $client->save_general_configuration( 'test.xml' );
@@ -1339,6 +1340,64 @@ subtest 'retrieve_plugin_info_of_a_certain_type', sub {
     };
     my $resp = $client->retrieve_plugin_info_of_a_certain_type( 'staging' );
     is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'retrieve_build_staging_strategy', sub {
+    my $client = setup();
+    my %args = (
+        strategyName => 'strategy1',
+        buildName => 'build1',
+        types => [ 'jar', 'war', 'zip' ]
+    );
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return $mock_responses{ http_200 };
+    };
+    my $resp = $client->retrieve_build_staging_strategy( %args );
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'execute_build_promotion', sub {
+    my $client = setup();
+    my %args = (
+        promotionName => 'promotion1',
+        buildName => 'build1',
+        buildNumber => 3,
+        types => [ 'jar', 'war', 'zip' ],
+    );
+    
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/plugins/build/promote/promotion1/build1/3")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->execute_build_promotion( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/plugins/build/promote/promotion1/build1/3|, 'requsted URL looks sane' );
+};
+
+subtest 'import_repository_content', sub {
+    my $client = setup();
+    my %args = (
+        path => 'foobar',
+        repo => 'repo',
+        metadata => 1,
+        verbose => 0
+    );
+
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/import/repositories?")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+
+    my $resp = $client->import_repository_content( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/import/repositories?|, 'requsted URL looks sane' );
 };
 
 done_testing();

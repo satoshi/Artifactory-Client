@@ -9,7 +9,7 @@ use URI::Escape;
 use namespace::autoclean;
 use JSON;
 use File::Basename;
-use File::Slurp;
+use Path::Tiny;
 
 =head1 NAME
 
@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.6.2
+Version 0.7.0
 
 =cut
 
-our $VERSION = '0.6.2';
+our $VERSION = '0.7.0';
 
 =head1 SYNOPSIS
 
@@ -534,7 +534,7 @@ sub deploy_artifacts_from_archive {
     );
 
     # need to use fully-qualified name here so that I can mock from unit tests
-    my $bin = File::Slurp::read_file( $file, { binmode => ':raw' } );
+    my $bin = Path::Tiny::path( $file )->slurp( { binmode => ":raw" } );
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path";
     return $self->put( $url, %header, content => $bin );
@@ -1212,7 +1212,7 @@ Save the general configuration (artifactory.config.xml)
 sub save_general_configuration {
     my ( $self, $xml ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $file = File::Slurp::read_file( $xml );
+    my $file = Path::Tiny::path( $xml )->slurp;
     my $url = "$artifactory:$port$api_root/system/configuration";
     return $self->post( $url, 'Content-Type' => 'application/xml', content => $file );
 }
@@ -1272,6 +1272,59 @@ specified type
 sub retrieve_plugin_info_of_a_certain_type {
     my ( $self, $type ) = @_;
     return $self->_handle_plugins( $type );
+}
+
+=head2 retrieve_build_staging_strategy( strategyName => 'strategy1', buildName => 'build1', %args )
+
+Retrieves a build staging strategy defined by a user plugin
+
+=cut
+
+sub retrieve_build_staging_strategy {
+    my ( $self, %args ) = @_;
+    my $strategy_name = delete $args{ strategyName };
+    my $build_name = delete $args{ buildName };
+    
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port$api_root/plugins/build/staging/$strategy_name?buildName=$build_name?params=";
+    $url = $self->_attach_properties( url => $url, properties => \%args );
+    return $self->get( $url );
+}
+
+=head2 execute_build_promotion( promotionName => 'promotion1', buildName => 'build1', buildNumber => 3, %args )
+
+Executes a named promotion closure found in the promotions section of a user plugin
+
+=cut
+
+sub execute_build_promotion {
+    my ( $self, %args ) = @_;
+    my $promotion_name = delete $args{ promotionName };
+    my $build_name = delete $args{ buildName };
+    my $build_number = delete $args{ buildNumber };
+    
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port$api_root/plugins/build/promote/$promotion_name/$build_name/$build_number?params=";
+    $url = $self->_attach_properties( url => $url, properties => \%args );
+    return $self->post( $url );
+}
+
+=head1 IMPORT & EXPORT
+
+=cut
+
+=head2 import_repository_content( path => 'foobar', repo => 'repo', metadata => 1, verbose => 0 )
+
+Import one or more repositories
+
+=cut
+
+sub import_repository_content {
+    my ( $self, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port$api_root/import/repositories?";
+    $url .= $self->_stringify_hash( '&', %args );
+    return $self->post( $url );
 }
 
 sub _build_ua {
