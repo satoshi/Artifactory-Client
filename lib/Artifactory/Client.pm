@@ -17,11 +17,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.7.0
+Version 0.7.2
 
 =cut
 
-our $VERSION = '0.7.0';
+our $VERSION = '0.7.2';
 
 =head1 SYNOPSIS
 
@@ -353,7 +353,7 @@ sub set_item_properties {
     my $properties = $args{ properties };
     my $recursive = $args{ recursive };
     my $url = "$artifactory:$port$api_root/storage/$repository$path?properties=";
-    my $request = $self->_attach_properties( url => $url, properties => $properties );
+    my $request = $url . $self->_attach_properties( properties => $properties );
     $request .= "&recursive=$recursive" if ( defined $recursive );
     return $self->put( $request );
 }
@@ -491,9 +491,11 @@ sub deploy_artifact {
     my $properties = $args{ properties };
     my $content = $args{ content };
     my $header = $args{ header };
-    my $url = "$artifactory:$port/artifactory/$repository$path;";
-
-    my $request = $self->_attach_properties( url => $url, properties => $properties, matrix => 1 );
+    my $url = "$artifactory:$port/artifactory/$repository$path";
+    my @joiners = ( $url );
+    my $props = $self->_attach_properties( properties => $properties, matrix => 1 );
+    push @joiners, $props if ( $props ); # if properties aren't passed in, the function returns empty string
+    my $request = join( ";", @joiners );
     return $self->put( $request, %{ $header }, content => $content );
 }
 
@@ -1246,7 +1248,7 @@ sub execute_plugin_code {
     my $url = ( $params ) ? "$artifactory:$port$api_root/plugins/execute/$execution_name?params=" :
         "$artifactory:$port$api_root/plugins/execute/$execution_name";
         
-    $url = $self->_attach_properties( url => $url, properties => $params );
+    $url = $url . $self->_attach_properties( properties => $params );
     $url .= "&" . $self->_stringify_hash( '&', %{ $async } ) if ( $async );
     return $self->post( $url );
 }
@@ -1287,7 +1289,7 @@ sub retrieve_build_staging_strategy {
     
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/plugins/build/staging/$strategy_name?buildName=$build_name?params=";
-    $url = $self->_attach_properties( url => $url, properties => \%args );
+    $url = $url . $self->_attach_properties( properties => \%args );
     return $self->get( $url );
 }
 
@@ -1305,7 +1307,7 @@ sub execute_build_promotion {
     
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/plugins/build/promote/$promotion_name/$build_name/$build_number?params=";
-    $url = $self->_attach_properties( url => $url, properties => \%args );
+    $url = $url . $self->_attach_properties( properties => \%args );
     return $self->post( $url );
 }
 
@@ -1325,6 +1327,50 @@ sub import_repository_content {
     my $url = "$artifactory:$port$api_root/import/repositories?";
     $url .= $self->_stringify_hash( '&', %args );
     return $self->post( $url );
+}
+
+=head2 import_system_settings_example
+
+Returned default Import Settings JSON
+
+=cut
+
+sub import_system_settings_example {
+    my $self = shift;
+    return $self->_handle_system_settings( 'import' );
+}
+
+=head2 full_system_import( importPath => '/import/path', includeMetadata => 'false' etc )
+
+Import full system from a server local Artifactory export directory
+
+=cut
+
+sub full_system_import {
+    my ( $self, %args ) = @_;
+    return $self->_handle_system_settings( 'import', %args );
+}
+
+=head2 export_system_settings_example
+
+Returned default Export Settings JSON
+
+=cut
+
+sub export_system_settings_example {
+    my $self = shift;
+    return $self->_handle_system_settings( 'export' );
+}
+
+=head2 export_system( exportPath => '/export/path', includeMetadata => 'true' etc )
+
+Export full system to a server local directory
+
+=cut
+
+sub export_system {
+    my ( $self, %args ) = @_;
+    return $self->_handle_system_settings( 'export', %args );
 }
 
 sub _build_ua {
@@ -1356,30 +1402,51 @@ sub _get_build {
 
 sub _attach_properties {
     my ( $self, %args ) = @_;
-    my $url = $args{ url };
     my $properties = $args{ properties };
     my $matrix = $args{ matrix };
+    my @strings;
 
     for my $key ( keys %{ $properties } ) {
-        $url .= $self->_handle_prop_multivalue( $key, $properties->{ $key }, $matrix );
+        push @strings, $self->_handle_prop_multivalue( $key, $properties->{ $key }, $matrix );
     }
-    return $url;
+    ( $matrix ) ? return join( ";", @strings ) : return join( "|", @strings );
 }
 
 sub _handle_prop_multivalue {
     my ( $self, $key, $values, $matrix ) = @_;
 
     # need to handle matrix vs non-matrix situations.
-    # if matrix, string looks like key=val;key=val2;key=val3;
-    # if non-matrix, string looks like key=val1,val2,val3|
-    my $str = ( $matrix ) ? '' : "$key=";
-
-    for my $val ( @{ $values } ) {
-        $val = '' if ( !defined $val );
-        $val = uri_escape( $val );
-        $str .= ( $matrix ) ? "$key=$val;" : "$val,";
+    if ( $matrix ) {
+        return $self->_handle_matrix_props( $key, $values );
     }
-    $str .= ( $matrix ) ? '' : "|";
+    return $self->_handle_non_matrix_props( $key, $values );
+}
+
+sub _handle_matrix_props {
+    my ( $self, $key, $values ) = @_;
+    
+    # string looks like key=val;key=val2;key=val3;
+    my @strings;
+    for my $value ( @{ $values } ) {
+        $value = '' if ( !defined $value );
+        #$value = uri_escape( $value );
+        push @strings, "$key=$value";
+    }
+    return join( ";", @strings );
+}
+
+sub _handle_non_matrix_props {
+    my ( $self, $key, $values ) = @_;
+    
+    # string looks like key=val1,val2,val3|
+    my $str = "$key=";
+    my @value_holder;
+    for my $value ( @{ $values } ) {
+        $value = '' if ( !defined $value );
+        $value = uri_escape( $value );
+        push @value_holder, $value;
+    }
+    $str .= join( ",", @value_holder );
     return $str;
 }
 
@@ -1477,6 +1544,17 @@ sub _handle_plugins {
     my ( $self, $type ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = ( $type ) ? "$artifactory:$port$api_root/plugins/$type" : "$artifactory:$port$api_root/plugins";
+    return $self->get( $url );
+}
+
+sub _handle_system_settings {
+    my ( $self, $action, %args ) = @_;
+    my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
+    my $url = "$artifactory:$port$api_root/$action/system";
+    
+    if ( %args ) {
+        return $self->post( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
+    }
     return $self->get( $url );
 }
 

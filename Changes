@@ -1,5 +1,11 @@
 Revision history for Artifactory-Client
 
+0.7.2   2014/6/24
+        Cleaned up logic to generate properties in matrix / non-matrix mode
+
+0.7.1   2014/6/24
+        Added import_system_settings_example, full_system_import, export_system_settings_example, export_system
+
 0.7.0   2014/6/23
         Added retrieve_build_staging_strategy, execute_build_promotion, import_repository_content, uses Path::Tiny
         instead of File::Slurp (although out of memory error persists on uploading a large archive)

@@ -1400,6 +1400,85 @@ subtest 'import_repository_content', sub {
     like( $url_in_response, qr|/api/import/repositories?|, 'requsted URL looks sane' );
 };
 
+subtest 'import_system_settings_example', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/import/system")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->import_system_settings_example();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/import/system|, 'requsted URL looks sane' );
+};
+
+subtest 'full_system_import', sub {
+    my $client = setup();
+    my %args = (
+        importPath => '/import/path',
+        includeMetadata => 'false',
+        verbose => 'false',
+        failOnError => 'true',
+        failIfEmpty => 'true',
+    );
+    
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/import/system")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->full_system_import( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/import/system|, 'requsted URL looks sane' );
+};
+
+subtest 'export_system_settings_example', sub {
+    my $client = setup();
+    
+    local *{ 'LWP::UserAgent::get' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/export/system")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->export_system_settings_example();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/export/system|, 'requsted URL looks sane' );
+};
+
+subtest 'export_system', sub {
+    my $client = setup();
+    my %args = (
+        exportPath => '/export/path',
+        includeMetadata => 'true',
+        createArchive => 'false',
+        bypassFiltering => 'false',
+        verbose => 'false',
+        failOnError => 'true',
+        failIfEmpty => 'true',
+        m2 => 'false',
+        incremental => 'false',
+        excludeContent => 'false'
+    );
+    
+    local *{ 'LWP::UserAgent::post' } = sub {
+        return bless( {
+            '_request' => bless( {
+            '_uri' => bless( do{\(my $o = "http://example.com:7777/artifactory/api/export/system")}, 'URI::http' ),
+            }, 'HTTP::Request' )
+        }, 'HTTP::Response' );
+    };
+    my $resp = $client->export_system( %args );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/export/system|, 'requsted URL looks sane' );
+};
+
 done_testing();
 
 sub setup {
