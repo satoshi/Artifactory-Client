@@ -1,5 +1,12 @@
 Revision history for Artifactory-Client
 
+0.7.4   2014/7/1
+        Updated deploy-related methods to take a filename then stream it so that large files can be uploaded without
+        reading into memory first.
+
+0.7.3   2014/6/25
+        Updating POD
+
 0.7.2   2014/6/24
         Cleaned up logic to generate properties in matrix / non-matrix mode
 

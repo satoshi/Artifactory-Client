@@ -47,7 +47,7 @@ subtest 'deploy_artifact with properties and content', sub {
     my $path = '/unique_path';
     my $content = "content of artifact";
 
-    local *{ 'LWP::UserAgent::put' } = sub {
+    local *{ 'LWP::UserAgent::request' } = sub {
         return $mock_responses{ http_201 };
     };
 
@@ -105,7 +105,7 @@ subtest 'deploy artifact by checksum', sub {
     my $path = '/unique_path';
     my $sha1 = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'; # sha-1 of 0 byte file
 
-    local *{ 'LWP::UserAgent::put' } = sub {
+    local *{ 'LWP::UserAgent::request' } = sub {
         return bless( {
             '_request' => bless( { 
                 '_headers' => bless( { 
@@ -120,7 +120,7 @@ subtest 'deploy artifact by checksum', sub {
     is( $resp->request()->header( 'x-checksum-deploy' ), 'true', 'x-checksum-deploy set' );
     is( $resp->request()->header( 'x-checksum-sha1' ), $sha1, 'x-checksum-sha1 set' );
     
-    local *{ 'LWP::UserAgent::put' } = sub {
+    local *{ 'LWP::UserAgent::request' } = sub {
         return $mock_responses{ http_404 }
     };
 
@@ -391,7 +391,7 @@ subtest 'create_directory', sub {
     my $client = setup();
     my $dir = '/unique_dir/';
 
-    local *{ 'LWP::UserAgent::put' } = sub {
+    local *{ 'LWP::UserAgent::request' } = sub {
         return $mock_responses{ http_201 };
     };
     my $resp = $client->create_directory( path => $dir );
@@ -401,14 +401,14 @@ subtest 'create_directory', sub {
 subtest 'deploy_artifacts_from_archive', sub {
     my $client = setup();
 
-    local *{ 'LWP::UserAgent::put' } = sub {
+    local *{ 'LWP::UserAgent::request' } = sub {
         return $mock_responses{ http_200 };
     };
 
     local *{ 'Path::Tiny::slurp' } = sub {
         # no-op, unit test reads no file
     };
-    my $resp = $client->deploy_artifacts_from_archive( file => 'test.zip', path => '/some_path/test.zip' );
+    my $resp = $client->deploy_artifacts_from_archive( file => "$Bin/data/test.xml", path => '/some_path/test.zip' );
     is( $resp->code, 200, 'deploy_artifacts_from_archive worked' );
 };
 
@@ -1085,7 +1085,7 @@ subtest 'get_repositories', sub {
     local *{ 'LWP::UserAgent::get' } = sub {
         return $mock_responses{ http_200 };
     }; 
-    my $resp = $client->get_repositories();
+    my $resp = $client->get_repositories( 'local' );
     is( $resp->code, 200, 'got repositories' );
 };
 

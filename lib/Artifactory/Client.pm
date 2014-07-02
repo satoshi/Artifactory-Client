@@ -10,6 +10,7 @@ use namespace::autoclean;
 use JSON;
 use File::Basename;
 use Path::Tiny;
+use HTTP::Request::StreamingUpload;
 
 =head1 NAME
 
@@ -17,11 +18,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.7.2
+Version 0.7.4
 
 =cut
 
-our $VERSION = '0.7.2';
+our $VERSION = '0.7.4';
 
 =head1 SYNOPSIS
 
@@ -474,10 +475,10 @@ sub create_directory {
     return $self->deploy_artifact( %args );
 }
 
-=head2 deploy_artifact( path => $path, properties => { key => [ values ] }, content => $content )
+=head2 deploy_artifact( path => $path, properties => { key => [ values ] }, file => $file )
 
-Takes path, properties and content then deploys artifact.  Note that properties are a hashref with key-arrayref pairs,
-such as:
+Takes path on Artifactory, properties and filename then deploys the file.  Note that properties are a hashref with
+key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -489,19 +490,24 @@ sub deploy_artifact {
 
     my $path = $args{ path };
     my $properties = $args{ properties };
-    my $content = $args{ content };
+    my $file = $args{ file };
     my $header = $args{ header };
-    my $url = "$artifactory:$port/artifactory/$repository$path";
-    my @joiners = ( $url );
+    my @joiners = ( "$artifactory:$port/artifactory/$repository$path" );
     my $props = $self->_attach_properties( properties => $properties, matrix => 1 );
     push @joiners, $props if ( $props ); # if properties aren't passed in, the function returns empty string
-    my $request = join( ";", @joiners );
-    return $self->put( $request, %{ $header }, content => $content );
+    my $url = join( ";", @joiners );
+
+    my $req = HTTP::Request::StreamingUpload->new(
+        PUT     => $url,
+        path    => $file,
+        headers => HTTP::Headers->new( %{ $header } ),
+    );
+    return $self->request( $req );
 }
 
-=head2 deploy_artifact_by_checksum( path => $path, properties => { key => [ values ] }, content => $content, sha1 => $sha1 )
+=head2 deploy_artifact_by_checksum( path => $path, properties => { key => [ values ] }, file => $file, sha1 => $sha1 )
 
-Takes path, properties, content and sha1 then deploys artifact.  Note that properties are a hashref with key-arrayref
+Takes path, properties, filename and sha1 then deploys the file.  Note that properties are a hashref with key-arrayref
 pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
@@ -531,15 +537,11 @@ sub deploy_artifacts_from_archive {
 
     my $path = $args{ path };
     my $file = $args{ file };
-    my %header = (
+    my $header = {
         'X-Explode-Archive' => 'true',
-    );
-
-    # need to use fully-qualified name here so that I can mock from unit tests
-    my $bin = Path::Tiny::path( $file )->slurp( { binmode => ":raw" } );
-    my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-    my $url = "$artifactory:$port/artifactory/$repository$path";
-    return $self->put( $url, %header, content => $bin );
+    };
+    $args{ header } = $header;
+    return $self->deploy_artifact( %args );
 }
 
 =head2 file_compliance_info( $path )
@@ -1052,16 +1054,18 @@ sub security_configuration {
 
 =cut
 
-=head2 get_repositories
+=head2 get_repositories( $type )
 
 Returns a list of minimal repository details for all repositories of the specified type
 
 =cut
 
 sub get_repositories {
-    my ( $self, $path ) = @_;
+    my ( $self, $type ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/repositories";
+    $url .= "?type=$type" if ( $type );
+
     return $self->get( $url );
 }
 
@@ -1079,7 +1083,7 @@ sub repository_configuration {
     return $self->get( $url );
 }
 
-=head2 create_or_replace_repository_configuration( $name, $payload, %args )
+=head2 create_or_replace_repository_configuration( $name, \%payload, %args )
 
 Creates a new repository in Artifactory with the provided configuration or replaces the configuration of an existing
 repository
@@ -1091,7 +1095,7 @@ sub create_or_replace_repository_configuration {
     return $self->_handle_repositories( $repo, $payload, 'put', %args );
 }
 
-=head2 update_repository_configuration( $name, %payload )
+=head2 update_repository_configuration( $name, \%payload )
 
 Updates an exiting repository configuration in Artifactory with the provided configuration elements
 
@@ -1135,7 +1139,7 @@ each NuGet package according to it's internal nuspec file
 =cut
 
 sub calculate_nuget_repository_metadata {
-    my ( $self ) = @_;
+    my $self = shift;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/nuget/$repository/reindex";
     return $self->post( $url );
@@ -1219,7 +1223,7 @@ sub save_general_configuration {
     return $self->post( $url, 'Content-Type' => 'application/xml', content => $file );
 }
 
-=head2 version_and_addons_information( $file )
+=head2 version_and_addons_information
 
 Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
 
