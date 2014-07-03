@@ -20,11 +20,12 @@ my $properties = {
     one => ['two'],
     baz => ['three'],
 };
-my $content = "content of artifact";
 
 # Name of methods are taken straight from Artifactory REST API documentation.  'Deploy Artifact' would map to
 # deploy_artifact method, like below.  The caller gets HTTP::Response object back.
-my $resp = $client->deploy_artifact( path => $path, properties => $properties, content => $content );
+
+# In this example, 'file.txt' on local disk will be uploaded to $path on Artifactory with $properties set on the artifact.
+my $resp = $client->deploy_artifact( path => $path, properties => $properties, file => 'file.txt' );
 
 # Custom requests can also be made via usual get / post / put / delete requests.
 my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
