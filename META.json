@@ -1,0 +1,54 @@
+{
+   "abstract" : "Perl client for Artifactory REST API",
+   "author" : [
+      "Satoshi Yagi <satoshi@yahoo-inc.com>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4007, CPAN::Meta::Converter version 2.132140",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Artifactory-Client",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "JSON" : "0",
+            "LWP::UserAgent" : "0",
+            "Test::More" : "0",
+            "WWW::Mechanize" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "HTTP::Request::StreamingUpload" : "0",
+            "LWP::UserAgent" : "0",
+            "Moose" : "2.0604",
+            "Path::Tiny" : "0",
+            "URI::Escape" : "0",
+            "namespace::autoclean" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "Artifactory::Client" : {
+         "file" : "lib/Artifactory/Client.pm",
+         "version" : "v0.7.4"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://www.perlfoundation.org/artistic_license_2_0"
+      ]
+   },
+   "version" : "v0.7.4"
+}
