@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.7.5   2014/7/7
+        Adding test xml to the distribution so that tests can run
+
 0.7.4   2014/7/1
         Updated deploy-related methods to take a filename then stream it so that large files can be uploaded without
         reading into memory first.
