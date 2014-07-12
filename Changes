@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.7.6   2014/7/11
+        Fixing synopsis as API changed
+
 0.7.5   2014/7/7
         Adding test xml to the distribution so that tests can run
 

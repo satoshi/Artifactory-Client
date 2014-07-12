@@ -18,11 +18,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.7.5
+Version 0.7.6
 
 =cut
 
-our $VERSION = '0.7.5';
+our $VERSION = '0.7.6';
 
 =head1 SYNOPSIS
 
@@ -47,11 +47,11 @@ Every public method provided in this module returns a HTTP::Response object.
         one => ['two'],
         baz => ['three'],
     };
-    my $content = "content of artifact";
+    my $file = '/local/file.xml';
 
     # Name of methods are taken straight from Artifactory REST API documentation.  'Deploy Artifact' would map to
     # deploy_artifact method, like below.  The caller gets HTTP::Response object back.
-    my $resp = $client->deploy_artifact( path => $path, properties => $properties, content => $content );
+    my $resp = $client->deploy_artifact( path => $path, properties => $properties, file => $file );
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
