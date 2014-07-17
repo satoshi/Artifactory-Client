@@ -18,11 +18,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.7.6
+Version 0.7.7
 
 =cut
 
-our $VERSION = '0.7.6';
+our $VERSION = '0.7.7';
 
 =head1 SYNOPSIS
 
@@ -378,17 +378,18 @@ sub delete_item_properties {
     return $self->delete( $url );
 }
 
-=head2 retrieve_artifact( $path )
+=head2 retrieve_artifact( $path, [ $filename ] )
 
-Takes path and retrieves artifact on the path.
+Takes path and retrieves artifact on the path.  If $filename is given, artifact content goes into the $filename rather
+than the HTTP::Response object.
 
 =cut
 
 sub retrieve_artifact {
-    my ( $self, $path ) = @_;
+    my ( $self, $path, $filename ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path";
-    return $self->get( $url );
+    return ( $filename ) ? $self->get( $url, ":content_file" => $filename ) : $self->get( $url );
 }
 
 =head2 retrieve_latest_artifact( path => $path, snapshot => $snapshot, release => $release, integration => $integration,

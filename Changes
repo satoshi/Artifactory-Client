@@ -1,5 +1,9 @@
 Revision history for Artifactory-Client
 
+0.7.7   2014/7/16
+        Added optional $filename argument to retrieve_artifact() call to handle large payload.  Otherwise the entire
+        content would go into the HTTP::Response object.
+
 0.7.6   2014/7/11
         Fixing synopsis as API changed
 
