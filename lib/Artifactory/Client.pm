@@ -18,11 +18,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.7.7
+Version 0.7.8
 
 =cut
 
-our $VERSION = '0.7.7';
+our $VERSION = '0.7.8';
 
 =head1 SYNOPSIS
 
@@ -70,24 +70,24 @@ version of my functional tests.  They should serve as a detailed guide on how to
 my $api_root = '/artifactory/api';
 
 has 'artifactory' => (
-    is => 'ro',
+    is  => 'ro',
     isa => 'Str',
 );
 
 has 'port' => (
-    is => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
     default => 80
 );
 
 has 'ua' => (
-    is => 'rw',
-    isa => 'LWP::UserAgent',
+    is      => 'rw',
+    isa     => 'LWP::UserAgent',
     builder => '_build_ua'
 );
 
 has 'repository' => (
-    is => 'ro',
+    is  => 'ro',
     isa => 'Str',
 );
 
@@ -173,7 +173,7 @@ Retrieves information of a particular build from artifactory.
 
 sub build_runs {
     my ( $self, $build ) = @_;
-    return $self->_get_build( $build );
+    return $self->_get_build($build);
 }
 
 =head2 build_info( $build_name, $build_number )
@@ -184,7 +184,7 @@ Retrieves information of a particular build number.
 
 sub build_info {
     my ( $self, $build, $number ) = @_;
-    return $self->_get_build( "$build/$number" );
+    return $self->_get_build("$build/$number");
 }
 
 =head2 builds_diff( $build_name, $new_build_number, $old_build_number )
@@ -195,7 +195,7 @@ Retrieves diff of 2 builds
 
 sub builds_diff {
     my ( $self, $build, $new, $old ) = @_;
-    return $self->_get_build( "$build/$new?diff=$old" );
+    return $self->_get_build("$build/$new?diff=$old");
 }
 
 =head2 build_promotion( $build_name, $build_number, $payload )
@@ -208,7 +208,7 @@ sub build_promotion {
     my ( $self, $build, $number, $payload ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/build/promote/$build/$number";
-    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
+    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json($payload) );
 }
 
 =head2 delete_build( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
@@ -219,18 +219,18 @@ Promotes a build by POSTing payload
 
 sub delete_build {
     my ( $self, %args ) = @_;
-    my $build = $args{ name };
-    my $buildnumbers = $args{ buildnumbers };
-    my $artifacts = $args{ artifacts };
-    my $deleteall = $args{ deleteall };
+    my $build        = $args{name};
+    my $buildnumbers = $args{buildnumbers};
+    my $artifacts    = $args{artifacts};
+    my $deleteall    = $args{deleteall};
 
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/build/$build";
     my @params;
 
-    if ( ref( $buildnumbers ) eq 'ARRAY' ) {
+    if ( ref($buildnumbers) eq 'ARRAY' ) {
         my $str = "buildNumbers=";
-        $str .= join( ",", @{ $buildnumbers } );
+        $str .= join( ",", @{$buildnumbers} );
         push @params, $str;
     }
 
@@ -242,11 +242,11 @@ sub delete_build {
         push @params, "deleteAll=$deleteall";
     }
 
-    if ( @params ) {
+    if (@params) {
         $url .= "?";
         $url .= join( "&", @params );
     }
-    return $self->delete( $url );
+    return $self->delete($url);
 }
 
 =head2 build_rename( $build_name, $new_build_name )
@@ -259,7 +259,7 @@ sub build_rename {
     my ( $self, $build, $new_build ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/build/rename/$build?to=$new_build";
-    return $self->post( $url );
+    return $self->post($url);
 }
 
 =head1 ARTIFACTS & STORAGE
@@ -276,7 +276,7 @@ sub folder_info {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/storage/$repository$path";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 file_info( $path )
@@ -287,7 +287,7 @@ Returns file info
 
 sub file_info {
     my ( $self, $path ) = @_;
-    return $self->folder_info( $path ); # should be OK to do this
+    return $self->folder_info($path);    # should be OK to do this
 }
 
 =head2 item_last_modified( $path )
@@ -300,7 +300,7 @@ sub item_last_modified {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/storage/$repository$path?lastModified";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 file_statistics( $path )
@@ -313,7 +313,7 @@ sub file_statistics {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/storage/$repository$path?stats";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 item_properties( path => $path, properties => [ key_names ] )
@@ -326,15 +326,15 @@ sub item_properties {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
 
-    my $path = $args{ path };
-    my $properties = $args{ properties };
-    my $url = "$artifactory:$port$api_root/storage/$repository$path?properties";
+    my $path       = $args{path};
+    my $properties = $args{properties};
+    my $url        = "$artifactory:$port$api_root/storage/$repository$path?properties";
 
-    if ( ref( $properties ) eq 'ARRAY' ) {
-        my $str = join( ',', @{ $properties } );
+    if ( ref($properties) eq 'ARRAY' ) {
+        my $str = join( ',', @{$properties} );
         $url .= "=" . $str;
     }
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => 0,1 )
@@ -350,13 +350,13 @@ sub set_item_properties {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
 
-    my $path = $args{ path };
-    my $properties = $args{ properties };
-    my $recursive = $args{ recursive };
-    my $url = "$artifactory:$port$api_root/storage/$repository$path?properties=";
-    my $request = $url . $self->_attach_properties( properties => $properties );
+    my $path       = $args{path};
+    my $properties = $args{properties};
+    my $recursive  = $args{recursive};
+    my $url        = "$artifactory:$port$api_root/storage/$repository$path?properties=";
+    my $request    = $url . $self->_attach_properties( properties => $properties );
     $request .= "&recursive=$recursive" if ( defined $recursive );
-    return $self->put( $request );
+    return $self->put($request);
 }
 
 =head2 delete_item_properties( path => $path, properties => [ key_names ], recursive => 0,1 )
@@ -370,12 +370,12 @@ sub delete_item_properties {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
 
-    my $path = $args{ path };
-    my $properties = $args{ properties };
-    my $recursive = $args{ recursive };
-    my $url = "$artifactory:$port$api_root/storage/$repository$path?properties=" . join( ",", @{ $properties } );
+    my $path       = $args{path};
+    my $properties = $args{properties};
+    my $recursive  = $args{recursive};
+    my $url        = "$artifactory:$port$api_root/storage/$repository$path?properties=" . join( ",", @{$properties} );
     $url .= "&recursive=$recursive" if ( defined $recursive );
-    return $self->delete( $url );
+    return $self->delete($url);
 }
 
 =head2 retrieve_artifact( $path, [ $filename ] )
@@ -389,7 +389,7 @@ sub retrieve_artifact {
     my ( $self, $path, $filename ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path";
-    return ( $filename ) ? $self->get( $url, ":content_file" => $filename ) : $self->get( $url );
+    return ($filename) ? $self->get( $url, ":content_file" => $filename ) : $self->get($url);
 }
 
 =head2 retrieve_latest_artifact( path => $path, snapshot => $snapshot, release => $release, integration => $integration,
@@ -402,28 +402,28 @@ Takes path, version, snapshot / release / integration and makes a GET request
 sub retrieve_latest_artifact {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-    my $path = $args{ path };
-    my $snapshot = $args{ snapshot };
-    my $release = $args{ release };
-    my $integration = $args{ integration };
-    my $version = $args{ version };
+    my $path        = $args{path};
+    my $snapshot    = $args{snapshot};
+    my $release     = $args{release};
+    my $integration = $args{integration};
+    my $version     = $args{version};
 
     my $base_url = "$artifactory:$port/artifactory/$repository$path";
-    my $basename = basename( $path );
+    my $basename = basename($path);
     my $url;
 
-    if( $snapshot && $version ) {
+    if ( $snapshot && $version ) {
         $url = "$base_url/$version-$snapshot/$basename-$version-$snapshot.jar";
     }
 
-    if( $release ) {
+    if ($release) {
         $url = "$base_url/$release/$basename-$release.jar";
     }
 
-    if( $integration && $version ) {
+    if ( $integration && $version ) {
         $url = "$base_url/$version-$integration/$basename-$version-$integration.jar";
     }
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 retrieve_build_artifacts_archive( $payload )
@@ -436,7 +436,7 @@ sub retrieve_build_artifacts_archive {
     my ( $self, $payload ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/archive/buildArtifacts";
-    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
+    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json($payload) );
 }
 
 =head2 trace_artifact_retrieval( $path )
@@ -449,7 +449,7 @@ sub trace_artifact_retrieval {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path?trace";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 archive_entry_download( $path, $archive_path )
@@ -462,7 +462,7 @@ sub archive_entry_download {
     my ( $self, $path, $archive_path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path!$archive_path";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 create_directory( path => $path, properties => { key => [ values ] } )
@@ -473,7 +473,7 @@ Takes path, properties then create a directory.  Directory needs to end with a /
 
 sub create_directory {
     my ( $self, %args ) = @_;
-    return $self->deploy_artifact( %args );
+    return $self->deploy_artifact(%args);
 }
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, file => $file )
@@ -489,21 +489,21 @@ sub deploy_artifact {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
 
-    my $path = $args{ path };
-    my $properties = $args{ properties };
-    my $file = $args{ file };
-    my $header = $args{ header };
-    my @joiners = ( "$artifactory:$port/artifactory/$repository$path" );
-    my $props = $self->_attach_properties( properties => $properties, matrix => 1 );
-    push @joiners, $props if ( $props ); # if properties aren't passed in, the function returns empty string
+    my $path       = $args{path};
+    my $properties = $args{properties};
+    my $file       = $args{file};
+    my $header     = $args{header};
+    my @joiners    = ("$artifactory:$port/artifactory/$repository$path");
+    my $props      = $self->_attach_properties( properties => $properties, matrix => 1 );
+    push @joiners, $props if ($props);    # if properties aren't passed in, the function returns empty string
     my $url = join( ";", @joiners );
 
     my $req = HTTP::Request::StreamingUpload->new(
         PUT     => $url,
         path    => $file,
-        headers => HTTP::Headers->new( %{ $header } ),
+        headers => HTTP::Headers->new( %{$header} ),
     );
-    return $self->request( $req );
+    return $self->request($req);
 }
 
 =head2 deploy_artifact_by_checksum( path => $path, properties => { key => [ values ] }, file => $file, sha1 => $sha1 )
@@ -518,13 +518,13 @@ pairs, such as:
 sub deploy_artifact_by_checksum {
     my ( $self, %args ) = @_;
 
-    my $sha1 = $args{ sha1 };
+    my $sha1   = $args{sha1};
     my $header = {
         'X-Checksum-Deploy' => 'true',
-        'X-Checksum-Sha1' => $sha1,
+        'X-Checksum-Sha1'   => $sha1,
     };
-    $args{ header } = $header;
-    return $self->deploy_artifact( %args );
+    $args{header} = $header;
+    return $self->deploy_artifact(%args);
 }
 
 =head2 deploy_artifacts_from_archive( path => $path, file => $file )
@@ -536,13 +536,11 @@ Path is the path on Artifactory, file is path to local archive.  Will deploy $fi
 sub deploy_artifacts_from_archive {
     my ( $self, %args ) = @_;
 
-    my $path = $args{ path };
-    my $file = $args{ file };
-    my $header = {
-        'X-Explode-Archive' => 'true',
-    };
-    $args{ header } = $header;
-    return $self->deploy_artifact( %args );
+    my $path   = $args{path};
+    my $file   = $args{file};
+    my $header = { 'X-Explode-Archive' => 'true', };
+    $args{header} = $header;
+    return $self->deploy_artifact(%args);
 }
 
 =head2 file_compliance_info( $path )
@@ -555,7 +553,7 @@ sub file_compliance_info {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/compliance/$repository$path";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 delete_item( $path )
@@ -568,7 +566,7 @@ sub delete_item {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port/artifactory/$repository$path";
-    return $self->delete( $url );
+    return $self->delete($url);
 }
 
 =head2 copy_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
@@ -581,8 +579,8 @@ failFast values as specified in the documentation.
 
 sub copy_item {
     my ( $self, %args ) = @_;
-    $args{ method } = 'copy';
-    return $self->_handle_item( %args );
+    $args{method} = 'copy';
+    return $self->_handle_item(%args);
 }
 
 =head2 move_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
@@ -595,8 +593,8 @@ failFast values as specified in the documentation.
 
 sub move_item {
     my ( $self, %args ) = @_;
-    $args{ method } = 'move';
-    return $self->_handle_item( %args );
+    $args{method} = 'move';
+    return $self->_handle_item(%args);
 }
 
 =head2 get_repository_replication_configuration
@@ -607,7 +605,7 @@ Get repository replication configuration
 
 sub get_repository_replication_configuration {
     my $self = shift;
-    return $self->_handle_repository_replication_configuration( 'get' );
+    return $self->_handle_repository_replication_configuration('get');
 }
 
 =head2 set_repository_replication_configuration( $payload )
@@ -640,7 +638,7 @@ Delete repository replication configuration
 
 sub delete_repository_replication_configuration {
     my $self = shift;
-    return $self->_handle_repository_replication_configuration( 'delete' );
+    return $self->_handle_repository_replication_configuration('delete');
 }
 
 =head2 scheduled_replication_status
@@ -653,7 +651,7 @@ sub scheduled_replication_status {
     my $self = shift;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/replication/$repository";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 pull_push_replication( payload => $payload, path => $path )
@@ -664,11 +662,11 @@ Schedules immediate content replication between two Artifactory instances
 
 sub pull_push_replication {
     my ( $self, %args ) = @_;
-    my $payload = $args{ payload };
-    my $path = $args{ path };
+    my $payload = $args{payload};
+    my $path    = $args{path};
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/replication/$repository$path";
-    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json( $payload ) );
+    return $self->post( $url, "Content-Type" => 'application/json', Content => to_json($payload) );
 }
 
 =head2 file_list( $dir, %opts )
@@ -681,12 +679,12 @@ sub file_list {
     my ( $self, $dir, %opts ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/storage/$repository$dir?list";
-    
+
     for my $opt ( keys %opts ) {
-        my $val = $opts{ $opt };
+        my $val = $opts{$opt};
         $url .= "&${opt}=$val";
     }
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head1 SEARCHES
@@ -791,7 +789,7 @@ sub pattern_search {
     my ( $self, $pattern ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/search/pattern?pattern=$repository:$pattern";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 builds_for_dependency( sha1 => 'abcde' )
@@ -846,12 +844,12 @@ Search for artifacts with the latest value in the "version" property
 
 sub artifact_latest_version_search_based_on_properties {
     my ( $self, %args ) = @_;
-    my $repo = delete $args{ repo };
-    my $path = delete $args{ path };
+    my $repo = delete $args{repo};
+    my $path = delete $args{path};
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/versions/$repo$path?";
     $url .= $self->_stringify_hash( '&', %args );
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 build_artifacts_search( buildNumber => 15, buildName => 'foobar' )
@@ -1035,7 +1033,7 @@ sub effective_item_permissions {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/storage/$repository$path";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 security_configuration
@@ -1048,7 +1046,7 @@ sub security_configuration {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/system/security";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head1 REPOSITORIES
@@ -1065,9 +1063,9 @@ sub get_repositories {
     my ( $self, $type ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/repositories";
-    $url .= "?type=$type" if ( $type );
+    $url .= "?type=$type" if ($type);
 
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 repository_configuration( $name, %args )
@@ -1079,9 +1077,10 @@ Retrieves the current configuration of a repository
 sub repository_configuration {
     my ( $self, $repo, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( %args ) ? "$artifactory:$port$api_root/repositories/$repo?" : "$artifactory:$port$api_root/repositories/$repo";
-    $url .= $self->_stringify_hash( '&', %args ) if ( %args );
-    return $self->get( $url );
+    my $url =
+      (%args) ? "$artifactory:$port$api_root/repositories/$repo?" : "$artifactory:$port$api_root/repositories/$repo";
+    $url .= $self->_stringify_hash( '&', %args ) if (%args);
+    return $self->get($url);
 }
 
 =head2 create_or_replace_repository_configuration( $name, \%payload, %args )
@@ -1127,9 +1126,9 @@ Calculates/recalculates the YUM metdata for this repository, based on the RPM pa
 sub calculate_yum_repository_metadata {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
-    my $url = ( %args ) ? "$artifactory:$port$api_root/yum/$repository?" : "$artifactory:$port$api_root/yum/$repository";
-    $url .= $self->_stringify_hash( '&', %args ) if ( %args );
-    return $self->post( $url );
+    my $url = (%args) ? "$artifactory:$port$api_root/yum/$repository?" : "$artifactory:$port$api_root/yum/$repository";
+    $url .= $self->_stringify_hash( '&', %args ) if (%args);
+    return $self->post($url);
 }
 
 =head2 calculate_nuget_repository_metadata
@@ -1143,7 +1142,7 @@ sub calculate_nuget_repository_metadata {
     my $self = shift;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/nuget/$repository/reindex";
-    return $self->post( $url );
+    return $self->post($url);
 }
 
 =head2 calculate_maven_index( repos => [ 'repo1', 'repo2' ], force => 0/1 )
@@ -1157,7 +1156,7 @@ sub calculate_maven_index {
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/maven?";
     $url .= $self->_stringify_hash( '&', %args );
-    return $self->post( $url );
+    return $self->post($url);
 }
 
 =head2 calculate_maven_metadata( $path )
@@ -1170,7 +1169,7 @@ sub calculate_maven_metadata {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/maven/calculateMetadata/$repository$path";
-    return $self->post( $url );
+    return $self->post($url);
 }
 
 =head1 SYSTEM & CONFIGURATION
@@ -1196,7 +1195,7 @@ Get a simple status response about the state of Artifactory
 
 sub system_health_ping {
     my $self = shift;
-    return $self->_handle_system( 'ping' );
+    return $self->_handle_system('ping');
 }
 
 =head2 general_configuration
@@ -1207,7 +1206,7 @@ Get the general configuration (artifactory.config.xml)
 
 sub general_configuration {
     my $self = shift;
-    return $self->_handle_system( 'configuration' );
+    return $self->_handle_system('configuration');
 }
 
 =head2 save_general_configuration( $file )
@@ -1219,8 +1218,8 @@ Save the general configuration (artifactory.config.xml)
 sub save_general_configuration {
     my ( $self, $xml ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $file = Path::Tiny::path( $xml )->slurp;
-    my $url = "$artifactory:$port$api_root/system/configuration";
+    my $file = Path::Tiny::path($xml)->slurp;
+    my $url  = "$artifactory:$port$api_root/system/configuration";
     return $self->post( $url, 'Content-Type' => 'application/xml', content => $file );
 }
 
@@ -1234,7 +1233,7 @@ sub version_and_addons_information {
     my $self = shift;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/system/version";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head1 PLUGINS
@@ -1250,12 +1249,14 @@ Executes a named execution closure found in the executions section of a user plu
 sub execute_plugin_code {
     my ( $self, $execution_name, $params, $async ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( $params ) ? "$artifactory:$port$api_root/plugins/execute/$execution_name?params=" :
-        "$artifactory:$port$api_root/plugins/execute/$execution_name";
-        
+    my $url =
+      ($params)
+      ? "$artifactory:$port$api_root/plugins/execute/$execution_name?params="
+      : "$artifactory:$port$api_root/plugins/execute/$execution_name";
+
     $url = $url . $self->_attach_properties( properties => $params );
-    $url .= "&" . $self->_stringify_hash( '&', %{ $async } ) if ( $async );
-    return $self->post( $url );
+    $url .= "&" . $self->_stringify_hash( '&', %{$async} ) if ($async);
+    return $self->post($url);
 }
 
 =head2 retrieve_all_available_plugin_info
@@ -1278,7 +1279,7 @@ specified type
 
 sub retrieve_plugin_info_of_a_certain_type {
     my ( $self, $type ) = @_;
-    return $self->_handle_plugins( $type );
+    return $self->_handle_plugins($type);
 }
 
 =head2 retrieve_build_staging_strategy( strategyName => 'strategy1', buildName => 'build1', %args )
@@ -1289,13 +1290,13 @@ Retrieves a build staging strategy defined by a user plugin
 
 sub retrieve_build_staging_strategy {
     my ( $self, %args ) = @_;
-    my $strategy_name = delete $args{ strategyName };
-    my $build_name = delete $args{ buildName };
-    
+    my $strategy_name = delete $args{strategyName};
+    my $build_name    = delete $args{buildName};
+
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/plugins/build/staging/$strategy_name?buildName=$build_name?params=";
     $url = $url . $self->_attach_properties( properties => \%args );
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 =head2 execute_build_promotion( promotionName => 'promotion1', buildName => 'build1', buildNumber => 3, %args )
@@ -1306,14 +1307,14 @@ Executes a named promotion closure found in the promotions section of a user plu
 
 sub execute_build_promotion {
     my ( $self, %args ) = @_;
-    my $promotion_name = delete $args{ promotionName };
-    my $build_name = delete $args{ buildName };
-    my $build_number = delete $args{ buildNumber };
-    
+    my $promotion_name = delete $args{promotionName};
+    my $build_name     = delete $args{buildName};
+    my $build_number   = delete $args{buildNumber};
+
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/plugins/build/promote/$promotion_name/$build_name/$build_number?params=";
     $url = $url . $self->_attach_properties( properties => \%args );
-    return $self->post( $url );
+    return $self->post($url);
 }
 
 =head1 IMPORT & EXPORT
@@ -1331,7 +1332,7 @@ sub import_repository_content {
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/import/repositories?";
     $url .= $self->_stringify_hash( '&', %args );
-    return $self->post( $url );
+    return $self->post($url);
 }
 
 =head2 import_system_settings_example
@@ -1342,7 +1343,7 @@ Returned default Import Settings JSON
 
 sub import_system_settings_example {
     my $self = shift;
-    return $self->_handle_system_settings( 'import' );
+    return $self->_handle_system_settings('import');
 }
 
 =head2 full_system_import( importPath => '/import/path', includeMetadata => 'false' etc )
@@ -1364,7 +1365,7 @@ Returned default Export Settings JSON
 
 sub export_system_settings_example {
     my $self = shift;
-    return $self->_handle_system_settings( 'export' );
+    return $self->_handle_system_settings('export');
 }
 
 =head2 export_system( exportPath => '/export/path', includeMetadata => 'true' etc )
@@ -1380,20 +1381,20 @@ sub export_system {
 
 sub _build_ua {
     my $self = shift;
-    $self->{ ua } = LWP::UserAgent->new() unless( $self->{ ua } );
+    $self->{ua} = LWP::UserAgent->new() unless ( $self->{ua} );
 }
 
 sub _request {
     my ( $self, $method, @args ) = @_;
-    return $self->{ ua }->$method( @args );
+    return $self->{ua}->$method(@args);
 }
 
 sub _unpack_attributes {
     my ( $self, @args ) = @_;
     my @result;
 
-    for my $attr ( @args ) {
-        push @result, $self->{ $attr };
+    for my $attr (@args) {
+        push @result, $self->{$attr};
     }
     return @result;
 }
@@ -1402,26 +1403,26 @@ sub _get_build {
     my ( $self, $path ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/build/$path";
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 sub _attach_properties {
     my ( $self, %args ) = @_;
-    my $properties = $args{ properties };
-    my $matrix = $args{ matrix };
+    my $properties = $args{properties};
+    my $matrix     = $args{matrix};
     my @strings;
 
-    for my $key ( keys %{ $properties } ) {
-        push @strings, $self->_handle_prop_multivalue( $key, $properties->{ $key }, $matrix );
+    for my $key ( keys %{$properties} ) {
+        push @strings, $self->_handle_prop_multivalue( $key, $properties->{$key}, $matrix );
     }
-    ( $matrix ) ? return join( ";", @strings ) : return join( "|", @strings );
+    ($matrix) ? return join( ";", @strings ) : return join( "|", @strings );
 }
 
 sub _handle_prop_multivalue {
     my ( $self, $key, $values, $matrix ) = @_;
 
     # need to handle matrix vs non-matrix situations.
-    if ( $matrix ) {
+    if ($matrix) {
         return $self->_handle_matrix_props( $key, $values );
     }
     return $self->_handle_non_matrix_props( $key, $values );
@@ -1429,11 +1430,12 @@ sub _handle_prop_multivalue {
 
 sub _handle_matrix_props {
     my ( $self, $key, $values ) = @_;
-    
+
     # string looks like key=val;key=val2;key=val3;
     my @strings;
-    for my $value ( @{ $values } ) {
+    for my $value ( @{$values} ) {
         $value = '' if ( !defined $value );
+
         #$value = uri_escape( $value );
         push @strings, "$key=$value";
     }
@@ -1442,13 +1444,13 @@ sub _handle_matrix_props {
 
 sub _handle_non_matrix_props {
     my ( $self, $key, $values ) = @_;
-    
+
     # string looks like key=val1,val2,val3|
     my $str = "$key=";
     my @value_holder;
-    for my $value ( @{ $values } ) {
+    for my $value ( @{$values} ) {
         $value = '' if ( !defined $value );
-        $value = uri_escape( $value );
+        $value = uri_escape($value);
         push @value_holder, $value;
     }
     $str .= join( ",", @value_holder );
@@ -1458,37 +1460,39 @@ sub _handle_non_matrix_props {
 sub _handle_item {
     my ( $self, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my ( $from, $to, $dry, $suppress_layouts, $fail_fast, $method ) = ( $args{ from }, $args{ to }, $args{ dry },
-        $args{ suppress_layouts }, $args{ fail_fast }, $args{ method } );
+    my ( $from, $to, $dry, $suppress_layouts, $fail_fast, $method ) =
+      ( $args{from}, $args{to}, $args{dry}, $args{suppress_layouts}, $args{fail_fast}, $args{method} );
 
     my $url = "$artifactory:$port$api_root/$method$from?to=$to";
-    $url .= "&dry=$dry" if ( defined $dry );
+    $url .= "&dry=$dry"                          if ( defined $dry );
     $url .= "&suppressLayouts=$suppress_layouts" if ( defined $suppress_layouts );
-    $url .= "&failFast=$fail_fast" if ( defined $fail_fast );
-    return $self->post( $url );
+    $url .= "&failFast=$fail_fast"               if ( defined $fail_fast );
+    return $self->post($url);
 }
 
 sub _handle_repository_replication_configuration {
     my ( $self, $method, $payload ) = @_;
     my ( $artifactory, $port, $repository ) = $self->_unpack_attributes( 'artifactory', 'port', 'repository' );
     my $url = "$artifactory:$port$api_root/replications/$repository";
-    ( $payload ) ? $self->$method( $url, 'Content-Type' => 'application/json', content => $payload ) : $self->$method( $url ); 
+    ($payload)
+      ? $self->$method( $url, 'Content-Type' => 'application/json', content => $payload )
+      : $self->$method($url);
 }
 
 sub _handle_search {
     my ( $self, $api, %args ) = @_;
-    my $name = $args{ name };
-    my $repos = $args{ repos };
+    my $name  = $args{name};
+    my $repos = $args{repos};
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/search/$api?name=$name";
-    
-    if ( ref( $repos ) eq 'ARRAY' ) {
+
+    if ( ref($repos) eq 'ARRAY' ) {
         $url .= "&repos=";
-        for my $item( @{ $repos } ) {
+        for my $item ( @{$repos} ) {
             $url .= "$item,";
         }
     }
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 sub _handle_search_props {
@@ -1497,7 +1501,7 @@ sub _handle_search_props {
     my $url = "$artifactory:$port$api_root/search/$method?";
 
     $url .= $self->_stringify_hash( '&', %args );
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 sub _stringify_hash {
@@ -1505,10 +1509,10 @@ sub _stringify_hash {
 
     my @strs;
     for my $key ( keys %args ) {
-        my $val = $args{ $key };
-        
-        if ( ref( $val ) eq 'ARRAY' ) {
-            $val = join( ",", @{ $val } );
+        my $val = $args{$key};
+
+        if ( ref($val) eq 'ARRAY' ) {
+            $val = join( ",", @{$val} );
         }
         push @strs, "$key=$val";
     }
@@ -1518,49 +1522,53 @@ sub _stringify_hash {
 sub _handle_security {
     my ( $self, $label, $method, $element, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( $label ) ? "$artifactory:$port$api_root/security/$element/$label" : "$artifactory:$port$api_root/security/$element";
+    my $url =
+      ($label)
+      ? "$artifactory:$port$api_root/security/$element/$label"
+      : "$artifactory:$port$api_root/security/$element";
 
-    if ( %args ) {
+    if (%args) {
         return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
     }
-    return $self->$method( $url );
+    return $self->$method($url);
 }
 
 sub _handle_repositories {
     my ( $self, $repo, $payload, $method, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( %args ) ? "$artifactory:$port$api_root/repositories/$repo?" : "$artifactory:$port$api_root/repositories/$repo";
-    $url .= $self->_stringify_hash( '&', %args ) if ( %args );
-    
-    if ( $payload ) {
-        return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json( $payload ) );
+    my $url =
+      (%args) ? "$artifactory:$port$api_root/repositories/$repo?" : "$artifactory:$port$api_root/repositories/$repo";
+    $url .= $self->_stringify_hash( '&', %args ) if (%args);
+
+    if ($payload) {
+        return $self->$method( $url, 'Content-Type' => 'application/json', content => to_json($payload) );
     }
-    return $self->$method( $url );
+    return $self->$method($url);
 }
 
 sub _handle_system {
     my ( $self, $arg ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( $arg ) ? "$artifactory:$port$api_root/system/$arg" : "$artifactory:$port$api_root/system";
-    return $self->get( $url );
+    my $url = ($arg) ? "$artifactory:$port$api_root/system/$arg" : "$artifactory:$port$api_root/system";
+    return $self->get($url);
 }
 
 sub _handle_plugins {
     my ( $self, $type ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
-    my $url = ( $type ) ? "$artifactory:$port$api_root/plugins/$type" : "$artifactory:$port$api_root/plugins";
-    return $self->get( $url );
+    my $url = ($type) ? "$artifactory:$port$api_root/plugins/$type" : "$artifactory:$port$api_root/plugins";
+    return $self->get($url);
 }
 
 sub _handle_system_settings {
     my ( $self, $action, %args ) = @_;
     my ( $artifactory, $port ) = $self->_unpack_attributes( 'artifactory', 'port' );
     my $url = "$artifactory:$port$api_root/$action/system";
-    
-    if ( %args ) {
+
+    if (%args) {
         return $self->post( $url, 'Content-Type' => 'application/json', content => to_json( \%args ) );
     }
-    return $self->get( $url );
+    return $self->get($url);
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -1647,4 +1655,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-1; # End of Artifactory::Client
+1;    # End of Artifactory::Client
