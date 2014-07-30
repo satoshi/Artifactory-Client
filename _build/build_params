@@ -1,0 +1,135 @@
+do{ my $x = [
+       {
+         'ARGV' => []
+       },
+       {},
+       {
+         'build_bat' => 0,
+         'test_requires' => {},
+         'base_dir' => '/home/satoshi/root/github/Artifactory-Client',
+         'c_source' => undef,
+         'perl' => '/usr/bin/perl',
+         'config' => undef,
+         'install_base_relpaths' => {},
+         'extra_manify_args' => undef,
+         'create_readme' => undef,
+         'bindoc_dirs' => [
+                            'blib/script'
+                          ],
+         'dist_suffix' => undef,
+         'recommends' => {},
+         'destdir' => undef,
+         'install_base' => undef,
+         'license' => 'Artistic_2_0',
+         'allow_pureperl' => 0,
+         'metafile' => 'META.yml',
+         'installdirs' => 'site',
+         'pollute' => undef,
+         'config_dir' => '_build',
+         '_added_to_INC' => [],
+         'verbose' => undef,
+         'autosplit' => undef,
+         'bundle_inc' => [],
+         'blib' => 'blib',
+         'dist_version' => 'v0.7.8',
+         'dist_author' => [
+                            'Satoshi Yagi <satoshi@yahoo-inc.com>'
+                          ],
+         'allow_mb_mismatch' => 0,
+         'pureperl_only' => 0,
+         'scripts' => undef,
+         'dist_name' => 'Artifactory-Client',
+         'share_dir' => undef,
+         'mymetafile2' => 'MYMETA.json',
+         'conflicts' => {},
+         'dynamic_config' => 1,
+         'original_prefix' => {},
+         'use_rcfile' => 1,
+         'dist_version_from' => 'lib/Artifactory/Client.pm',
+         'use_tap_harness' => 0,
+         'install_sets' => {},
+         'meta_merge' => {},
+         'debug' => undef,
+         'prefix' => undef,
+         'extra_compiler_flags' => [],
+         'auto_configure_requires' => 1,
+         'prefix_relpaths' => {},
+         'extra_linker_flags' => [],
+         'build_elements' => [
+                               'PL',
+                               'support',
+                               'pm',
+                               'xs',
+                               'share_dir',
+                               'pod',
+                               'script'
+                             ],
+         'get_options' => {},
+         'mb_version' => '0.4007',
+         'sign' => undef,
+         'debugger' => undef,
+         'bundle_inc_preload' => [],
+         'include_dirs' => [],
+         'create_makefile_pl' => 'traditional',
+         'has_config_data' => undef,
+         'requires' => {
+                         'URI::Escape' => 0,
+                         'namespace::autoclean' => 0,
+                         'LWP::UserAgent' => 0,
+                         'HTTP::Request::StreamingUpload' => 0,
+                         'Path::Tiny' => 0,
+                         'Moose' => '2.0604'
+                       },
+         'html_css' => '',
+         'libdoc_dirs' => [
+                            'blib/lib',
+                            'blib/arch'
+                          ],
+         'pod_files' => undef,
+         'orig_dir' => '/home/satoshi/root/github/Artifactory-Client',
+         'dist_abstract' => undef,
+         'test_file_exts' => [
+                               '.t'
+                             ],
+         'build_class' => 'Module::Build',
+         'mymetafile' => 'MYMETA.yml',
+         'prereq_action_types' => [
+                                    'requires',
+                                    'build_requires',
+                                    'test_requires',
+                                    'conflicts',
+                                    'recommends'
+                                  ],
+         'magic_number' => undef,
+         'recursive_test_files' => undef,
+         'metafile2' => 'META.json',
+         'meta_add' => {},
+         'release_status' => 'stable',
+         'program_name' => undef,
+         'module_name' => 'Artifactory::Client',
+         'create_packlist' => 1,
+         'install_path' => {},
+         'pm_files' => undef,
+         'build_script' => 'Build',
+         'create_license' => undef,
+         'needs_compiler' => '',
+         'build_requires' => {
+                               'Test::More' => 0,
+                               'LWP::UserAgent' => 0,
+                               'JSON' => 0,
+                               'WWW::Mechanize' => 0
+                             },
+         'cpan_client' => 'cpan',
+         'recurse_into' => [],
+         'test_files' => undef,
+         'script_files' => undef,
+         'xs_files' => undef,
+         'configure_requires' => {
+                                   'Module::Build' => 0
+                                 },
+         'tap_harness_args' => {},
+         'PL_files' => undef,
+         'quiet' => undef
+       }
+     ];
+$x; }

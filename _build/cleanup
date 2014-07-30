@@ -1,0 +1,4 @@
+do{ my $x = {
+       'Artifactory-Client-*' => 1
+     };
+$x; }

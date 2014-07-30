@@ -1,0 +1,32 @@
+---
+abstract: 'Perl client for Artifactory REST API'
+author:
+  - 'Satoshi Yagi <satoshi@yahoo-inc.com>'
+build_requires:
+  JSON: 0
+  LWP::UserAgent: 0
+  Test::More: 0
+  WWW::Mechanize: 0
+configure_requires:
+  Module::Build: 0
+dynamic_config: 0
+generated_by: 'Module::Build version 0.4007, CPAN::Meta::Converter version 2.132140'
+license: artistic_2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Artifactory-Client
+provides:
+  Artifactory::Client:
+    file: lib/Artifactory/Client.pm
+    version: v0.7.8
+requires:
+  HTTP::Request::StreamingUpload: 0
+  LWP::UserAgent: 0
+  Moose: 2.0604
+  Path::Tiny: 0
+  URI::Escape: 0
+  namespace::autoclean: 0
+resources:
+  license: http://www.perlfoundation.org/artistic_license_2_0
+version: v0.7.8
