@@ -9,7 +9,7 @@ use Data::Dumper;
 use URI;
 use URI::Escape;
 use namespace::autoclean;
-use JSON;
+use JSON::MaybeXS;
 use File::Basename;
 use Path::Tiny;
 use HTTP::Request::StreamingUpload;
@@ -100,6 +100,12 @@ has 'repository' => (
     isa     => 'Str',
     default => '',
     writer  => '_set_repository',
+);
+
+has '_json' => (
+    builder => '_build_json',
+    is      => 'ro',
+    lazy    => 1,
 );
 
 has '_api_url' => (
@@ -272,7 +278,7 @@ sub build_promotion {
   return $self->post(
         $url,
         "Content-Type" => 'application/json',
-        Content        => to_json($payload)
+        Content        => $self->_json->encode($payload)
     );
 } ## end sub build_promotion
 
@@ -529,7 +535,7 @@ sub retrieve_build_artifacts_archive {
   return $self->post(
         $url,
         "Content-Type" => 'application/json',
-        Content        => to_json($payload)
+        Content        => $self->_json->encode($payload)
     );
 } ## end sub retrieve_build_artifacts_archive
 
@@ -785,7 +791,7 @@ sub pull_push_replication {
   return $self->post(
         $url,
         "Content-Type" => 'application/json',
-        Content        => to_json($payload)
+        Content        => $self->_json->encode($payload)
     );
 } ## end sub pull_push_replication
 
@@ -1008,7 +1014,7 @@ sub build_artifacts_search {
   return $self->post(
         $url,
         'Content-Type' => 'application/json',
-        content        => to_json( \%args )
+        content        => $self->_json->encode( \%args )
     );
 } ## end sub build_artifacts_search
 
@@ -1585,6 +1591,12 @@ sub _build_ua {
 } ## end sub _build_ua
 
 
+sub _build_json {
+    my ($self) = @_;
+  return JSON::MaybeXS->new( utf8 => 1 );
+} ## end sub _build_json
+
+
 sub _request {
     my ( $self, $method, @args ) = @_;
   return $self->{ua}->$method(@args);
@@ -1753,7 +1765,7 @@ sub _handle_security {
       return $self->$method(
             $url,
             'Content-Type' => 'application/json',
-            content        => to_json( \%args )
+            content        => $self->_json->encode( \%args )
         );
     } ## end if (%args)
   return $self->$method($url);
@@ -1776,7 +1788,7 @@ sub _handle_repositories {
       return $self->$method(
             $url,
             'Content-Type' => 'application/json',
-            content        => to_json($payload)
+            content        => $self->_json->encode($payload)
         );
     } ## end if ($payload)
   return $self->$method($url);
@@ -1814,7 +1826,7 @@ sub _handle_system_settings {
       return $self->post(
             $url,
             'Content-Type' => 'application/json',
-            content        => to_json( \%args )
+            content        => $self->_json->encode( \%args )
         );
     } ## end if (%args)
   return $self->get($url);
