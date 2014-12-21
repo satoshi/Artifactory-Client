@@ -70,7 +70,6 @@ version of my functional tests.  They should serve as a detailed guide on how to
 
 =cut
 
-
 has 'artifactory' => (
     is       => 'ro',
     isa      => 'Str',
@@ -100,6 +99,7 @@ has 'repository' => (
     is      => 'ro',
     isa     => 'Str',
     default => '',
+    writer  => '_set_repository',
 );
 
 has '_api_url' => (
@@ -120,6 +120,7 @@ has '_art_url' => (
 sub BUILD {
     my ($self) = @_;
 
+    # Save URIs
     my $uri = URI->new( $self->artifactory() );
     $uri->port( $self->port );
     my $context_root = $self->context_root();
@@ -132,6 +133,13 @@ sub BUILD {
 
     $uri->path_segments( $context_root, 'api' );
     $self->_set_api_url( $uri->canonical()->as_string() );
+
+    # Save Repository
+    my $repo = $self->repository;
+    $repo =~ s{^\/}{}xi;
+    $repo =~ s{\/$}{}xi;
+    $self->_set_repository($repo);
+
 } ## end sub BUILD
 
 =head1 GENERIC METHODS
@@ -334,8 +342,8 @@ Returns folder info
 sub folder_info {
     my ( $self, $path ) = @_;
 
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/storage/$repository$path";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/storage/$path";
 
   return $self->get($url);
 } ## end sub folder_info
@@ -361,8 +369,8 @@ Returns item_last_modified for a given path
 
 sub item_last_modified {
     my ( $self, $path ) = @_;
-    my $repository = $self->repository();
-    my $url = $self->_api_url() . "/storage/$repository$path?lastModified";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/storage/$path?lastModified";
   return $self->get($url);
 } ## end sub item_last_modified
 
@@ -375,8 +383,7 @@ Returns file_statistics for a given path
 
 sub file_statistics {
     my ( $self, $path ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/storage/$repository$path?stats";
+    my $url = $self->_api_url() . "/storage/$path?stats";
   return $self->get($url);
 } ## end sub file_statistics
 
@@ -389,11 +396,12 @@ Takes path and properties then get item properties.
 
 sub item_properties {
     my ( $self, %args ) = @_;
-    my $repository = $self->repository();
 
     my $path       = $args{path};
     my $properties = $args{properties};
-    my $url = $self->_api_url() . "/storage/$repository$path?properties";
+
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/storage/$path?properties";
 
     if ( ref($properties) eq 'ARRAY' ) {
         my $str = join( ',', @{$properties} );
@@ -414,12 +422,14 @@ properties downstream.  Note that properties are a hashref with key-arrayref pai
 
 sub set_item_properties {
     my ( $self, %args ) = @_;
-    my $repository = $self->repository();
 
     my $path       = $args{path};
     my $properties = $args{properties};
     my $recursive  = $args{recursive};
-    my $url = $self->_api_url() . "/storage/$repository$path?properties=";
+
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/storage/$path?properties=";
+
     my $request
       = $url . $self->_attach_properties( properties => $properties );
     $request .= "&recursive=$recursive" if ( defined $recursive );
@@ -436,14 +446,15 @@ properties downstream.
 
 sub delete_item_properties {
     my ( $self, %args ) = @_;
-    my $repository = $self->repository();
 
     my $path       = $args{path};
     my $properties = $args{properties};
     my $recursive  = $args{recursive};
+
+    $path = $self->_merge_repo_and_path($path);
     my $url
       = $self->_api_url()
-      . "/storage/$repository$path?properties="
+      . "/storage/$path?properties="
       . join( ",", @{$properties} );
     $url .= "&recursive=$recursive" if ( defined $recursive );
   return $self->delete($url);
@@ -459,8 +470,8 @@ than the HTTP::Response object.
 
 sub retrieve_artifact {
     my ( $self, $path, $filename ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_art_url() . "/$repository$path";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_art_url() . "/$path";
   return ($filename)
       ? $self->get( $url, ":content_file" => $filename )
       : $self->get($url);
@@ -476,14 +487,15 @@ Takes path, version, snapshot / release / integration and makes a GET request
 
 sub retrieve_latest_artifact {
     my ( $self, %args ) = @_;
-    my $repository  = $self->repository();
+
     my $path        = $args{path};
     my $snapshot    = $args{snapshot};
     my $release     = $args{release};
     my $integration = $args{integration};
     my $version     = $args{version};
+    $path = $self->_merge_repo_and_path($path);
 
-    my $base_url = $self->_art_url() . "/$repository$path";
+    my $base_url = $self->_art_url() . "/$path";
     my $basename = basename($path);
     my $url;
 
@@ -530,8 +542,8 @@ Takes path and traces artifact retrieval
 
 sub trace_artifact_retrieval {
     my ( $self, $path ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_art_url() . "/$repository$path?trace";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_art_url() . "/$path?trace";
   return $self->get($url);
 } ## end sub trace_artifact_retrieval
 
@@ -544,8 +556,8 @@ Takes path and archive_path, retrieves an archived resource from the specified a
 
 sub archive_entry_download {
     my ( $self, $path, $archive_path ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_art_url() . "/$repository$path!$archive_path";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_art_url() . "/$path!$archive_path";
   return $self->get($url);
 } ## end sub archive_entry_download
 
@@ -573,14 +585,15 @@ key-arrayref pairs, such as:
 
 sub deploy_artifact {
     my ( $self, %args ) = @_;
-    my $repository = $self->repository();
 
     my $path       = $args{path};
     my $properties = $args{properties};
     my $file       = $args{file};
     my $header     = $args{header};
-    my @joiners    = ( $self->_art_url() . "/$repository$path" );
-    my $props      = $self->_attach_properties(
+
+    $path = $self->_merge_repo_and_path($path);
+    my @joiners = ( $self->_art_url() . "/$path" );
+    my $props   = $self->_attach_properties(
         properties => $properties,
         matrix     => 1
     );
@@ -627,8 +640,6 @@ Path is the path on Artifactory, file is path to local archive.  Will deploy $fi
 sub deploy_artifacts_from_archive {
     my ( $self, %args ) = @_;
 
-    my $path   = $args{path};
-    my $file   = $args{file};
     my $header = {
         'X-Explode-Archive' => 'true',
     };
@@ -645,8 +656,8 @@ Retrieves file compliance info of a given path.
 
 sub file_compliance_info {
     my ( $self, $path ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/compliance/$repository$path";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/compliance/$path";
   return $self->get($url);
 } ## end sub file_compliance_info
 
@@ -659,8 +670,8 @@ Delete $path on artifactory.
 
 sub delete_item {
     my ( $self, $path ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_art_url() . "/$repository$path";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_art_url() . "/$path";
   return $self->delete($url);
 } ## end sub delete_item
 
@@ -767,10 +778,10 @@ Schedules immediate content replication between two Artifactory instances
 
 sub pull_push_replication {
     my ( $self, %args ) = @_;
-    my $payload    = $args{payload};
-    my $path       = $args{path};
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/replication/$repository$path";
+    my $payload = $args{payload};
+    my $path    = $args{path};
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/replication/$path";
   return $self->post(
         $url,
         "Content-Type" => 'application/json',
@@ -787,8 +798,8 @@ Get a flat (the default) or deep listing of the files and folders (not included 
 
 sub file_list {
     my ( $self, $dir, %opts ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/storage/$repository$dir?list";
+    $dir = $self->_merge_repo_and_path($dir);
+    my $url = $self->_api_url() . "/storage/$dir?list";
 
     for my $opt ( keys %opts ) {
         my $val = $opts{$opt};
@@ -972,7 +983,13 @@ sub artifact_latest_version_search_based_on_properties {
     my $repo = delete $args{repo};
     my $path = delete $args{path};
 
-    my $url = $self->_api_url() . "/versions/$repo$path?";
+    $repo =~ s{^\/}{}xi;
+    $repo =~ s{\/$}{}xi;
+
+    $path =~ s{^\/}{}xi;
+    $path =~ s{\/$}{}xi;
+
+    my $url = $self->_api_url() . "/versions/$repo/$path?";
     $url .= $self->_stringify_hash( '&', %args );
   return $self->get($url);
 } ## end sub artifact_latest_version_search_based_on_properties
@@ -1176,8 +1193,8 @@ Returns a list of effective permissions for the specified item (file or folder)
 
 sub effective_item_permissions {
     my ( $self, $path ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/storage/$repository$path";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/storage/$path";
   return $self->get($url);
 } ## end sub effective_item_permissions
 
@@ -1224,6 +1241,9 @@ Retrieves the current configuration of a repository
 
 sub repository_configuration {
     my ( $self, $repo, %args ) = @_;
+
+    $repo =~ s{^\/}{}xi;
+    $repo =~ s{\/$}{}xi;
 
     my $url
       = (%args)
@@ -1327,8 +1347,8 @@ Calculates Maven metadata on the specified path (local repositories only)
 
 sub calculate_maven_metadata {
     my ( $self, $path ) = @_;
-    my $repository = $self->repository();
-    my $url = $self->_api_url() . "/maven/calculateMetadata/$repository$path";
+    $path = $self->_merge_repo_and_path($path);
+    my $url = $self->_api_url() . "/maven/calculateMetadata/$path";
   return $self->post($url);
 } ## end sub calculate_maven_metadata
 
@@ -1743,6 +1763,9 @@ sub _handle_security {
 sub _handle_repositories {
     my ( $self, $repo, $payload, $method, %args ) = @_;
 
+    $repo =~ s{^\/}{}xi;
+    $repo =~ s{\/$}{}xi;
+
     my $url
       = (%args)
       ? $self->_api_url() . "/repositories/$repo?"
@@ -1796,6 +1819,16 @@ sub _handle_system_settings {
     } ## end if (%args)
   return $self->get($url);
 } ## end sub _handle_system_settings
+
+
+sub _merge_repo_and_path {
+    my ( $self, $_path ) = @_;
+
+    $_path = '' if not defined $_path;
+    $_path =~ s{^\/}{}xi;
+
+  return join( '/', grep { $_ } $self->repository(), $_path );
+} ## end sub _merge_repo_and_path
 
 __PACKAGE__->meta->make_immutable;
 
