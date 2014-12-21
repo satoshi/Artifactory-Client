@@ -29,8 +29,9 @@ our $VERSION = '0.8.0';
 
 =head1 SYNOPSIS
 
-This is a Perl client for Artifactory REST API: https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API
-Every public method provided in this module returns a HTTP::Response object.
+This is a Perl client for Artifactory REST API:
+https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API Every public
+method provided in this module returns a HTTP::Response object.
 
     use Artifactory::Client;
 
@@ -64,10 +65,11 @@ Every public method provided in this module returns a HTTP::Response object.
     my $ua = WWW::Mechanize->new();
     $client->ua( $ua ); # now uses WWW::Mechanize to make requests
 
-Note on testing:
-This module is developed using Test-Driven Development.  I have functional tests making real API calls, however they
-contain proprietary information and I am not allowed to open source them.  The unit tests included are dumbed-down
-version of my functional tests.  They should serve as a detailed guide on how to make API calls.
+Note on testing: This module is developed using Test-Driven Development.  I
+have functional tests making real API calls, however they contain proprietary
+information and I am not allowed to open source them.  The unit tests included
+are dumbed-down version of my functional tests.  They should serve as a
+detailed guide on how to make API calls.
 
 =cut
 
@@ -192,7 +194,8 @@ sub put {
 
 =head2 delete( @args )
 
-Invokes DELETE request on LWP::UserAgent-like object; params are passed through.
+Invokes DELETE request on LWP::UserAgent-like object; params are passed
+through.
 
 =cut
 
@@ -420,8 +423,9 @@ sub item_properties {
 
 =head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => 0,1 )
 
-Takes path and properties then set item properties.  Supply recursive => 0 if you want to suppress propagation of
-properties downstream.  Note that properties are a hashref with key-arrayref pairs, such as:
+Takes path and properties then set item properties.  Supply recursive => 0 if
+you want to suppress propagation of properties downstream.  Note that
+properties are a hashref with key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -446,8 +450,8 @@ sub set_item_properties {
 
 =head2 delete_item_properties( path => $path, properties => [ key_names ], recursive => 0,1 )
 
-Takes path and properties then delete item properties.  Supply recursive => 0 if you want to suppress propagation of
-properties downstream.
+Takes path and properties then delete item properties.  Supply recursive => 0
+if you want to suppress propagation of properties downstream.
 
 =cut
 
@@ -470,8 +474,8 @@ sub delete_item_properties {
 
 =head2 retrieve_artifact( $path, [ $filename ] )
 
-Takes path and retrieves artifact on the path.  If $filename is given, artifact content goes into the $filename rather
-than the HTTP::Response object.
+Takes path and retrieves artifact on the path.  If $filename is given, artifact
+content goes into the $filename rather than the HTTP::Response object.
 
 =cut
 
@@ -557,7 +561,8 @@ sub trace_artifact_retrieval {
 
 =head2 archive_entry_download( $path, $archive_path )
 
-Takes path and archive_path, retrieves an archived resource from the specified archive destination.
+Takes path and archive_path, retrieves an archived resource from the specified
+archive destination.
 
 =cut
 
@@ -571,7 +576,8 @@ sub archive_entry_download {
 
 =head2 create_directory( path => $path, properties => { key => [ values ] } )
 
-Takes path, properties then create a directory.  Directory needs to end with a /, such as "/some_dir/".
+Takes path, properties then create a directory.  Directory needs to end with a
+/, such as "/some_dir/".
 
 =cut
 
@@ -583,8 +589,8 @@ sub create_directory {
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, file => $file )
 
-Takes path on Artifactory, properties and filename then deploys the file.  Note that properties are a hashref with
-key-arrayref pairs, such as:
+Takes path on Artifactory, properties and filename then deploys the file.  Note
+that properties are a hashref with key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -618,8 +624,8 @@ sub deploy_artifact {
 
 =head2 deploy_artifact_by_checksum( path => $path, properties => { key => [ values ] }, file => $file, sha1 => $sha1 )
 
-Takes path, properties, filename and sha1 then deploys the file.  Note that properties are a hashref with key-arrayref
-pairs, such as:
+Takes path, properties, filename and sha1 then deploys the file.  Note that
+properties are a hashref with key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -640,7 +646,8 @@ sub deploy_artifact_by_checksum {
 
 =head2 deploy_artifacts_from_archive( path => $path, file => $file )
 
-Path is the path on Artifactory, file is path to local archive.  Will deploy $file to $path.
+Path is the path on Artifactory, file is path to local archive.  Will deploy
+$file to $path.
 
 =cut
 
@@ -685,8 +692,9 @@ sub delete_item {
 
 =head2 copy_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
-Copies an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
-names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
+Copies an artifact from $from to $to.  Note that for this particular API call,
+the $from and $to must include repository names as copy source and destination
+may be different repositories.  You can also supply dry, suppressLayouts and
 failFast values as specified in the documentation.
 
 =cut
@@ -700,8 +708,9 @@ sub copy_item {
 
 =head2 move_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
-Moves an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
-names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
+Moves an artifact from $from to $to.  Note that for this particular API call,
+the $from and $to must include repository names as copy source and destination
+may be different repositories.  You can also supply dry, suppressLayouts and
 failFast values as specified in the documentation.
 
 =cut
@@ -799,7 +808,8 @@ sub pull_push_replication {
 
 =head2 file_list( $dir, %opts )
 
-Get a flat (the default) or deep listing of the files and folders (not included by default) within a folder
+Get a flat (the default) or deep listing of the files and folders (not included
+by default) within a folder
 
 =cut
 
@@ -882,7 +892,8 @@ sub checksum_search {
 
 =head2 bad_checksum_search( type => 'md5', repos => [ 'repo1', repo2' ]  )
 
-Find all artifacts that have a bad or missing client checksum values (md5 or sha1)
+Find all artifacts that have a bad or missing client checksum values (md5 or
+sha1)
 
 =cut
 
@@ -933,7 +944,8 @@ sub pattern_search {
 
 =head2 builds_for_dependency( sha1 => 'abcde' )
 
-Find all the builds an artifact is a dependency of (where the artifact is included in the build-info dependencies)
+Find all the builds an artifact is a dependency of (where the artifact is
+included in the build-info dependencies)
 
 =cut
 
@@ -957,7 +969,8 @@ sub license_search {
 
 =head2 artifact_version_search( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
 
-Search for all available artifact versions by GroupId and ArtifactId in local, remote or virtual repositories
+Search for all available artifact versions by GroupId and ArtifactId in local,
+remote or virtual repositories
 
 =cut
 
@@ -969,7 +982,8 @@ sub artifact_version_search {
 
 =head2 artifact_latest_version_search_based_on_layout( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
 
-Search for the latest artifact version by groupId and artifactId, based on the layout defined in the repository
+Search for the latest artifact version by groupId and artifactId, based on the
+layout defined in the repository
 
 =cut
 
@@ -1170,7 +1184,8 @@ sub get_permission_target_details {
 
 =head2 create_or_replace_permission_target( $name, %args )
 
-Creates a new permission target in Artifactory or replaces an existing permission target
+Creates a new permission target in Artifactory or replaces an existing
+permission target
 
 =cut
 
@@ -1226,7 +1241,8 @@ sub security_configuration {
 
 =head2 get_repositories( $type )
 
-Returns a list of minimal repository details for all repositories of the specified type
+Returns a list of minimal repository details for all repositories of the
+specified type
 
 =cut
 
@@ -1263,8 +1279,8 @@ sub repository_configuration {
 
 =head2 create_or_replace_repository_configuration( $name, \%payload, %args )
 
-Creates a new repository in Artifactory with the provided configuration or replaces the configuration of an existing
-repository
+Creates a new repository in Artifactory with the provided configuration or
+replaces the configuration of an existing repository
 
 =cut
 
@@ -1276,7 +1292,8 @@ sub create_or_replace_repository_configuration {
 
 =head2 update_repository_configuration( $name, \%payload )
 
-Updates an exiting repository configuration in Artifactory with the provided configuration elements
+Updates an exiting repository configuration in Artifactory with the provided
+configuration elements
 
 =cut
 
@@ -1300,7 +1317,8 @@ sub delete_repository {
 
 =head2 calculate_yum_repository_metadata( async => 0/1 )
 
-Calculates/recalculates the YUM metdata for this repository, based on the RPM package currently hosted in the repository
+Calculates/recalculates the YUM metdata for this repository, based on the RPM
+package currently hosted in the repository
 
 =cut
 
@@ -1318,8 +1336,9 @@ sub calculate_yum_repository_metadata {
 
 =head2 calculate_nuget_repository_metadata
 
-Recalculates all the NuGet packages for this repository (local/cache/virtual), and re-annotate the NuGet properties for
-each NuGet package according to it's internal nuspec file
+Recalculates all the NuGet packages for this repository (local/cache/virtual),
+and re-annotate the NuGet properties for each NuGet package according to it's
+internal nuspec file
 
 =cut
 
@@ -1421,7 +1440,8 @@ sub save_general_configuration {
 
 =head2 version_and_addons_information
 
-Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
+Retrieve information about the current Artifactory version, revision, and
+currently installed Add-ons
 
 =cut
 
@@ -1439,7 +1459,8 @@ sub version_and_addons_information {
 
 =head2 execute_plugin_code( $execution_name, $params, $async )
 
-Executes a named execution closure found in the executions section of a user plugin
+Executes a named execution closure found in the executions section of a user
+plugin
 
 =cut
 
@@ -1459,7 +1480,8 @@ sub execute_plugin_code {
 
 =head2 retrieve_all_available_plugin_info
 
-Retrieves all available user plugin information (subject to the permissions of the provided credentials)
+Retrieves all available user plugin information (subject to the permissions of
+the provided credentials)
 
 =cut
 
@@ -1471,8 +1493,8 @@ sub retrieve_all_available_plugin_info {
 
 =head2 retrieve_plugin_info_of_a_certain_type( $type )
 
-Retrieves all available user plugin information (subject to the permissions of the provided credentials) of the
-specified type
+Retrieves all available user plugin information (subject to the permissions of
+the provided credentials) of the specified type
 
 =cut
 
@@ -1502,7 +1524,8 @@ sub retrieve_build_staging_strategy {
 
 =head2 execute_build_promotion( promotionName => 'promotion1', buildName => 'build1', buildNumber => 3, %args )
 
-Executes a named promotion closure found in the promotions section of a user plugin
+Executes a named promotion closure found in the promotions section of a user
+plugin
 
 =cut
 
@@ -1847,9 +1870,11 @@ Satoshi Yagi, C<< <satoshi.yagi at yahoo.com> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-artifactory-client at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Artifactory-Client>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or feature requests to C<bug-artifactory-client at
+rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Artifactory-Client>.  I will
+be notified, and then you'll automatically be notified of progress on your bug
+as I make changes.
 
 =head1 SUPPORT
 
@@ -1885,41 +1910,41 @@ L<http://search.cpan.org/dist/Artifactory-Client/>
 
 Copyright 2014, Yahoo! Inc.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of the the Artistic License (2.0). You may obtain a
-copy of the full license at:
+This program is free software; you can redistribute it and/or modify it under
+the terms of the the Artistic License (2.0). You may obtain a copy of the full
+license at:
 
 L<http://www.perlfoundation.org/artistic_license_2_0>
 
-Any use, modification, and distribution of the Standard or Modified
-Versions is governed by this Artistic License. By using, modifying or
-distributing the Package, you accept this license. Do not use, modify,
-or distribute the Package, if you do not accept this license.
+Any use, modification, and distribution of the Standard or Modified Versions is
+governed by this Artistic License. By using, modifying or distributing the
+Package, you accept this license. Do not use, modify, or distribute the
+Package, if you do not accept this license.
 
-If your Modified Version has been derived from a Modified Version made
-by someone other than you, you are nevertheless required to ensure that
-your Modified Version complies with the requirements of this license.
+If your Modified Version has been derived from a Modified Version made by
+someone other than you, you are nevertheless required to ensure that your
+Modified Version complies with the requirements of this license.
 
-This license does not grant you the right to use any trademark, service
-mark, tradename, or logo of the Copyright Holder.
+This license does not grant you the right to use any trademark, service mark,
+tradename, or logo of the Copyright Holder.
 
-This license includes the non-exclusive, worldwide, free-of-charge
-patent license to make, have made, use, offer to sell, sell, import and
-otherwise transfer the Package with respect to any patent claims
-licensable by the Copyright Holder that are necessarily infringed by the
-Package. If you institute patent litigation (including a cross-claim or
-counterclaim) against any party alleging that the Package constitutes
-direct or contributory patent infringement, then this Artistic License
-to you shall terminate on the date that such litigation is filed.
+This license includes the non-exclusive, worldwide, free-of-charge patent
+license to make, have made, use, offer to sell, sell, import and otherwise
+transfer the Package with respect to any patent claims licensable by the
+Copyright Holder that are necessarily infringed by the Package. If you
+institute patent litigation (including a cross-claim or counterclaim) against
+any party alleging that the Package constitutes direct or contributory patent
+infringement, then this Artistic License to you shall terminate on the date
+that such litigation is filed.
 
-Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER
-AND CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
-THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE, OR NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY
-YOUR LOCAL LAW. UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR
-CONTRIBUTOR WILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR
-CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OF THE PACKAGE,
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+Disclaimer of Warranty: THE PACKAGE IS PROVIDED BY THE COPYRIGHT HOLDER AND
+CONTRIBUTORS "AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES. THE IMPLIED
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
+NON-INFRINGEMENT ARE DISCLAIMED TO THE EXTENT PERMITTED BY YOUR LOCAL LAW.
+UNLESS REQUIRED BY LAW, NO COPYRIGHT HOLDER OR CONTRIBUTOR WILL BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING IN ANY WAY
+OUT OF THE USE OF THE PACKAGE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
 
 =cut
 
