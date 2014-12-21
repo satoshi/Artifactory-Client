@@ -1587,7 +1587,10 @@ sub export_system {
 
 sub _build_ua {
     my $self = shift;
-    $self->{ua} = LWP::UserAgent->new() unless ( $self->{ua} );
+  return if $self->{ua};
+  return LWP::UserAgent->new(
+        agent => 'perl-artifactory-client/' . $VERSION,
+    );
 } ## end sub _build_ua
 
 
