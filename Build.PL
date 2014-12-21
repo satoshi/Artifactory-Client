@@ -28,6 +28,19 @@ my $builder = Module::Build->new(
     },
     add_to_cleanup     => ['Artifactory-Client-*'],
     create_makefile_pl => 'traditional',
+
+    meta_merge => {
+        no_index => {
+            directory => [ 't_func', ],
+        },
+        keywords  => [qw(artifactory)],
+        resources => {
+            bugtracker =>
+              'https://github.com/satoshi/Artifactory-Client/issues',
+            repository => 'git://github.com/satoshi/Artifactory-Client.git',
+            homepage   => 'https://github.com/satoshi/Artifactory-Client',
+        },
+    },
 );
 
 $builder->create_build_script();
