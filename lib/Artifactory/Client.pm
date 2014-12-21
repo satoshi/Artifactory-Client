@@ -9,6 +9,7 @@ use URI;
 use JSON::MaybeXS;
 use LWP::UserAgent;
 use Path::Tiny qw();
+use MooseX::StrictConstructor;
 use URI::Escape qw(uri_escape);
 use File::Basename qw(basename);
 use HTTP::Request::StreamingUpload;
@@ -95,7 +96,8 @@ has 'context_root' => (
 has 'ua' => (
     is      => 'rw',
     isa     => 'LWP::UserAgent',
-    builder => '_build_ua'
+    builder => '_build_ua',
+    lazy    => 1,
 );
 
 has 'repository' => (
@@ -106,8 +108,8 @@ has 'repository' => (
 );
 
 has '_json' => (
-    builder => '_build_json',
     is      => 'ro',
+    builder => '_build_json',
     lazy    => 1,
 );
 
