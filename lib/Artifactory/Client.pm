@@ -1,18 +1,19 @@
 package Artifactory::Client;
 
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 
 use Moose;
-use LWP::UserAgent;
-use Data::Dumper;
+
 use URI;
-use URI::Escape;
-use namespace::autoclean;
 use JSON::MaybeXS;
-use File::Basename;
-use Path::Tiny;
+use LWP::UserAgent;
+use Path::Tiny qw();
+use URI::Escape qw(uri_escape);
+use File::Basename qw(basename);
 use HTTP::Request::StreamingUpload;
+
+use namespace::autoclean;
 
 =head1 NAME
 
@@ -146,6 +147,7 @@ sub BUILD {
     $repo =~ s{\/$}{}xi;
     $self->_set_repository($repo);
 
+  return 1;
 } ## end sub BUILD
 
 =head1 GENERIC METHODS
@@ -1606,17 +1608,6 @@ sub _request {
 } ## end sub _request
 
 
-sub _unpack_attributes {
-    my ( $self, @args ) = @_;
-    my @result;
-
-    for my $attr (@args) {
-        push @result, $self->{$attr};
-    }
-  return @result;
-} ## end sub _unpack_attributes
-
-
 sub _get_build {
     my ( $self, $path ) = @_;
 
@@ -1636,7 +1627,9 @@ sub _attach_properties {
           $self->_handle_prop_multivalue( $key, $properties->{$key},
             $matrix );
     } ## end for my $key ( keys %{$properties...})
-    ($matrix) ? return join( ";", @strings ) : return join( "|", @strings );
+
+  return join( ";", @strings ) if $matrix;
+  return join( "|", @strings );
 } ## end sub _attach_properties
 
 
@@ -1703,13 +1696,14 @@ sub _handle_repository_replication_configuration {
     my ( $self, $method, $payload ) = @_;
     my $repository = $self->repository();
     my $url        = $self->_api_url() . "/replications/$repository";
-    ($payload)
-      ? $self->$method(
+
+  return $self->$method(
         $url,
         'Content-Type' => 'application/json',
         content        => $payload
-      )
-      : $self->$method($url);
+    ) if ($payload);
+
+  return $self->$method($url);
 } ## end sub _handle_repository_replication_configuration
 
 
