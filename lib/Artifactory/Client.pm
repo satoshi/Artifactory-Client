@@ -1614,7 +1614,6 @@ sub export_system {
 
 sub _build_ua {
     my $self = shift;
-  return if $self->{ua};
   return LWP::UserAgent->new(
         agent => 'perl-artifactory-client/' . $VERSION,
     );
@@ -1629,7 +1628,7 @@ sub _build_json {
 
 sub _request {
     my ( $self, $method, @args ) = @_;
-  return $self->{ua}->$method(@args);
+  return $self->ua->$method(@args);
 } ## end sub _request
 
 
