@@ -1402,8 +1402,8 @@ Save the general configuration (artifactory.config.xml)
 sub save_general_configuration {
     my ( $self, $xml ) = @_;
 
-    my $file = Path::Tiny::path($xml)->slurp;
-    my $url  = $self->_api_url() . "/system/configuration";
+    my $file = Path::Tiny::path($xml)->slurp( { binmode => ":raw" } );
+    my $url = $self->_api_url() . "/system/configuration";
   return $self->post(
         $url,
         'Content-Type' => 'application/xml',
