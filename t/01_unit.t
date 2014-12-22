@@ -868,8 +868,7 @@ subtest 'builds_for_dependency', sub {
                 '_request' => bless(
                     {
                         '_uri' => bless(
-                            do { \( my $o = "http://example.com:7777/artifactory/api/search/dependency" ) },
-                            'URI::http'
+                            do { \( my $o = "http://example.com:7777/artifactory/api/search/dependency" ) }, 'URI::http'
                         ),
                     },
                     'HTTP::Request'

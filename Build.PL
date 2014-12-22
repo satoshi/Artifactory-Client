@@ -8,10 +8,8 @@ my $builder = Module::Build->new(
     dist_author        => q{Satoshi Yagi <satoshi@yahoo-inc.com>},
     dist_version_from  => 'lib/Artifactory/Client.pm',
     release_status     => 'stable',
-    configure_requires => {
-        'Module::Build' => 0,
-    },
-    test_requires => {
+    configure_requires => { 'Module::Build' => 0, },
+    test_requires      => {
         'Test::More'     => 0,
         'JSON'           => 0,
         'WWW::Mechanize' => 0,
@@ -30,13 +28,10 @@ my $builder = Module::Build->new(
     create_makefile_pl => 'traditional',
 
     meta_merge => {
-        no_index => {
-            directory => [ 't_func', ],
-        },
+        no_index  => { directory => [ 't_func', ], },
         keywords  => [qw(artifactory)],
         resources => {
-            bugtracker =>
-              'https://github.com/satoshi/Artifactory-Client/issues',
+            bugtracker => 'https://github.com/satoshi/Artifactory-Client/issues',
             repository => 'git://github.com/satoshi/Artifactory-Client.git',
             homepage   => 'https://github.com/satoshi/Artifactory-Client',
         },
