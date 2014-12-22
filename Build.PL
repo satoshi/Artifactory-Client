@@ -5,7 +5,7 @@ use Module::Build;
 my $builder = Module::Build->new(
     module_name        => 'Artifactory::Client',
     license            => 'Artistic_2_0',
-    dist_author        => q{Satoshi Yagi <satoshi@yahoo-inc.com>},
+    dist_author        => q{Satoshi Yagi <satoshi.yagi@yahoo.com>},
     dist_version_from  => 'lib/Artifactory/Client.pm',
     release_status     => 'stable',
     configure_requires => { 'Module::Build' => 0, },
