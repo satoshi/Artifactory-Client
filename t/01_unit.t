@@ -31,11 +31,11 @@ my %mock_responses = (
 
 subtest 'check if ua is LWP::UserAgent', sub {
     my $client = setup();
-    isa_ok( $client->{ua}, 'LWP::UserAgent' );
+    isa_ok( $client->ua, 'LWP::UserAgent' );
 
     my $ua = WWW::Mechanize->new();
     $client->ua($ua);
-    isa_ok( $client->{ua}, 'WWW::Mechanize' );
+    isa_ok( $client->ua, 'WWW::Mechanize' );
 };
 
 subtest 'deploy_artifact with properties and content', sub {

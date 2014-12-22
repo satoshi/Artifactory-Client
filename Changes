@@ -1,5 +1,14 @@
 Revision history for Artifactory-Client
 
+0.8.0   2014/12/21
+        -   Allow use of custom context roots
+        -   Do not assume that `repository` is set for API calls.
+        -   Read and post raw XML for system/security configuration
+        -   Swap out JSON for JSON::MaybeXS
+        -   Initialize ua with appropriate agent info
+        -   cleanup imports and fix few perl-critic warnings
+        -   use MooseX::StrictConstructor
+
 0.7.8   2014/7/18
         Trying out EPIC source formatter.
 
