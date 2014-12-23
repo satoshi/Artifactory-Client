@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.1   2014/12/22
+        Updating contact info
+
 0.8.0   2014/12/21
         -   Allow use of custom context roots
         -   Do not assume that `repository` is set for API calls.
@@ -10,11 +13,11 @@ Revision history for Artifactory-Client
         -   use MooseX::StrictConstructor
 
 0.7.8   2014/7/18
-        Trying out EPIC source formatter.
+        Trying out EPIC source formatter
 
 0.7.7   2014/7/16
         Added optional $filename argument to retrieve_artifact() call to handle large payload.  Otherwise the entire
-        content would go into the HTTP::Response object.
+        content would go into the HTTP::Response object
 
 0.7.6   2014/7/11
         Fixing synopsis as API changed
