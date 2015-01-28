@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.2   2015/1/28
+        Added get_user_encrypted_password call
+
 0.8.1   2014/12/22
         Updating contact info
 

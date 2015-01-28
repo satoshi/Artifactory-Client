@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.1
+Version 0.8.2
 
 =cut
 
-our $VERSION = '0.8.1';
+our $VERSION = '0.8.2';
 
 =head1 SYNOPSIS
 
@@ -995,6 +995,17 @@ sub get_user_details {
     my ( $self, $user ) = @_;
     return $self->_handle_security( $user, 'get', 'users' );
 } ## end sub get_user_details
+
+=head2 get_user_encrypted_password
+
+Get the encrypted password of the authenticated requestor
+
+=cut
+
+sub get_user_encrypted_password {
+    my $self = shift;
+    return $self->_handle_security( undef, 'get', 'encryptedPassword' );
+}
 
 =head2 create_or_replace_user( $user, %args )
 

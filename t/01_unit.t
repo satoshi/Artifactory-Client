@@ -1064,6 +1064,30 @@ subtest 'get_user_details', sub {
     like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
 };
 
+subtest 'get_user_encrypted_password', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::get'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/security/encryptedPassword" ) },
+                            'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->get_user_encrypted_password();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/security/encryptedPassword|, 'requsted URL looks sane' );
+};
+
 subtest 'create_or_replace_user', sub {
     my $client = setup();
     my $user   = 'foo';
