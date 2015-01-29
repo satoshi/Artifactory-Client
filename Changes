@@ -1,4 +1,4 @@
-Revision history for Artifactory-Client(test)
+Revision history for Artifactory-Client
 
 0.8.2   2015/1/28
         Added get_user_encrypted_password call
