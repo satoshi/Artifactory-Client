@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.2
+Version 0.8.3
 
 =cut
 
-our $VERSION = '0.8.2';
+our $VERSION = '0.8.3';
 
 =head1 SYNOPSIS
 
@@ -1165,6 +1165,18 @@ sub security_configuration {
     my $url = $self->_api_url() . "/system/security";
     return $self->get($url);
 } ## end sub security_configuration
+
+=head2 activate_master_key_encryption
+
+Creates a new master key and activates master key encryption
+
+=cut
+
+sub activate_master_key_encryption {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/system/encrypt";
+    return $self->post($url);
+}
 
 =head1 REPOSITORIES
 

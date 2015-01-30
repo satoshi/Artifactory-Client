@@ -1426,6 +1426,29 @@ subtest 'security_configuration', sub {
     like( $url_in_response, qr|/api/system/security|, 'requsted URL looks sane' );
 };
 
+subtest 'activate_master_key_encryption', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/system/encrypt" ) }, 'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->activate_master_key_encryption();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/encrypt|, 'requsted URL looks sane' );
+};
+
 subtest 'get_repositories', sub {
     my $client = setup();
 
