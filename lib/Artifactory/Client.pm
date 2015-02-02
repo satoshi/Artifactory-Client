@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.3
+Version 0.8.4
 
 =cut
 
-our $VERSION = '0.8.3';
+our $VERSION = '0.8.4';
 
 =head1 SYNOPSIS
 
@@ -1175,6 +1175,18 @@ Creates a new master key and activates master key encryption
 sub activate_master_key_encryption {
     my $self = shift;
     my $url  = $self->_api_url() . "/system/encrypt";
+    return $self->post($url);
+}
+
+=head2 deactivate_master_key_encryption
+
+Removes the current master key and deactivates master key encryption
+
+=cut
+
+sub deactivate_master_key_encryption {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/system/decrypt";
     return $self->post($url);
 }
 
