@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.4
+Version 0.8.5
 
 =cut
 
-our $VERSION = '0.8.4';
+our $VERSION = '0.8.5';
 
 =head1 SYNOPSIS
 
@@ -1188,6 +1188,18 @@ sub deactivate_master_key_encryption {
     my $self = shift;
     my $url  = $self->_api_url() . "/system/decrypt";
     return $self->post($url);
+}
+
+=head2 set_gpg_public_key
+
+Sets the public key that Artifactory provides to Debian clients to verify packages
+
+=cut
+
+sub set_gpg_public_key {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/gpg/key/public";
+    return $self->put($url);
 }
 
 =head1 REPOSITORIES

@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.5   2015/2/3
+        Added set_gpg_public_key call
+
 0.8.4   2015/2/2
         Added deactivate_master_key_encryption call
 
