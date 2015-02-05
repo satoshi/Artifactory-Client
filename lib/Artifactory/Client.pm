@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.6
+Version 0.8.7
 
 =cut
 
-our $VERSION = '0.8.6';
+our $VERSION = '0.8.7';
 
 =head1 SYNOPSIS
 
@@ -1198,8 +1198,7 @@ Sets the public key that Artifactory provides to Debian clients to verify packag
 
 sub set_gpg_public_key {
     my $self = shift;
-    my $url  = $self->_api_url() . "/gpg/key/public";
-    return $self->put($url);
+    return $self->_handle_gpg_key( 'public', 'put' );
 }
 
 =head2 get_gpg_public_key
@@ -1210,8 +1209,18 @@ Gets the public key that Artifactory provides to Debian clients to verify packag
 
 sub get_gpg_public_key {
     my $self = shift;
-    my $url  = $self->_api_url() . "/gpg/key/public";
-    return $self->get($url);
+    return $self->_handle_gpg_key( 'public', 'get' );
+}
+
+=head2 set_gpg_private_key
+
+Sets the private key that Artifactory will use to sign Debian packages
+
+=cut
+
+sub set_gpg_private_key {
+    my $self = shift;
+    return $self->_handle_gpg_key( 'private', 'put' );
 }
 
 =head1 REPOSITORIES
@@ -1779,6 +1788,12 @@ sub _handle_system_settings {
     } ## end if (%args)
     return $self->get($url);
 } ## end sub _handle_system_settings
+
+sub _handle_gpg_key {
+    my ( $self, $type, $method ) = @_;
+    my $url = $self->_api_url() . "/gpg/key/$type";
+    return $self->$method($url);
+}
 
 sub _merge_repo_and_path {
     my ( $self, $_path ) = @_;

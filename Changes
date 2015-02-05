@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.7   2015/2/5
+        Added set_gpg_private_key call and refactored methods
+
 0.8.6   2015/2/4
         Added get_gpg_public_key call
 
