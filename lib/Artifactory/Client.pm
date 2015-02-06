@@ -1223,6 +1223,20 @@ sub set_gpg_private_key {
     return $self->_handle_gpg_key( 'private', 'put' );
 }
 
+=head2 set_gpg_pass_phrase( $passphrase )
+
+Sets the pass phrase required signing Debian packages using the private key
+
+=cut
+
+sub set_gpg_pass_phrase {
+    my ( $self, $pass ) = @_;
+    my %header = (
+        'X-GPG-PASSPHRASE' => $pass
+    );
+    return $self->_handle_gpg_key( 'passphrase', 'put', %header );
+}
+
 =head1 REPOSITORIES
 
 =cut
@@ -1790,9 +1804,9 @@ sub _handle_system_settings {
 } ## end sub _handle_system_settings
 
 sub _handle_gpg_key {
-    my ( $self, $type, $method ) = @_;
+    my ( $self, $type, $method, %args ) = @_;
     my $url = $self->_api_url() . "/gpg/key/$type";
-    return $self->$method($url);
+    return $self->$method( $url, %args );
 }
 
 sub _merge_repo_and_path {

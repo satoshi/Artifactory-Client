@@ -1541,6 +1541,30 @@ subtest 'set_gpg_private_key', sub {
     like( $url_in_response, qr|/api/gpg/key/private|, 'requsted URL looks sane' );
 };
 
+subtest 'set_gpg_pass_phrase', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::put'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/gpg/key/passphrase" ) },
+                            'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->set_gpg_pass_phrase('foobar');
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/gpg/key/passphrase|, 'requsted URL looks sane' );
+};
+
 subtest 'get_repositories', sub {
     my $client = setup();
 
