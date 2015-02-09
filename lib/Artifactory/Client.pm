@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.7
+Version 0.8.9
 
 =cut
 
-our $VERSION = '0.8.7';
+our $VERSION = '0.8.9';
 
 =head1 SYNOPSIS
 
@@ -1231,9 +1231,7 @@ Sets the pass phrase required signing Debian packages using the private key
 
 sub set_gpg_pass_phrase {
     my ( $self, $pass ) = @_;
-    my %header = (
-        'X-GPG-PASSPHRASE' => $pass
-    );
+    my %header = ( 'X-GPG-PASSPHRASE' => $pass );
     return $self->_handle_gpg_key( 'passphrase', 'put', %header );
 }
 
@@ -1322,13 +1320,8 @@ package currently hosted in the repository
 sub calculate_yum_repository_metadata {
     my ( $self, %args ) = @_;
     my $repository = $self->repository();
-    my $url =
-      (%args)
-      ? $self->_api_url() . "/yum/$repository?"
-      : $self->_api_url() . "/yum/$repository";
-    $url .= $self->_stringify_hash( '&', %args ) if (%args);
-    return $self->post($url);
-} ## end sub calculate_yum_repository_metadata
+    return $self->_handle_repository_reindex( "/yum/$repository", %args );
+}
 
 =head2 calculate_nuget_repository_metadata
 
@@ -1341,9 +1334,21 @@ internal nuspec file
 sub calculate_nuget_repository_metadata {
     my $self       = shift;
     my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/nuget/$repository/reindex";
-    return $self->post($url);
-} ## end sub calculate_nuget_repository_metadata
+    return $self->_handle_repository_reindex("/nuget/$repository/reindex");
+}
+
+=head2 calculate_npm_repository_metadata
+
+Recalculates the npm search index for this repository (local/virtual). Please see the Npm integration documentation for
+more details.
+
+=cut
+
+sub calculate_npm_repository_metadata {
+    my $self       = shift;
+    my $repository = $self->repository();
+    return $self->_handle_repository_reindex("/npm/$repository/reindex");
+}
 
 =head2 calculate_maven_index( repos => [ 'repo1', 'repo2' ], force => 0/1 )
 
@@ -1807,6 +1812,16 @@ sub _handle_gpg_key {
     my ( $self, $type, $method, %args ) = @_;
     my $url = $self->_api_url() . "/gpg/key/$type";
     return $self->$method( $url, %args );
+}
+
+sub _handle_repository_reindex {
+    my ( $self, $endpoint, %args ) = @_;
+    my $url =
+      (%args)
+      ? $self->_api_url() . $endpoint . "?"
+      : $self->_api_url() . $endpoint;
+    $url .= $self->_stringify_hash( '&', %args ) if (%args);
+    return $self->post($url);
 }
 
 sub _merge_repo_and_path {

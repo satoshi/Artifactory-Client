@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.9   2015/2/9
+        Added calculate_npm_repository_metadata call and extracted a helper method
+
 0.8.8   2015/2/6
         Added set_gpg_pass_phrase call
 

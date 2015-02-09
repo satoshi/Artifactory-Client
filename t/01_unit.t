@@ -1706,7 +1706,6 @@ subtest 'calculate_yum_repository_metadata', sub {
 
 subtest 'calculate_nuget_repository_metadata', sub {
     my $client = setup();
-    my %args = ( async => 1, );
 
     local *{'LWP::UserAgent::post'} = sub {
         return bless(
@@ -1724,9 +1723,33 @@ subtest 'calculate_nuget_repository_metadata', sub {
             'HTTP::Response'
         );
     };
-    my $resp            = $client->calculate_nuget_repository_metadata(%args);
+    my $resp            = $client->calculate_nuget_repository_metadata();
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr|/api/nuget/$repository/reindex|, 'requsted URL looks sane' );
+};
+
+subtest 'calculate_npm_repository_metadata', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/npm/$repository/reindex" ) },
+                            'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->calculate_npm_repository_metadata();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/npm/$repository/reindex|, 'requsted URL looks sane' );
 };
 
 subtest 'calculate_maven_index', sub {
