@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.9
+Version 0.8.10
 
 =cut
 
-our $VERSION = '0.8.9';
+our $VERSION = '0.8.10';
 
 =head1 SYNOPSIS
 
@@ -1376,6 +1376,19 @@ sub calculate_maven_metadata {
     my $url = $self->_api_url() . "/maven/calculateMetadata/$path";
     return $self->post($url);
 } ## end sub calculate_maven_metadata
+
+=head2 calculate_debian_repository_metadata( async => 0/1 )
+
+Calculates/recalculates the Packages and Release metadata for this repository,based on the Debian packages in it.
+Calculation can be synchronous (the default) or asynchronous.
+
+=cut
+
+sub calculate_debian_repository_metadata {
+    my ( $self, %args ) = @_;
+    my $repository = $self->repository();
+    return $self->_handle_repository_reindex( "/deb/reindex/$repository", %args );
+}
 
 =head1 SYSTEM & CONFIGURATION
 

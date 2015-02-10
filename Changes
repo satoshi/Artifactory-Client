@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.10  2015/2/10
+        Added calculate_debian_repository_metadata call
+
 0.8.9   2015/2/9
         Added calculate_npm_repository_metadata call and extracted a helper method
 
