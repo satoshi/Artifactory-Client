@@ -1914,6 +1914,29 @@ subtest 'save_general_configuration', sub {
     like( $url_in_response, qr|/api/system/configuration|, 'requsted URL looks sane' );
 };
 
+subtest 'license_information', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::get'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/system/license" ) }, 'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->license_information();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/license|, 'requsted URL looks sane' );
+};
+
 subtest 'version_and_addons_information', sub {
     my $client = setup();
 

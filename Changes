@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.11  2015/2/11
+        Added license_information call
+
 0.8.10  2015/2/10
         Added calculate_debian_repository_metadata call
 
