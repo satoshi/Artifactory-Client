@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.12  2015/2/12
+        Added install_license call
+
 0.8.11  2015/2/11
         Added license_information call
 

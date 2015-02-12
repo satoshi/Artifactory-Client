@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.11
+Version 0.8.12
 
 =cut
 
-our $VERSION = '0.8.11';
+our $VERSION = '0.8.12';
 
 =head1 SYNOPSIS
 
@@ -1456,6 +1456,23 @@ sub license_information {
 
     my $url = $self->_api_url() . "/system/license";
     return $self->get($url);
+}
+
+=head2 install_license( $licensekey )
+
+Install new license key or change the current one
+
+=cut
+
+sub install_license {
+    my ( $self, $key ) = @_;
+    my $url = $self->_api_url() . "/system/license";
+
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( { licenseKey => $key } )
+    );
 }
 
 =head2 version_and_addons_information

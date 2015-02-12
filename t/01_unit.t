@@ -1937,6 +1937,29 @@ subtest 'license_information', sub {
     like( $url_in_response, qr|/api/system/license|, 'requsted URL looks sane' );
 };
 
+subtest 'license_information', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/system/license" ) }, 'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->install_license('your_license_key');
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/license|, 'requsted URL looks sane' );
+};
+
 subtest 'version_and_addons_information', sub {
     my $client = setup();
 
