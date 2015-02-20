@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.12
+Version 0.8.13
 
 =cut
 
-our $VERSION = '0.8.12';
+our $VERSION = '0.8.13';
 
 =head1 SYNOPSIS
 
@@ -1922,7 +1922,7 @@ L<http://search.cpan.org/dist/Artifactory-Client/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2014, Yahoo! Inc.
+Copyright 2014-2015, Yahoo! Inc.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the the Artistic License (2.0). You may obtain a copy of the full
