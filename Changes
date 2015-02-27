@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.14  2015/2/26
+        Using Pod::Markdown to generate README.md
+
 0.8.13  2015/2/20
         Updating copyright
 
