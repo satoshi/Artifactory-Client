@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.15  2015/3/4
+        Added travis-ci link in POD
+
 0.8.14  2015/2/26
         Using Pod::Markdown to generate README.md
 
