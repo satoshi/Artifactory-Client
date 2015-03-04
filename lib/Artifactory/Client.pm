@@ -20,8 +20,6 @@ use namespace::autoclean;
 
 Artifactory::Client - Perl client for Artifactory REST API
 
-    [![Build Status](https://travis-ci.org/satoshi/Artifactory-Client.svg?branch=master)](https://travis-ci.org/satoshi/Artifactory-Client)
-
 =head1 VERSION
 
 Version 0.8.14
