@@ -16,15 +16,11 @@ use HTTP::Request::StreamingUpload;
 
 use namespace::autoclean;
 
-=head1 Travis CI
-
-[![Build Status](https://travis-ci.org/satoshi/Artifactory-Client.svg?branch=master)](https://travis-ci.org/satoshi/Artifactory-Client)
-
-=cut
-
 =head1 NAME
 
 Artifactory::Client - Perl client for Artifactory REST API
+
+    [![Build Status](https://travis-ci.org/satoshi/Artifactory-Client.svg?branch=master)](https://travis-ci.org/satoshi/Artifactory-Client)
 
 =head1 VERSION
 
