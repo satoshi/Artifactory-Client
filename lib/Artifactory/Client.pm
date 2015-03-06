@@ -328,6 +328,36 @@ sub build_rename {
     return $self->post($url);
 } ## end sub build_rename
 
+=head2 push_build_to_bintray( buildName => 'name', buildNumber => 1, gpgPassphrase => 'foo', gpgSign => 'true', payload => { subject => "myUser" ... } )
+
+Push a build to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename and a
+.json extension) that is included with the build artifacts. For more details, please refer to Pushing a Build.
+
+=cut
+
+sub push_build_to_bintray {
+    my ( $self, %info ) = @_;
+
+    my $build_name   = $info{buildName};
+    my $build_number = $info{buildNumber};
+    my $url          = $self->_api_url() . "/build/pushToBintray/$build_name/$build_number";
+    my @extra;
+
+    for my $key ( 'gpgPassphrase', 'gpgSign' ) {
+        my $val = $info{$key};
+        push @extra, "$key=$val";
+    }
+
+    $url .= "?" . join( '&', @extra ) if (@extra);
+
+    my $payload = $info{payload} || "";
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode($payload)
+    );
+}
+
 =head1 ARTIFACTS & STORAGE
 
 =cut

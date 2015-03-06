@@ -105,6 +105,11 @@ Promotes a build by POSTing payload
 
 Renames a build
 
+## push\_build\_to\_bintray( buildName => 'name', buildNumber => 1, gpgPassphrase => 'foo', gpgSign => 'true', payload => { subject => "myUser" ... } )
+
+Push a build to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename and a
+.json extension) that is included with the build artifacts. For more details, please refer to Pushing a Build.
+
 # ARTIFACTS & STORAGE
 
 ## folder\_info( $path )

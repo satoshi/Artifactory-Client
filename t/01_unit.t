@@ -289,6 +289,30 @@ subtest 'build_rename', sub {
     is( $resp->code, 200, 'build_rename succeeded' );
 };
 
+subtest 'push_build_to_bintray', sub {
+    my $client = setup();
+    my %info   = (
+        buildName     => 'testBuild',
+        buildNumber   => 1,
+        gpgPassphrase => 'password',
+        gpgSign       => 'true',
+        payload       => {
+            subject     => "myUser",
+            repoName    => "test",
+            packageName => "overridePkg",
+            versionName => "overrideVer",
+            licenses    => ["MIT"]
+        }
+    );
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+
+    my $resp = $client->push_build_to_bintray(%info);
+    is( $resp->code, 200, 'push_build_to_bintray_succeeded' );
+};
+
 subtest 'folder_info', sub {
     my $client = setup();
 
