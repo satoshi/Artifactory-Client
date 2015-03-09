@@ -657,6 +657,23 @@ sub deploy_artifacts_from_archive {
     return $self->deploy_artifact(%args);
 } ## end sub deploy_artifacts_from_archive
 
+=head2 push_artifacts_as_a_version_to_bintray( descriptor => 'foo', gpgPassphrase => 'top_secret', gpgSign => 'true')
+
+Push a set of artifacts to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename
+and a .json extension) that was deployed to artifactory, the call accepts the full path to the descriptor as a
+parameter.
+
+=cut
+
+sub push_artifacts_as_a_version_to_bintray {
+    my ( $self, %args ) = @_;
+
+    my $url = $self->_api_url() . "/bintray/push";
+    my $params = $self->_stringify_hash( '&', %args );
+    $url .= "?" . $params if ($params);
+    return $self->post($url);
+}
+
 =head2 file_compliance_info( $path )
 
 Retrieves file compliance info of a given path.

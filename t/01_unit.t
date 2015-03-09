@@ -517,6 +517,22 @@ subtest 'deploy_artifacts_from_archive', sub {
     is( $resp->code, 200, 'deploy_artifacts_from_archive worked' );
 };
 
+subtest 'push_artifacts_as_a_version_to_bintray', sub {
+    my $client = setup();
+    my %info   = (
+        descriptor    => 'some_path',
+        gpgPassphrase => 'top_secret',
+        gpgSign       => 'true'
+    );
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+
+    my $resp = $client->push_artifacts_as_a_version_to_bintray(%info);
+    is( $resp->code, 200, 'push_artifacts_as_a_version_to_bintray' );
+};
+
 subtest 'file_compliance_info', sub {
     my $client = setup();
 

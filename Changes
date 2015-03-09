@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.17  2015/3/9
+        Added push_artifacts_as_a_version_to_bintray API call
+
 0.8.16  2015/3/6
         Added push_build_to_bintray API call
 
