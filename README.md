@@ -192,6 +192,12 @@ properties are a hashref with key-arrayref pairs, such as:
 Path is the path on Artifactory, file is path to local archive.  Will deploy
 $file to $path.
 
+## push\_artifacts\_as\_a\_version\_to\_bintray( descriptor => 'foo', gpgPassphrase => 'top\_secret', gpgSign => 'true')
+
+Push a set of artifacts to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename
+and a .json extension) that was deployed to artifactory, the call accepts the full path to the descriptor as a
+parameter.
+
 ## file\_compliance\_info( $path )
 
 Retrieves file compliance info of a given path.
