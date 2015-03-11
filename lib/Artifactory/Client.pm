@@ -829,6 +829,23 @@ sub file_list {
 
 =cut
 
+=head2 artifactory_query_language( $aql_statement )
+
+Flexible and high performance search using Artifactory Query Language (AQL).
+
+=cut
+
+sub artifactory_query_language {
+    my ( $self, $aql ) = @_;
+
+    my $url = $self->_api_url() . "/search/aql";
+    return $self->post(
+        $url,
+        "Content-Type" => 'text/plain',
+        Content        => $aql
+    );
+}
+
 =head2 artifact_search( name => $name, repos => [ @repos ] )
 
 Artifact search by part of file name

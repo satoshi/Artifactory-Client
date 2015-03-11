@@ -714,6 +714,17 @@ subtest 'file_list', sub {
     is( $resp->code, 200, 'got 200 back' );
 };
 
+subtest 'artifactory_query_language', sub {
+    my $client = setup();
+    my $aql    = q|items.find({"repo":{"$eq":"testrepo"}}|;
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->artifactory_query_language($aql);
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'artifact_search', sub {
     my $client = setup();
 

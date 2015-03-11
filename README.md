@@ -251,6 +251,10 @@ by default) within a folder
 
 # SEARCHES
 
+## artifactory\_query\_language( $aql\_statement )
+
+Flexible and high performance search using Artifactory Query Language (AQL).
+
 ## artifact\_search( name => $name, repos => \[ @repos \] )
 
 Artifact search by part of file name
