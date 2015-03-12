@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 0.8.14
+Version 0.8.19
 
 # SYNOPSIS
 
@@ -283,6 +283,11 @@ sha1)
 ## artifacts\_not\_downloaded\_since( notUsedSince => 12345, createdBefore => 12345, repos => \[ 'repo1', repo2' \] )
 
 Retrieve all artifacts not downloaded since the specified Java epoch in msec.
+
+## artifacts\_with\_date\_in\_date\_range( from => 12345, repos => \[ 'repo1', 'repo2' \], dateFields => \[ 'created' \] )
+
+Get all artifacts with specified dates within the given range. Search can be limited to specific repositories (local or
+caches).
 
 ## artifacts\_created\_in\_date\_range( from => 12345, to => 12345, repos => \[ 'repo1', repo2' \] )
 

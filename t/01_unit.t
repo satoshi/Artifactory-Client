@@ -872,6 +872,35 @@ subtest 'artifacts_not_downloaded_since', sub {
     like( $url_in_response, qr|/api/search/usage|, 'requsted URL looks sane' );
 };
 
+subtest 'artifacts_with_date_in_date_range', sub {
+    my $client = setup();
+    my %args   = (
+        from       => 12345,
+        repos      => [ 'repo1', 'repo2' ],
+        dateFields => [ 'created', 'lastModified', 'lastDownloaded' ],
+    );
+
+    local *{'LWP::UserAgent::get'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/search/dates" ) }, 'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+
+    my $resp            = $client->artifacts_with_date_in_date_range(%args);
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/search/dates|, 'requested URL looks sane' );
+};
+
 subtest 'artifacts_created_in_date_range', sub {
     my $client = setup();
     my %args   = (

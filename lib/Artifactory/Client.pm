@@ -22,11 +22,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.14
+Version 0.8.19
 
 =cut
 
-our $VERSION = '0.8.14';
+our $VERSION = '0.8.19';
 
 =head1 SYNOPSIS
 
@@ -923,6 +923,18 @@ sub artifacts_not_downloaded_since {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'usage', %args );
 } ## end sub artifacts_not_downloaded_since
+
+=head2 artifacts_with_date_in_date_range( from => 12345, repos => [ 'repo1', 'repo2' ], dateFields => [ 'created' ] )
+
+Get all artifacts with specified dates within the given range. Search can be limited to specific repositories (local or
+caches).
+
+=cut
+
+sub artifacts_with_date_in_date_range {
+    my ( $self, %args ) = @_;
+    return $self->_handle_search_props( 'dates', %args );
+}
 
 =head2 artifacts_created_in_date_range( from => 12345, to => 12345, repos => [ 'repo1', repo2' ] )
 
