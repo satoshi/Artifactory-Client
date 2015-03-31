@@ -217,6 +217,18 @@ subtest 'build_runs', sub {
     is( $resp->code, 200, 'got build runs' );
 };
 
+subtest 'build_upload', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::put'} = sub {
+        return $mock_responses{http_200};
+    };
+
+    my $json_file = "$Bin/data/test.json";
+    my $resp      = $client->build_upload($json_file);
+    is( $resp->code, 200, 'got build upload' );
+};
+
 subtest 'build_info', sub {
     my $client = setup();
 

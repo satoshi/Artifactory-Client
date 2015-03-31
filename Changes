@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.8.20  2015/3/31
+        Added build_upload API call
+
 0.8.19  2015/3/12
         Added artifacts_with_date_in_date_range call
 

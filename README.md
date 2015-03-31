@@ -85,6 +85,10 @@ Retrieves information on all builds from artifactory.
 
 Retrieves information of a particular build from artifactory.
 
+## build\_upload( $path\_to\_json )
+
+Upload Build
+
 ## build\_info( $build\_name, $build\_number )
 
 Retrieves information of a particular build number.

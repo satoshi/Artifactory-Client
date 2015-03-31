@@ -5,6 +5,7 @@ use warnings FATAL => 'all';
 
 use Moose;
 
+use Data::Dumper;
 use URI;
 use JSON::MaybeXS;
 use LWP::UserAgent;
@@ -22,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.8.19
+Version 0.8.20
 
 =cut
 
-our $VERSION = '0.8.19';
+our $VERSION = '0.8.20';
 
 =head1 SYNOPSIS
 
@@ -238,6 +239,27 @@ sub build_runs {
     my ( $self, $build ) = @_;
     return $self->_get_build($build);
 } ## end sub build_runs
+
+=head2 build_upload( $path_to_json )
+
+Upload Build
+
+=cut
+
+sub build_upload {
+    my ( $self, $json_file ) = @_;
+
+    open( my $fh, '<', $json_file );
+    chomp( my @lines = <$fh> );
+    my $json_input = join( "", @lines );
+    my $data       = $self->_json->decode($json_input);
+    my $url        = $self->_api_url() . "/build";
+    return $self->put(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode($data)
+    );
+}
 
 =head2 build_info( $build_name, $build_number )
 
