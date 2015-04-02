@@ -33,6 +33,13 @@ subtest 'build_upload', sub {
     like( $url, qr|/artifactory/api/build|, 'build_upload called' );
 };
 
+subtest 'build_info', sub {
+    my $client = setup();
+    my $resp   = $client->build_info( 'foo', 2 );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/artifactory/api/build/foo/2|, 'build_info called' );
+};
+
 done_testing();
 
 sub setup {
