@@ -40,6 +40,13 @@ subtest 'build_info', sub {
     like( $url, qr|/artifactory/api/build/foo/2|, 'build_info called' );
 };
 
+subtest 'builds_diff', sub {
+    my $client = setup();
+    my $resp   = $client->builds_diff( 'foo', 2, 1 );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/build/foo/2\?diff=1|, 'builds_diff called' );
+};
+
 done_testing();
 
 sub setup {
