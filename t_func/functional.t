@@ -47,6 +47,14 @@ subtest 'builds_diff', sub {
     like( $url, qr|/api/build/foo/2\?diff=1|, 'builds_diff called' );
 };
 
+subtest 'build_promotion', sub {
+    my $client  = setup();
+    my $payload = { status => 'staged' };
+    my $resp    = $client->build_promotion( 'foo', 2, $payload );
+    my $url     = $resp->request->uri;
+    like( $url, qr|/api/build/promote/foo/2|, 'build_promotion called' );
+};
+
 done_testing();
 
 sub setup {
