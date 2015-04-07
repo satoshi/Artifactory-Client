@@ -55,6 +55,19 @@ subtest 'build_promotion', sub {
     like( $url, qr|/api/build/promote/foo/2|, 'build_promotion called' );
 };
 
+subtest 'delete_builds', sub {
+    my $client = setup();
+    my %args   = (
+        name         => 'foo',
+        buildnumbers => [ 1, 2, 3, 4, 5 ],
+        artifacts    => 1,
+        deleteall    => 1,
+    );
+    my $resp = $client->delete_builds(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/build/foo\?buildNumbers=1,2,3,4,5&artifacts=1&deleteAll=1|, 'delete_builds called' );
+};
+
 done_testing();
 
 sub setup {

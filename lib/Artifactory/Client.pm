@@ -300,13 +300,13 @@ sub build_promotion {
     );
 } ## end sub build_promotion
 
-=head2 delete_build( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
+=head2 delete_builds( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
 
-Promotes a build by POSTing payload
+Removes builds stored in Artifactory. Useful for cleaning up old build info data
 
 =cut
 
-sub delete_build {
+sub delete_builds {
     my ( $self, %args ) = @_;
     my $build        = $args{name};
     my $buildnumbers = $args{buildnumbers};

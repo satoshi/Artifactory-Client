@@ -260,7 +260,7 @@ subtest 'build_promotion', sub {
     is( $resp->code, 200, 'build_promotion succeeded' );
 };
 
-subtest 'delete_build', sub {
+subtest 'delete_builds', sub {
     my $client = setup();
 
     local *{'LWP::UserAgent::delete'} = sub {
@@ -284,7 +284,7 @@ subtest 'delete_build', sub {
         );
     };
 
-    my $resp = $client->delete_build( name => 'api-test', buildnumbers => [1], artifacts => 0, deleteall => 0 );
+    my $resp = $client->delete_builds( name => 'api-test', buildnumbers => [1], artifacts => 0, deleteall => 0 );
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr/buildNumbers=1/, 'buildNumbers showed up' );
     like( $url_in_response, qr/artifacts=0/,    'artifacts showed up' );
