@@ -68,6 +68,13 @@ subtest 'delete_builds', sub {
     like( $url, qr|/api/build/foo\?buildNumbers=1,2,3,4,5&artifacts=1&deleteAll=1|, 'delete_builds called' );
 };
 
+subtest 'build_rename', sub {
+    my $client = setup();
+    my $resp   = $client->build_rename( 'foo', 'bar' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/build/rename/foo?to=bar|, 'build_rename called' );
+};
+
 done_testing();
 
 sub setup {
