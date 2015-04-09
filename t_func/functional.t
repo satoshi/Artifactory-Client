@@ -72,7 +72,21 @@ subtest 'build_rename', sub {
     my $client = setup();
     my $resp   = $client->build_rename( 'foo', 'bar' );
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/build/rename/foo?to=bar|, 'build_rename called' );
+    like( $url, qr|/api/build/rename/foo\?to=bar|, 'build_rename called' );
+};
+
+subtest 'push_build_to_bintray', sub {
+    my $client = setup();
+    my %args   = (
+        buildName     => 'name',
+        buildNumber   => 1,
+        gpgPassphrase => 'foo',
+        gpgSign       => 'true',
+        payload       => { subject => "myUser" },
+    );
+    my $resp = $client->push_build_to_bintray(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/build/pushToBintray/name/1\?gpgPassphrase=foo&gpgSign=true|, 'push_to_bintray called' );
 };
 
 done_testing();
