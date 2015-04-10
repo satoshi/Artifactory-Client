@@ -89,6 +89,13 @@ subtest 'push_build_to_bintray', sub {
     like( $url, qr|/api/build/pushToBintray/name/1\?gpgPassphrase=foo&gpgSign=true|, 'push_to_bintray called' );
 };
 
+subtest 'folder_info', sub {
+    my $client = setup();
+    my $resp   = $client->folder_info('foo/bar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar|, 'folder_info called' );
+};
+
 done_testing();
 
 sub setup {
