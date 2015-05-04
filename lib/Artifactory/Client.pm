@@ -321,7 +321,6 @@ sub delete_builds {
         $str .= join( ",", @{$buildnumbers} );
         push @params, $str;
     }
-
     push @params, "artifacts=$artifacts" if ( defined $artifacts );
     push @params, "deleteAll=$deleteall" if ( defined $deleteall );
 
