@@ -320,15 +320,10 @@ sub delete_builds {
         my $str = "buildNumbers=";
         $str .= join( ",", @{$buildnumbers} );
         push @params, $str;
-    } ## end if ( ref($buildnumbers...))
-
-    if ( defined $artifacts ) {
-        push @params, "artifacts=$artifacts";
     }
 
-    if ( defined $deleteall ) {
-        push @params, "deleteAll=$deleteall";
-    }
+    push @params, "artifacts=$artifacts" if ( defined $artifacts );
+    push @params, "deleteAll=$deleteall" if ( defined $deleteall );
 
     if (@params) {
         $url .= "?";
