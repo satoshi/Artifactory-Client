@@ -314,22 +314,14 @@ sub delete_builds {
     my $deleteall    = $args{deleteall};
 
     my $url = $self->_api_url() . "/build/$build";
-    my @params;
-
-    if ( ref($buildnumbers) eq 'ARRAY' ) {
-        my $str = "buildNumbers=";
-        $str .= join( ",", @{$buildnumbers} );
-        push @params, $str;
-    }
-    push @params, "artifacts=$artifacts" if ( defined $artifacts );
-    push @params, "deleteAll=$deleteall" if ( defined $deleteall );
+    my @params = $self->_gather_delete_builds_params( $buildnumbers, $artifacts, $deleteall );
 
     if (@params) {
         $url .= "?";
         $url .= join( "&", @params );
-    } ## end if (@params)
+    }
     return $self->delete($url);
-} ## end sub delete_build
+}
 
 =head2 build_rename( $build_name, $new_build_name )
 
@@ -1966,7 +1958,21 @@ sub _merge_repo_and_path {
     $_path =~ s{^\/}{}xi;
 
     return join( '/', grep { $_ } $self->repository(), $_path );
-} ## end sub _merge_repo_and_path
+}
+
+sub _gather_delete_builds_params {
+    my ( $self, $buildnumbers, $artifacts, $deleteall ) = @_;
+
+    my @params;
+    if ( ref($buildnumbers) eq 'ARRAY' ) {
+        my $str = "buildNumbers=";
+        $str .= join( ",", @{$buildnumbers} );
+        push @params, $str;
+    }
+    push @params, "artifacts=$artifacts" if ( defined $artifacts );
+    push @params, "deleteAll=$deleteall" if ( defined $deleteall );
+    return @params;
+}
 
 __PACKAGE__->meta->make_immutable;
 
