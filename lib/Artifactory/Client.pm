@@ -524,20 +524,11 @@ sub retrieve_latest_artifact {
     my $base_url = $self->_art_url() . "/$path";
     my $basename = basename($path);
     my $url;
-
-    if ( $snapshot && $version ) {
-        $url = "$base_url/$version-$snapshot/$basename-$version-$snapshot.jar";
-    } ## end if ( $snapshot && $version)
-
-    if ($release) {
-        $url = "$base_url/$release/$basename-$release.jar";
-    }
-
-    if ( $integration && $version ) {
-        $url = "$base_url/$version-$integration/$basename-$version-$integration.jar";
-    } ## end if ( $integration && $version)
+    $url = "$base_url/$version-$snapshot/$basename-$version-$snapshot.jar"       if ( $snapshot && $version );
+    $url = "$base_url/$release/$basename-$release.jar"                           if ($release);
+    $url = "$base_url/$version-$integration/$basename-$version-$integration.jar" if ( $integration && $version );
     return $self->get($url);
-} ## end sub retrieve_latest_artifact
+}
 
 =head2 retrieve_build_artifacts_archive( $payload )
 
