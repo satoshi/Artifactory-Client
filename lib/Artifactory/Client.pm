@@ -605,20 +605,17 @@ sub deploy_artifact {
 
     $path = $self->_merge_repo_and_path($path);
     my @joiners = ( $self->_art_url() . "/$path" );
-    my $props   = $self->_attach_properties(
-        properties => $properties,
-        matrix     => 1
-    );
+    my $props = $self->_attach_properties( properties => $properties, matrix => 1 );
     push @joiners, $props if ($props);    # if properties aren't passed in, the function returns empty string
-    my $url = join( ";", @joiners );
 
+    my $url = join( ";", @joiners );
     my $req = HTTP::Request::StreamingUpload->new(
         PUT     => $url,
         path    => $file,
         headers => HTTP::Headers->new( %{$header} ),
     );
     return $self->request($req);
-} ## end sub deploy_artifact
+}
 
 =head2 deploy_artifact_by_checksum( path => $path, properties => { key => [ values ] }, file => $file, sha1 => $sha1 )
 
