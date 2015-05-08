@@ -394,7 +394,7 @@ Returns file info
 sub file_info {
     my ( $self, $path ) = @_;
     return $self->folder_info($path);    # should be OK to do this
-} ## end sub file_info
+}
 
 =head2 item_last_modified( $path )
 

@@ -96,6 +96,13 @@ subtest 'folder_info', sub {
     like( $url, qr|/testrepo/foo/bar|, 'folder_info called' );
 };
 
+subtest 'file_info', sub {
+    my $client = setup();
+    my $resp   = $client->file_info('foo/bar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar|, 'file_info called' );
+};
+
 done_testing();
 
 sub setup {
