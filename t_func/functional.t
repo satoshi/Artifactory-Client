@@ -103,6 +103,13 @@ subtest 'file_info', sub {
     like( $url, qr|/testrepo/foo/bar|, 'file_info called' );
 };
 
+subtest 'item_last_modified', sub {
+    my $client = setup();
+    my $resp   = $client->item_last_modified('foo/bar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar\?lastModified|, 'file_info called' );
+};
+
 done_testing();
 
 sub setup {
