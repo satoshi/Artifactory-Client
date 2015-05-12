@@ -110,6 +110,13 @@ subtest 'item_last_modified', sub {
     like( $url, qr|/testrepo/foo/bar\?lastModified|, 'file_info called' );
 };
 
+subtest 'file_statistics', sub {
+    my $client = setup();
+    my $resp   = $client->file_statistics('foo/bar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar\?stats|, 'file_statistics called' );
+};
+
 done_testing();
 
 sub setup {

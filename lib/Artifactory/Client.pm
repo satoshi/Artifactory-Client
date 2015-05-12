@@ -417,9 +417,10 @@ Returns file_statistics for a given path
 
 sub file_statistics {
     my ( $self, $path ) = @_;
+    $path = $self->_merge_repo_and_path($path);
     my $url = $self->_api_url() . "/storage/$path?stats";
     return $self->get($url);
-} ## end sub file_statistics
+}
 
 =head2 item_properties( path => $path, properties => [ key_names ] )
 
