@@ -117,6 +117,13 @@ subtest 'file_statistics', sub {
     like( $url, qr|/testrepo/foo/bar\?stats|, 'file_statistics called' );
 };
 
+subtest 'item_properties', sub {
+    my $client = setup();
+    my $resp   = $client->item_properties( path => 'foo/bar', properties => [ 'foo', 'bar' ] );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar\?properties=foo,bar|, 'item_properties called' );
+};
+
 done_testing();
 
 sub setup {

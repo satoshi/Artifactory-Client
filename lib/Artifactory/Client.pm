@@ -440,9 +440,9 @@ sub item_properties {
     if ( ref($properties) eq 'ARRAY' ) {
         my $str = join( ',', @{$properties} );
         $url .= "=" . $str;
-    } ## end if ( ref($properties) ...)
+    }
     return $self->get($url);
-} ## end sub item_properties
+}
 
 =head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => 0,1 )
 
