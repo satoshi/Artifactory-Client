@@ -467,7 +467,7 @@ sub set_item_properties {
     my $request = $url . $self->_attach_properties( properties => $properties );
     $request .= "&recursive=$recursive" if ( defined $recursive );
     return $self->put($request);
-} ## end sub set_item_properties
+}
 
 =head2 delete_item_properties( path => $path, properties => [ key_names ], recursive => 0,1 )
 
