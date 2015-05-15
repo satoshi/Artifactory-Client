@@ -131,6 +131,13 @@ subtest 'set_item_properties', sub {
     like( $url, qr|/testrepo/foo/bar\?properties=foo=bar,baz|, 'set_item_properties called' );
 };
 
+subtest 'delete_item_properties', sub {
+    my $client = setup();
+    my $resp   = $client->delete_item_properties( path => 'foo/bar', properties => [ 'bar', 'baz' ] );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar\?properties=bar,baz|, 'delete item properties called' );
+};
+
 done_testing();
 
 sub setup {
