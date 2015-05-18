@@ -138,6 +138,13 @@ subtest 'delete_item_properties', sub {
     like( $url, qr|/testrepo/foo/bar\?properties=bar,baz|, 'delete item properties called' );
 };
 
+subtest 'retrieve_artifact', sub {
+    my $client = setup();
+    my $resp   = $client->retrieve_artifact('foo/bar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar|, 'retrieve_artifact called' );
+};
+
 done_testing();
 
 sub setup {
