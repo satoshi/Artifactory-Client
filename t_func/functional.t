@@ -145,6 +145,13 @@ subtest 'retrieve_artifact', sub {
     like( $url, qr|/testrepo/foo/bar|, 'retrieve_artifact called' );
 };
 
+subtest 'retrieve_latest_artifact', sub {
+    my $client = setup();
+    my $resp   = $client->retrieve_latest_artifact( path => 'foo/bar', version => '1.0', flag => 'snapshot' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar/1.0-SNAPSHOT/bar-1.0-SNAPSHOT.jar|, 'retrieve_latest_artifact called' );
+};
+
 done_testing();
 
 sub setup {

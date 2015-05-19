@@ -387,7 +387,7 @@ subtest 'retrieve_latest_artifact', sub {
                         '_uri' => bless(
                             do {
                                 \( my $o =
-'http://example.com:7777/artifactory/repository/unique_path/0.9.9-snapshot/unique_path-0.9.9-snapshot.jar'
+'http://example.com:7777/artifactory/repository/unique_path/0.9.9-SNAPSHOT/unique_path-0.9.9-SNAPSHOT.jar'
                                 );
                             },
                             'URI::http'
@@ -399,9 +399,9 @@ subtest 'retrieve_latest_artifact', sub {
             'HTTP::Response'
         );
     };
-    my $resp = $client->retrieve_latest_artifact( path => $path, snapshot => 'snapshot', version => '0.9.9' );
+    my $resp = $client->retrieve_latest_artifact( path => $path, version => '0.9.9', flag => 'snapshot' );
     my $url_in_response = $resp->request->uri;
-    like( $url_in_response, qr/\Qunique_path-0.9.9-snapshot.jar\E/, 'snapshot URL looks sane' );
+    like( $url_in_response, qr/\Qunique_path-0.9.9-SNAPSHOT.jar\E/, 'snapshot URL looks sane' );
 
     local *{'LWP::UserAgent::get'} = sub {
         return bless(
@@ -423,7 +423,7 @@ subtest 'retrieve_latest_artifact', sub {
             'HTTP::Response'
         );
     };
-    $resp = $client->retrieve_latest_artifact( path => $path, release => 'release' );
+    $resp = $client->retrieve_latest_artifact( path => $path, release => 'release', flag => 'release' );
     my $url_in_response2 = $resp->request->uri;
     like( $url_in_response2, qr/\Qunique_path-release.jar\E/, 'release URL looks sane' );
 
@@ -447,7 +447,12 @@ subtest 'retrieve_latest_artifact', sub {
             'HTTP::Response'
         );
     };
-    $resp = $client->retrieve_latest_artifact( path => $path, version => '1.0', integration => 'integration' );
+    $resp = $client->retrieve_latest_artifact(
+        path        => $path,
+        version     => '1.0',
+        integration => 'integration',
+        flag        => 'integration'
+    );
     my $url_in_response3 = $resp->request->uri;
     like( $url_in_response3, qr/\Qunique_path-1.0-integration.jar\E/, 'integration URL looks sane' );
 };

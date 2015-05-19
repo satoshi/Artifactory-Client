@@ -505,10 +505,10 @@ sub retrieve_artifact {
       : $self->get($url);
 } ## end sub retrieve_artifact
 
-=head2 retrieve_latest_artifact( path => $path, snapshot => $snapshot, release => $release, integration => $integration,
-    version => $version )
+=head2 retrieve_latest_artifact( path => $path, version => $version, release => $release, integration => $integration,
+ flag => 'snapshot', 'release', 'integration' )
 
-Takes path, version, snapshot / release / integration and makes a GET request
+Takes path, version, flag of 'snapshot', 'release' or 'integration' and retrieves artifact
 
 =cut
 
@@ -516,18 +516,19 @@ sub retrieve_latest_artifact {
     my ( $self, %args ) = @_;
 
     my $path        = $args{path};
-    my $snapshot    = $args{snapshot};
+    my $version     = $args{version};
     my $release     = $args{release};
     my $integration = $args{integration};
-    my $version     = $args{version};
+    my $flag        = $args{flag};
     $path = $self->_merge_repo_and_path($path);
 
     my $base_url = $self->_art_url() . "/$path";
     my $basename = basename($path);
     my $url;
-    $url = "$base_url/$version-$snapshot/$basename-$version-$snapshot.jar"       if ( $snapshot && $version );
-    $url = "$base_url/$release/$basename-$release.jar"                           if ($release);
-    $url = "$base_url/$version-$integration/$basename-$version-$integration.jar" if ( $integration && $version );
+    $url = "$base_url/$version-SNAPSHOT/$basename-$version-SNAPSHOT.jar" if ( $version && $flag eq 'snapshot' );
+    $url = "$base_url/$release/$basename-$release.jar"                   if ( $flag             eq 'release' );
+    $url = "$base_url/$version-$integration/$basename-$version-$integration.jar"
+      if ( $version && $flag eq 'integration' );
     return $self->get($url);
 }
 
