@@ -152,6 +152,18 @@ subtest 'retrieve_latest_artifact', sub {
     like( $url, qr|/testrepo/foo/bar/1.0-SNAPSHOT/bar-1.0-SNAPSHOT.jar|, 'retrieve_latest_artifact called' );
 };
 
+subtest 'retrieve_build_artifacts_archive', sub {
+    my $client  = setup();
+    my $payload = {
+        buildName   => 'foo',
+        buildNumber => 15,
+        archiveType => 'zip'
+    };
+    my $resp = $client->retrieve_build_artifacts_archive($payload);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/archive/buildArtifacts|, 'retrieve_build_artifacts_archive called' );
+};
+
 done_testing();
 
 sub setup {
