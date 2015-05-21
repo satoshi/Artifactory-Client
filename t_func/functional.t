@@ -164,6 +164,13 @@ subtest 'retrieve_build_artifacts_archive', sub {
     like( $url, qr|/api/archive/buildArtifacts|, 'retrieve_build_artifacts_archive called' );
 };
 
+subtest 'trace_artifact_retrieval', sub {
+    my $client = setup();
+    my $resp   = $client->trace_artifact_retrieval('foo/bar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar\?trace|, 'trace_artifact_retrieval called' );
+};
+
 done_testing();
 
 sub setup {

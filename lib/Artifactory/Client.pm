@@ -560,7 +560,7 @@ sub trace_artifact_retrieval {
     $path = $self->_merge_repo_and_path($path);
     my $url = $self->_art_url() . "/$path?trace";
     return $self->get($url);
-} ## end sub trace_artifact_retrieval
+}
 
 =head2 archive_entry_download( $path, $archive_path )
 
