@@ -171,6 +171,13 @@ subtest 'trace_artifact_retrieval', sub {
     like( $url, qr|/testrepo/foo/bar\?trace|, 'trace_artifact_retrieval called' );
 };
 
+subtest 'archive_entry_download', sub {
+    my $client = setup();
+    my $resp   = $client->archive_entry_download( 'foo/bar', 'baz/goo' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar!baz/goo|, 'archive_entry_download called' );
+};
+
 done_testing();
 
 sub setup {

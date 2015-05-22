@@ -574,7 +574,7 @@ sub archive_entry_download {
     $path = $self->_merge_repo_and_path($path);
     my $url = $self->_art_url() . "/$path!$archive_path";
     return $self->get($url);
-} ## end sub archive_entry_download
+}
 
 =head2 create_directory( path => $path, properties => { key => [ values ] } )
 
