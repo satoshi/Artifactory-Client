@@ -183,7 +183,7 @@ subtest 'create_directory', sub {
     my $resp   = $client->create_directory( path => 'foo/bar/' );
     my $url    = $resp->request->uri;
     like( $url, qr|/testrepo/foo/bar/|, 'create_directory called' );
-    $client->delete_item('foo/bar');
+    $client->delete_item('foo');
 };
 
 done_testing();
