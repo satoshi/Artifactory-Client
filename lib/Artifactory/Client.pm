@@ -586,7 +586,7 @@ Takes path, properties then create a directory.  Directory needs to end with a
 sub create_directory {
     my ( $self, %args ) = @_;
     return $self->deploy_artifact(%args);
-} ## end sub create_directory
+}
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, file => $file )
 

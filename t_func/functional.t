@@ -178,6 +178,14 @@ subtest 'archive_entry_download', sub {
     like( $url, qr|/testrepo/foo/bar!baz/goo|, 'archive_entry_download called' );
 };
 
+subtest 'create_directory', sub {
+    my $client = setup();
+    my $resp   = $client->create_directory( path => 'foo/bar/' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar/|, 'create_directory called' );
+    $client->delete_item('foo/bar');
+};
+
 done_testing();
 
 sub setup {
