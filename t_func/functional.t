@@ -186,6 +186,14 @@ subtest 'create_directory', sub {
     $client->delete_item('foo');
 };
 
+subtest 'deploy_artifact', sub {
+    my $client = setup();
+    my $resp   = $client->deploy_artifact( path => 'foo/bar' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar|, 'deploy_artifact called' );
+    $client->delete_item('foo');
+};
+
 done_testing();
 
 sub setup {
