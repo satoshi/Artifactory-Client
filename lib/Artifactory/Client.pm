@@ -638,7 +638,7 @@ sub deploy_artifact_by_checksum {
     };
     $args{header} = $header;
     return $self->deploy_artifact(%args);
-} ## end sub deploy_artifact_by_checksum
+}
 
 =head2 deploy_artifacts_from_archive( path => $path, file => $file )
 

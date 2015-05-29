@@ -194,6 +194,12 @@ subtest 'deploy_artifact', sub {
     $client->delete_item('foo');
 };
 
+subtest 'deploy_artifact_by_checksum', sub {
+    my $client = setup();
+    my $resp = $client->deploy_artifact_by_checksum( path => 'foo/bar', sha1 => 'abc' );    # would fail, and it's ok
+    like( $url, qr|/testrepo/foo/bar|, 'deploy_artifact_by_checksum called' );
+};
+
 done_testing();
 
 sub setup {
