@@ -196,8 +196,17 @@ subtest 'deploy_artifact', sub {
 
 subtest 'deploy_artifact_by_checksum', sub {
     my $client = setup();
-    my $resp = $client->deploy_artifact_by_checksum( path => 'foo/bar', sha1 => 'abc' );    # would fail, and it's ok
+    my $resp   = $client->deploy_artifact_by_checksum( path => 'foo/bar', sha1 => 'abc' );    # would fail, and it's ok
+    my $url    = $resp->request->uri;
     like( $url, qr|/testrepo/foo/bar|, 'deploy_artifact_by_checksum called' );
+};
+
+subtest 'deploy_artifacts_from_archive', sub {
+    my $client = setup();
+    my $resp   = $client->deploy_artifacts_from_archive( path => 'foo/bar.zip', file => "$Bin/data/foo.zip" );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/testrepo/foo/bar\.zip|, 'deploy_artifacts_from_archive called' );
+    $client->delete_item('foo');
 };
 
 done_testing();

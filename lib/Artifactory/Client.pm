@@ -653,7 +653,7 @@ sub deploy_artifacts_from_archive {
     my $header = { 'X-Explode-Archive' => 'true', };
     $args{header} = $header;
     return $self->deploy_artifact(%args);
-} ## end sub deploy_artifacts_from_archive
+}
 
 =head2 push_artifacts_as_a_version_to_bintray( descriptor => 'foo', gpgPassphrase => 'top_secret', gpgSign => 'true')
 
