@@ -209,6 +209,17 @@ subtest 'deploy_artifacts_from_archive', sub {
     $client->delete_item('foo');
 };
 
+subtest 'push_a_set_of_artifacts_to_bintray', sub {
+    my $client = setup();
+    my $resp   = $client->push_a_set_of_artifacts_to_bintray(
+        descriptor    => 'foo',
+        gpgPassphrase => 'top_secret',
+        gpgSign       => 'true'
+    );
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/bintray/push|, 'push_a_set_of_artifacts_to_bintray called' );
+};
+
 done_testing();
 
 sub setup {

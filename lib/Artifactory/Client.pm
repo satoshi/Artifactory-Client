@@ -655,7 +655,7 @@ sub deploy_artifacts_from_archive {
     return $self->deploy_artifact(%args);
 }
 
-=head2 push_artifacts_as_a_version_to_bintray( descriptor => 'foo', gpgPassphrase => 'top_secret', gpgSign => 'true')
+=head2 push_a_set_of_artifacts_to_bintray( descriptor => 'foo', gpgPassphrase => 'top_secret', gpgSign => 'true' )
 
 Push a set of artifacts to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename
 and a .json extension) that was deployed to artifactory, the call accepts the full path to the descriptor as a
@@ -663,7 +663,7 @@ parameter.
 
 =cut
 
-sub push_artifacts_as_a_version_to_bintray {
+sub push_a_set_of_artifacts_to_bintray {
     my ( $self, %args ) = @_;
 
     my $url = $self->_api_url() . "/bintray/push";

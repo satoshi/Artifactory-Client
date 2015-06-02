@@ -534,7 +534,7 @@ subtest 'deploy_artifacts_from_archive', sub {
     is( $resp->code, 200, 'deploy_artifacts_from_archive worked' );
 };
 
-subtest 'push_artifacts_as_a_version_to_bintray', sub {
+subtest 'push_a_set_of_artifacts_to_bintray', sub {
     my $client = setup();
     my %info   = (
         descriptor    => 'some_path',
@@ -546,8 +546,8 @@ subtest 'push_artifacts_as_a_version_to_bintray', sub {
         return $mock_responses{http_200};
     };
 
-    my $resp = $client->push_artifacts_as_a_version_to_bintray(%info);
-    is( $resp->code, 200, 'push_artifacts_as_a_version_to_bintray' );
+    my $resp = $client->push_a_set_of_artifacts_to_bintray(%info);
+    is( $resp->code, 200, 'push_a_set_of_artifacts_to_bintray' );
 };
 
 subtest 'file_compliance_info', sub {
