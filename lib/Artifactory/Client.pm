@@ -672,6 +672,24 @@ sub push_a_set_of_artifacts_to_bintray {
     return $self->post($url);
 }
 
+=head2 push_docker_tag_to_bintray( dockerImage => 'jfrog/ubuntu:latest', async => 'foo', ... )
+
+Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.
+You will need to enter your Bintray credentials, for more details, please refer to Entering your Bintray credentials.
+
+=cut
+
+sub push_docker_tag_to_bintray {
+    my ( $self, %args ) = @_;
+
+    my $url = $self->_api_url() . '/bintray/docker/push/' . $self->repository();
+    return $self->post(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode( \%args )
+    );
+}
+
 =head2 file_compliance_info( $path )
 
 Retrieves file compliance info of a given path.
@@ -2050,4 +2068,4 @@ DAMAGE.
 
 =cut
 
-1;    # End of Artifactory::Client
+1;

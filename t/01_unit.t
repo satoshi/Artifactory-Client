@@ -325,6 +325,23 @@ subtest 'push_build_to_bintray', sub {
     is( $resp->code, 200, 'push_build_to_bintray_succeeded' );
 };
 
+subtest 'push_docker_tag_to_bintray', sub {
+    my $client = setup();
+    my %info   = (
+        dockerImage    => 'jfrog/ubuntu:latest',
+        bintraySubject => 'shayy',
+        bintrayRepo    => 'containers',
+        async          => 'false'
+    );
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+
+    my $resp = $client->push_docker_tag_to_bintray(%info);
+    is( $resp->code, 200, 'push_docker_tag_to_bintray_succeeded' );
+};
+
 subtest 'folder_info', sub {
     my $client = setup();
 
