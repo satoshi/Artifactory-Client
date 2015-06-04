@@ -672,7 +672,7 @@ sub push_a_set_of_artifacts_to_bintray {
     return $self->post($url);
 }
 
-=head2 push_docker_tag_to_bintray( dockerImage => 'jfrog/ubuntu:latest', async => 'foo', ... )
+=head2 push_docker_tag_to_bintray( dockerImage => 'jfrog/ubuntu:latest', async => 'true', ... )
 
 Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.
 You will need to enter your Bintray credentials, for more details, please refer to Entering your Bintray credentials.

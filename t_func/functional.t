@@ -220,6 +220,16 @@ subtest 'push_a_set_of_artifacts_to_bintray', sub {
     like( $url, qr|/api/bintray/push|, 'push_a_set_of_artifacts_to_bintray called' );
 };
 
+subtest 'push_docker_tag_to_bintray', sub {
+    my $client = setup();
+    my $resp   = $client->push_docker_tag_to_bintray(
+        dockerImage => 'jfrog/ubuntu:latest',
+        async       => 'true'
+    );
+    my $url = $resp->request->uri;
+    like( $url, qr|/bintray/docker/push/testrepo|, 'push_docker_tag_to_bintray called' );
+};
+
 done_testing();
 
 sub setup {
