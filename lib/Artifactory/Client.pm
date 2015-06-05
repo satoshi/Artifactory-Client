@@ -701,7 +701,7 @@ sub file_compliance_info {
     $path = $self->_merge_repo_and_path($path);
     my $url = $self->_api_url() . "/compliance/$path";
     return $self->get($url);
-} ## end sub file_compliance_info
+}
 
 =head2 delete_item( $path )
 

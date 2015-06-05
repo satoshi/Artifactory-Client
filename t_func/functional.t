@@ -230,6 +230,13 @@ subtest 'push_docker_tag_to_bintray', sub {
     like( $url, qr|/bintray/docker/push/testrepo|, 'push_docker_tag_to_bintray called' );
 };
 
+subtest 'file_compliance_info', sub {
+    my $client = setup();
+    my $resp   = $client->file_compliance_info('foo/bar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/compliance/testrepo/foo/bar|, 'file_compliance_info called' );
+};
+
 done_testing();
 
 sub setup {
