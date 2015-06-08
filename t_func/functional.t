@@ -237,6 +237,14 @@ subtest 'file_compliance_info', sub {
     like( $url, qr|/api/compliance/testrepo/foo/bar|, 'file_compliance_info called' );
 };
 
+subtest 'delete_item', sub {
+    my $client = setup();
+    $client->deploy_artifact( path => 'foo/bar' );
+    my $resp = $client->delete_item('foo');
+    my $url  = $resp->request->uri;
+    like( $url, qr|/artifactory/testrepo/foo|, 'delete_item called' );
+};
+
 done_testing();
 
 sub setup {
