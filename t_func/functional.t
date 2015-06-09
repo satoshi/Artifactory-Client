@@ -245,6 +245,16 @@ subtest 'delete_item', sub {
     like( $url, qr|/artifactory/testrepo/foo|, 'delete_item called' );
 };
 
+subtest 'copy_item', sub {
+    my $client = setup();
+    $client->deploy_artifact( path => 'foo/bar' );
+    my $resp = $client->copy_item( from => '/testrepo/foo/bar', to => '/testrepo/bar/baz' );
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/copy/testrepo/foo/bar\?to=/testrepo/bar/baz|, 'copy_item called' );
+    $client->delete_item('foo');
+    $client->delete_item('bar');
+};
+
 done_testing();
 
 sub setup {

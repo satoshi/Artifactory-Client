@@ -729,7 +729,7 @@ sub copy_item {
     my ( $self, %args ) = @_;
     $args{method} = 'copy';
     return $self->_handle_item(%args);
-} ## end sub copy_item
+}
 
 =head2 move_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
@@ -1812,7 +1812,7 @@ sub _handle_item {
       if ( defined $suppress_layouts );
     $url .= "&failFast=$fail_fast" if ( defined $fail_fast );
     return $self->post($url);
-} ## end sub _handle_item
+}
 
 sub _handle_repository_replication_configuration {
     my ( $self, $method, $payload ) = @_;
