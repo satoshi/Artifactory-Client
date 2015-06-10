@@ -255,6 +255,16 @@ subtest 'copy_item', sub {
     $client->delete_item('bar');
 };
 
+subtest 'move_item', sub {
+    my $client = setup();
+    $client->deploy_artifact( path => 'foo/bar' );
+    my $resp = $client->move_item( from => '/testrepo/foo/bar', to => '/testrepo/bar/baz' );
+    print Dumper($resp);
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/move/testrepo/foo/bar\?to=/testrepo/bar/baz|, 'move_item called' );
+    $client->delete_item('bar');
+};
+
 done_testing();
 
 sub setup {
