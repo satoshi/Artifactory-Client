@@ -265,6 +265,13 @@ subtest 'move_item', sub {
     $client->delete_item('bar');
 };
 
+subtest 'get_repository_replication_configuration', sub {
+    my $client = setup();
+    my $resp   = $client->get_repository_replication_configuration();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/replications/testrepo|, 'get_repository_replication_configuration called' );
+};
+
 done_testing();
 
 sub setup {

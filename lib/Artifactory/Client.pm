@@ -755,7 +755,7 @@ Get repository replication configuration
 sub get_repository_replication_configuration {
     my $self = shift;
     return $self->_handle_repository_replication_configuration('get');
-} ## end sub get_repository_replication_configuration
+}
 
 =head2 set_repository_replication_configuration( $payload )
 
