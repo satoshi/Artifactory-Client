@@ -766,7 +766,7 @@ Set repository replication configuration
 sub set_repository_replication_configuration {
     my ( $self, $payload ) = @_;
     return $self->_handle_repository_replication_configuration( 'put', $payload );
-} ## end sub set_repository_replication_configuration
+}
 
 =head2 update_repository_replication_configuration( $payload )
 
@@ -1822,11 +1822,11 @@ sub _handle_repository_replication_configuration {
     return $self->$method(
         $url,
         'Content-Type' => 'application/json',
-        content        => $payload
+        content        => $self->_json->encode($payload),
     ) if ($payload);
 
     return $self->$method($url);
-} ## end sub _handle_repository_replication_configuration
+}
 
 sub _handle_search {
     my ( $self, $api, %args ) = @_;
