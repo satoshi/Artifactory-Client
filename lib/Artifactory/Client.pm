@@ -777,7 +777,7 @@ Update repository replication configuration
 sub update_repository_replication_configuration {
     my ( $self, $payload ) = @_;
     return $self->_handle_repository_replication_configuration( 'post', $payload );
-} ## end sub update_repository_replication_configuration
+}
 
 =head2 delete_repository_replication_configuration
 

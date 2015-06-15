@@ -280,6 +280,14 @@ subtest 'set_repository_replication_configuration', sub {
     like( $url, qr|/api/replications/testrepo|, 'set_repository_replication_configuration called' );
 };
 
+subtest 'update_repository_replication_configuration', sub {
+    my $client  = setup();
+    my $payload = { foo => 'bar', };
+    my $resp    = $client->update_repository_replication_configuration($payload);
+    my $url     = $resp->request->uri;
+    like( $url, qr|/api/replications/testrepo|, 'update_repository_replication_configuration called' );
+};
+
 done_testing();
 
 sub setup {
