@@ -288,6 +288,13 @@ subtest 'update_repository_replication_configuration', sub {
     like( $url, qr|/api/replications/testrepo|, 'update_repository_replication_configuration called' );
 };
 
+subtest 'delete_repository_replication_configuration', sub {
+    my $client = setup();
+    my $resp   = $client->delete_repository_replication_configuration();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/replications/testrepo|, 'delete_repository_replication_configuration called' );
+};
+
 done_testing();
 
 sub setup {

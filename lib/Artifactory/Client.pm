@@ -788,7 +788,7 @@ Delete repository replication configuration
 sub delete_repository_replication_configuration {
     my $self = shift;
     return $self->_handle_repository_replication_configuration('delete');
-} ## end sub delete_repository_replication_configuration
+}
 
 =head2 scheduled_replication_status
 
