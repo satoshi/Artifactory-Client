@@ -295,6 +295,13 @@ subtest 'delete_repository_replication_configuration', sub {
     like( $url, qr|/api/replications/testrepo|, 'delete_repository_replication_configuration called' );
 };
 
+subtest 'scheduled_replication_status', sub {
+    my $client = setup();
+    my $resp   = $client->scheduled_replication_status();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/replication/testrepo|, 'scheduled_replication_status called' );
+};
+
 done_testing();
 
 sub setup {

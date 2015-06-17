@@ -801,7 +801,7 @@ sub scheduled_replication_status {
     my $repository = $self->repository();
     my $url        = $self->_api_url() . "/replication/$repository";
     return $self->get($url);
-} ## end sub scheduled_replication_status
+}
 
 =head2 pull_push_replication( payload => $payload, path => $path )
 
