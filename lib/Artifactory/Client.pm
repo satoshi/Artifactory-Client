@@ -820,7 +820,7 @@ sub pull_push_replication {
         "Content-Type" => 'application/json',
         Content        => $self->_json->encode($payload)
     );
-} ## end sub pull_push_replication
+}
 
 =head2 file_list( $dir, %opts )
 

@@ -302,6 +302,17 @@ subtest 'scheduled_replication_status', sub {
     like( $url, qr|/api/replication/testrepo|, 'scheduled_replication_status called' );
 };
 
+subtest 'pull_push_replication', sub {
+    my $client  = setup();
+    my $payload = {
+        username => "replicator",
+        password => "secret",
+    };
+    my $resp = $client->pull_push_replication( payload => $payload, path => '/foo' );
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/replication/testrepo/foo|, 'pull_push_replication called' );
+};
+
 done_testing();
 
 sub setup {
