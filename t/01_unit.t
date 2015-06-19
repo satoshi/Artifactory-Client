@@ -757,7 +757,6 @@ subtest 'create_or_replace_local_multi_push_replication', sub {
     my $resp            = $client->create_or_replace_local_multi_push_replication($payload);
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr|/api/replications/multiple|, 'requsted URL looks sane' );
-
 };
 
 subtest 'file_list', sub {
