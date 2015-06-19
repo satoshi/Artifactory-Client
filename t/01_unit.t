@@ -731,6 +731,35 @@ subtest 'pull_push_replication', sub {
     like( $url_in_response, qr|/api/replication|, 'requsted URL looks sane' );
 };
 
+subtest 'create_or_replace_local_multi_push_replication', sub {
+    my $client  = setup();
+    my $payload = {
+        cronExp                => "0 0/9 14 * * ?",
+        enableEventReplication => 'true'
+    };
+
+    local *{'LWP::UserAgent::put'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/replications/multiple" ) },
+                            'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->create_or_replace_local_multi_push_replication($payload);
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/replications/multiple|, 'requsted URL looks sane' );
+
+};
+
 subtest 'file_list', sub {
     my $client = setup();
     my %opts   = (

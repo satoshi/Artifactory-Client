@@ -822,6 +822,22 @@ sub pull_push_replication {
     );
 }
 
+=head2 create_or_replace_local_multi_push_replication( $payload )
+
+Creates or replaces a local multi-push replication configuration. Supported by local and local-cached repositories
+
+=cut
+
+sub create_or_replace_local_multi_push_replication {
+    my ( $self, $payload ) = @_;
+    my $url = $self->_api_url() . '/replications/multiple';
+    return $self->put(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode($payload)
+    );
+}
+
 =head2 file_list( $dir, %opts )
 
 Get a flat (the default) or deep listing of the files and folders (not included
