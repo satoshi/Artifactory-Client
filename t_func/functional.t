@@ -313,6 +313,17 @@ subtest 'pull_push_replication', sub {
     like( $url, qr|/api/replication/testrepo/foo|, 'pull_push_replication called' );
 };
 
+subtest 'create_or_replace_local_multi_push_replication', sub {
+    my $client  = setup();
+    my $payload = {
+        cronExp                => "0 0/9 14 * * ?",
+        enableEventReplication => 'true',
+    };
+    my $resp = $client->create_or_replace_local_multi_push_replication($payload);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/replications/multiple|, 'create_or_replace_local_multi_push_replication called' );
+};
+
 done_testing();
 
 sub setup {
