@@ -830,12 +830,18 @@ Creates or replaces a local multi-push replication configuration. Supported by l
 
 sub create_or_replace_local_multi_push_replication {
     my ( $self, $payload ) = @_;
-    my $url = $self->_api_url() . '/replications/multiple';
-    return $self->put(
-        $url,
-        "Content-Type" => 'application/json',
-        Content        => $self->_json->encode($payload)
-    );
+    return $self->_handle_multi_push_replication( $payload, 'put' );
+}
+
+=head2 update_local_multi_push_replication( $payload )
+
+Updates a local multi-push replication configuration. Supported by local and local-cached repositories
+
+=cut
+
+sub update_local_multi_push_replication {
+    my ( $self, $payload ) = @_;
+    return $self->_handle_multi_push_replication( $payload, 'post' );
 }
 
 =head2 file_list( $dir, %opts )
@@ -1973,6 +1979,17 @@ sub _handle_repository_reindex {
       : $self->_api_url() . $endpoint;
     $url .= $self->_stringify_hash( '&', %args ) if (%args);
     return $self->post($url);
+}
+
+sub _handle_multi_push_replication {
+    my ( $self, $payload, $method ) = @_;
+
+    my $url = $self->_api_url() . '/replications/multiple';
+    return $self->$method(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode($payload)
+    );
 }
 
 sub _merge_repo_and_path {
