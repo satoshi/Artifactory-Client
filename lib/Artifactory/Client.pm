@@ -201,7 +201,7 @@ through.
 sub delete {
     my ( $self, @args ) = @_;
     return $self->_request( 'delete', @args );
-} ## end sub delete
+}
 
 =head2 request( @args )
 
@@ -842,6 +842,19 @@ Updates a local multi-push replication configuration. Supported by local and loc
 sub update_local_multi_push_replication {
     my ( $self, $payload ) = @_;
     return $self->_handle_multi_push_replication( $payload, 'post' );
+}
+
+=head2 delete_local_multi_push_replication( $url )
+
+Deletes a local multi-push replication configuration. Supported by local and local-cached repositories
+
+=cut
+
+sub delete_local_multi_push_replication {
+    my ( $self, $url ) = @_;
+    my $repo     = $self->repository();
+    my $call_url = $self->_api_url() . "/replications/$repo?url=$url";
+    return $self->delete($call_url);
 }
 
 =head2 file_list( $dir, %opts )

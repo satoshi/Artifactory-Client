@@ -787,6 +787,39 @@ subtest 'update_local_multi_push_replication', sub {
     like( $url_in_response, qr|/api/replications/multiple|, 'requsted URL looks sane' );
 };
 
+subtest 'delete_local_multi_push_replication', sub {
+    my $client = setup();
+    my $url    = 'http://10.0.0.1/artifactory/libs-release-local';
+
+    local *{'LWP::UserAgent::delete'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do {
+                                \( my $o =
+"http://example.com:7777/artifactory/api/replications/repository?url=http://10.0.0.1/artifactory/libs-release-local"
+                                );
+                            },
+                            'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->delete_local_multi_push_replication($url);
+    my $url_in_response = $resp->request->uri;
+    like(
+        $url_in_response,
+        qr|/api/replications/repository\?url=http://10.0.0.1/artifactory/libs-release-local|,
+        'requsted URL looks sane'
+    );
+};
+
 subtest 'file_list', sub {
     my $client = setup();
     my %opts   = (
