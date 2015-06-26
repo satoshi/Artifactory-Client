@@ -335,6 +335,17 @@ subtest 'update_local_multi_push_replication', sub {
     like( $url, qr|/api/replications/multiple|, 'update_local_multi_push_replication called' );
 };
 
+subtest 'delete_local_multi_push_replication', sub {
+    my $client = setup();
+    my $resp   = $client->delete_local_multi_push_replication('http://10.0.0.1/artifactory/libs-release-local');
+    my $url    = $resp->request->uri;
+    like(
+        $url,
+        qr|/api/replications/testrepo\?url=http://10.0.0.1/artifactory/libs-release-local|,
+        'delete_local_multi_push_replication called'
+    );
+};
+
 done_testing();
 
 sub setup {
