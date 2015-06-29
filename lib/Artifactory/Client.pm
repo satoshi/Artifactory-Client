@@ -872,9 +872,9 @@ sub file_list {
     for my $opt ( keys %opts ) {
         my $val = $opts{$opt};
         $url .= "&${opt}=$val";
-    } ## end for my $opt ( keys %opts)
+    }
     return $self->get($url);
-} ## end sub file_list
+}
 
 =head1 SEARCHES
 

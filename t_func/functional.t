@@ -346,6 +346,13 @@ subtest 'delete_local_multi_push_replication', sub {
     );
 };
 
+subtest 'file_list', sub {
+    my $client = setup();
+    my $resp   = $client->file_list('/foo');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/storage/testrepo/foo\?list|, 'file_list called' );
+};
+
 done_testing();
 
 sub setup {
