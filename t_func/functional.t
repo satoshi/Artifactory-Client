@@ -353,6 +353,18 @@ subtest 'file_list', sub {
     like( $url, qr|/api/storage/testrepo/foo\?list|, 'file_list called' );
 };
 
+subtest 'artifactory_query_language', sub {
+    my $client = setup();
+    my $aql    = q|items.find(
+    {
+        "repo":{"$eq":"jcenter"}
+    }
+)|;
+    my $resp = $client->artifactory_query_language($aql);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/aql|, 'artifactory_query_language called' );
+};
+
 done_testing();
 
 sub setup {
