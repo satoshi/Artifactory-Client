@@ -365,6 +365,17 @@ subtest 'artifactory_query_language', sub {
     like( $url, qr|/api/search/aql|, 'artifactory_query_language called' );
 };
 
+subtest 'artifact_search', sub {
+    my $client = setup();
+    my %info   = (
+        name  => 'foobar',
+        repos => ['testrepo'],
+    );
+    my $resp = $client->artifact_search(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/artifact\?name=foobar&repos=testrepo|, 'artifact_search called' );
+};
+
 done_testing();
 
 sub setup {

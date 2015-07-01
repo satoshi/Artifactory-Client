@@ -906,7 +906,7 @@ Artifact search by part of file name
 sub artifact_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search( 'artifact', %args );
-} ## end sub artifact_search
+}
 
 =head2 archive_entry_search( name => $name, repos => [ @repos ] )
 
@@ -1871,13 +1871,10 @@ sub _handle_search {
     my $url = $self->_api_url() . "/search/$api?name=$name";
 
     if ( ref($repos) eq 'ARRAY' ) {
-        $url .= "&repos=";
-        for my $item ( @{$repos} ) {
-            $url .= "$item,";
-        }
-    } ## end if ( ref($repos) eq 'ARRAY')
+        $url .= "&repos=" . join( ",", @{$repos} );
+    }
     return $self->get($url);
-} ## end sub _handle_search
+}
 
 sub _handle_search_props {
     my ( $self, $method, %args ) = @_;
