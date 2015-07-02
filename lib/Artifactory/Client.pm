@@ -917,7 +917,7 @@ Search archive entries for classes or any other jar resources
 sub archive_entry_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search( 'archive', %args );
-} ## end sub archive_entry_search
+}
 
 =head2 gavc_search( groupId => 'foo', classifier => 'bar' )
 

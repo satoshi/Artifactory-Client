@@ -376,6 +376,17 @@ subtest 'artifact_search', sub {
     like( $url, qr|/api/search/artifact\?name=foobar&repos=testrepo|, 'artifact_search called' );
 };
 
+subtest 'archive_entry_search', sub {
+    my $client = setup();
+    my %info   = (
+        name  => 'foobar',
+        repos => ['testrepo'],
+    );
+    my $resp = $client->archive_entry_search(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/archive\?name=foobar&repos=testrepo|, 'archive_entry_search called' );
+};
+
 done_testing();
 
 sub setup {
