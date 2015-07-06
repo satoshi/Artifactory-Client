@@ -919,7 +919,7 @@ sub archive_entry_search {
     return $self->_handle_search( 'archive', %args );
 }
 
-=head2 gavc_search( groupId => 'foo', classifier => 'bar' )
+=head2 gavc_search( g => 'foo', c => 'bar' )
 
 Search by Maven coordinates: groupId, artifactId, version & classifier
 
@@ -928,7 +928,7 @@ Search by Maven coordinates: groupId, artifactId, version & classifier
 sub gavc_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'gavc', %args );
-} ## end sub gavc_search
+}
 
 =head2 property_search( p => [ 'v1', 'v2' ], repos => [ 'repo1', repo2' ]  )
 

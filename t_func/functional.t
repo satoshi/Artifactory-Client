@@ -387,6 +387,17 @@ subtest 'archive_entry_search', sub {
     like( $url, qr|/api/search/archive\?name=foobar&repos=testrepo|, 'archive_entry_search called' );
 };
 
+subtest 'gavc_search', sub {
+    my $client = setup();
+    my %info   = (
+        g => 'foo',
+        c => 'bar'
+    );
+    my $resp = $client->gavc_search(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/gavc|, 'gavc_search called' );
+};
+
 done_testing();
 
 sub setup {
