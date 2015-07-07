@@ -930,7 +930,7 @@ sub gavc_search {
     return $self->_handle_search_props( 'gavc', %args );
 }
 
-=head2 property_search( p => [ 'v1', 'v2' ], repos => [ 'repo1', repo2' ]  )
+=head2 property_search( p => [ 'v1', 'v2' ], repos => [ 'repo1', 'repo2' ]  )
 
 Search by properties
 
@@ -939,7 +939,7 @@ Search by properties
 sub property_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'prop', %args );
-} ## end sub property_search
+}
 
 =head2 checksum_search( md5sum => '12345', repos => [ 'repo1', repo2' ]  )
 

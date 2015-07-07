@@ -398,6 +398,17 @@ subtest 'gavc_search', sub {
     like( $url, qr|/api/search/gavc|, 'gavc_search called' );
 };
 
+subtest 'property_search', sub {
+    my $client = setup();
+    my %info   = (
+        p     => [ 'v1', 'v2' ],
+        repos => ['testrepo']
+    );
+    my $resp = $client->property_search(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/prop|, 'property_search called' );
+};
+
 done_testing();
 
 sub setup {
