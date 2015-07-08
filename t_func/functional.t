@@ -409,6 +409,17 @@ subtest 'property_search', sub {
     like( $url, qr|/api/search/prop|, 'property_search called' );
 };
 
+subtest 'checksum_search', sub {
+    my $client = setup();
+    my %info   = (
+        md5   => '12345',
+        repos => ['testrepo']
+    );
+    my $resp = $client->checksum_search(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/checksum|, 'checksum_search called' );
+};
+
 done_testing();
 
 sub setup {

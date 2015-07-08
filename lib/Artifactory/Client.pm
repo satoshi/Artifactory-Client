@@ -941,7 +941,7 @@ sub property_search {
     return $self->_handle_search_props( 'prop', %args );
 }
 
-=head2 checksum_search( md5sum => '12345', repos => [ 'repo1', repo2' ]  )
+=head2 checksum_search( md5 => '12345', repos => [ 'repo1', repo2' ]  )
 
 Artifact search by checksum (md5 or sha1)
 
@@ -950,7 +950,7 @@ Artifact search by checksum (md5 or sha1)
 sub checksum_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'checksum', %args );
-} ## end sub checksum_search
+}
 
 =head2 bad_checksum_search( type => 'md5', repos => [ 'repo1', repo2' ]  )
 

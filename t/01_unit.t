@@ -915,8 +915,8 @@ subtest 'property_search', sub {
 subtest 'checksum_search', sub {
     my $client = setup();
     my %args   = (
-        md5sum => '12345',
-        repos  => [ 'repo', 'abc' ],
+        md5 => '12345',
+        repos => [ 'repo', 'abc' ],
     );
 
     local *{'LWP::UserAgent::get'} = sub {
