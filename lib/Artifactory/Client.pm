@@ -962,7 +962,7 @@ sha1)
 sub bad_checksum_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'badChecksum', %args );
-} ## end sub bad_checksum_search
+}
 
 =head2 artifacts_not_downloaded_since( notUsedSince => 12345, createdBefore => 12345, repos => [ 'repo1', repo2' ] )
 

@@ -420,6 +420,17 @@ subtest 'checksum_search', sub {
     like( $url, qr|/api/search/checksum|, 'checksum_search called' );
 };
 
+subtest 'bad_checksum_search', sub {
+    my $client = setup();
+    my %info   = (
+        type  => 'md5',
+        repos => ['testrepo']
+    );
+    my $resp = $client->bad_checksum_search(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/badChecksum|, 'bad_checksum_search called' );
+};
+
 done_testing();
 
 sub setup {
