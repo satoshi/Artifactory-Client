@@ -964,7 +964,7 @@ sub bad_checksum_search {
     return $self->_handle_search_props( 'badChecksum', %args );
 }
 
-=head2 artifacts_not_downloaded_since( notUsedSince => 12345, createdBefore => 12345, repos => [ 'repo1', repo2' ] )
+=head2 artifacts_not_downloaded_since( notUsedSince => 12345, createdBefore => 12345, repos => [ 'repo1', 'repo2' ] )
 
 Retrieve all artifacts not downloaded since the specified Java epoch in msec.
 
@@ -973,7 +973,7 @@ Retrieve all artifacts not downloaded since the specified Java epoch in msec.
 sub artifacts_not_downloaded_since {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'usage', %args );
-} ## end sub artifacts_not_downloaded_since
+}
 
 =head2 artifacts_with_date_in_date_range( from => 12345, repos => [ 'repo1', 'repo2' ], dateFields => [ 'created' ] )
 

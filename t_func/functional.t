@@ -431,6 +431,18 @@ subtest 'bad_checksum_search', sub {
     like( $url, qr|/api/search/badChecksum|, 'bad_checksum_search called' );
 };
 
+subtest 'artifacts_not_downloaded_since', sub {
+    my $client = setup();
+    my %info   = (
+        notUsedSince  => 12345,
+        createdBefore => 12345,
+        repos         => [ 'repo1', 'repo2' ]
+    );
+    my $resp = $client->artifacts_not_downloaded_since(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/usage|, 'artifacts_not_downloaded_since called' );
+};
+
 done_testing();
 
 sub setup {
