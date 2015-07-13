@@ -443,6 +443,19 @@ subtest 'artifacts_not_downloaded_since', sub {
     like( $url, qr|/api/search/usage|, 'artifacts_not_downloaded_since called' );
 };
 
+subtest 'artifacts_with_date_in_date_range', sub {
+    my $client = setup();
+    my %info   = (
+        from       => 12345,
+        to         => 23456,
+        repos      => ['testrepo'],
+        dateFields => [ 'created', 'lastModified' ]
+    );
+    my $resp = $client->artifacts_with_date_in_date_range(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/dates|, 'artifacts_with_date_in_date_range called' );
+};
+
 done_testing();
 
 sub setup {
