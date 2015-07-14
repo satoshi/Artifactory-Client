@@ -456,6 +456,18 @@ subtest 'artifacts_with_date_in_date_range', sub {
     like( $url, qr|/api/search/dates|, 'artifacts_with_date_in_date_range called' );
 };
 
+subtest 'artifacts_created_in_date_range', sub {
+    my $client = setup();
+    my %info   = (
+        from  => 12345,
+        to    => 23456,
+        repos => ['testrepo']
+    );
+    my $resp = $client->artifacts_created_in_date_range(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/creation|, 'artifacts_created_in_date_range called' );
+};
+
 done_testing();
 
 sub setup {

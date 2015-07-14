@@ -941,7 +941,7 @@ sub property_search {
     return $self->_handle_search_props( 'prop', %args );
 }
 
-=head2 checksum_search( md5 => '12345', repos => [ 'repo1', repo2' ]  )
+=head2 checksum_search( md5 => '12345', repos => [ 'repo1', 'repo2' ]  )
 
 Artifact search by checksum (md5 or sha1)
 
@@ -952,7 +952,7 @@ sub checksum_search {
     return $self->_handle_search_props( 'checksum', %args );
 }
 
-=head2 bad_checksum_search( type => 'md5', repos => [ 'repo1', repo2' ]  )
+=head2 bad_checksum_search( type => 'md5', repos => [ 'repo1', 'repo2' ]  )
 
 Find all artifacts that have a bad or missing client checksum values (md5 or
 sha1)
@@ -987,7 +987,7 @@ sub artifacts_with_date_in_date_range {
     return $self->_handle_search_props( 'dates', %args );
 }
 
-=head2 artifacts_created_in_date_range( from => 12345, to => 12345, repos => [ 'repo1', repo2' ] )
+=head2 artifacts_created_in_date_range( from => 12345, to => 12345, repos => [ 'repo1', 'repo2' ] )
 
 Get all artifacts created in date range
 
@@ -996,7 +996,7 @@ Get all artifacts created in date range
 sub artifacts_created_in_date_range {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'creation', %args );
-} ## end sub artifacts_created_in_date_range
+}
 
 =head2 pattern_search( $pattern )
 
