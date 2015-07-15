@@ -1009,7 +1009,7 @@ sub pattern_search {
     my $repository = $self->repository();
     my $url        = $self->_api_url() . "/search/pattern?pattern=$repository:$pattern";
     return $self->get($url);
-} ## end sub pattern_search
+}
 
 =head2 builds_for_dependency( sha1 => 'abcde' )
 

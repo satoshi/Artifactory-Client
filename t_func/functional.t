@@ -468,6 +468,13 @@ subtest 'artifacts_created_in_date_range', sub {
     like( $url, qr|/api/search/creation|, 'artifacts_created_in_date_range called' );
 };
 
+subtest 'pattern_search', sub {
+    my $client = setup();
+    my $resp   = $client->pattern_search("some_pattern");
+    my $url    = $resp->request->uri;
+    like( $url, qr|/pattern\?pattern=testrepo:some_pattern|, 'pattern_search called' );
+};
+
 done_testing();
 
 sub setup {
