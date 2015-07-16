@@ -475,6 +475,13 @@ subtest 'pattern_search', sub {
     like( $url, qr|/pattern\?pattern=testrepo:some_pattern|, 'pattern_search called' );
 };
 
+subtest 'builds_for_dependency', sub {
+    my $client = setup();
+    my $resp   = $client->builds_for_dependency( sha1 => '12345' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/search/dependency\?sha1=12345|, 'builds_for_dependency called' );
+};
+
 done_testing();
 
 sub setup {

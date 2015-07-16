@@ -1013,15 +1013,14 @@ sub pattern_search {
 
 =head2 builds_for_dependency( sha1 => 'abcde' )
 
-Find all the builds an artifact is a dependency of (where the artifact is
-included in the build-info dependencies)
+Find all the builds an artifact is a dependency of (where the artifact is included in the build-info dependencies)
 
 =cut
 
 sub builds_for_dependency {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'dependency', %args );
-} ## end sub builds_for_dependency
+}
 
 =head2 license_search( unapproved => 1, unknown => 1, notfound => 0, neutral => 0, repos => [ 'foo', 'bar' ] )
 
