@@ -152,7 +152,7 @@ sub BUILD {
     $self->_set_repository($repo);
 
     return 1;
-} ## end sub BUILD
+}
 
 =head1 GENERIC METHODS
 
@@ -167,7 +167,7 @@ Invokes GET request on LWP::UserAgent-like object; params are passed through.
 sub get {
     my ( $self, @args ) = @_;
     return $self->_request( 'get', @args );
-} ## end sub get
+}
 
 =head2 post( @args )
 
@@ -178,7 +178,7 @@ nvokes POST request on LWP::UserAgent-like object; params are passed through.
 sub post {
     my ( $self, @args ) = @_;
     return $self->_request( 'post', @args );
-} ## end sub post
+}
 
 =head2 put( @args )
 
@@ -189,7 +189,7 @@ Invokes PUT request on LWP::UserAgent-like object; params are passed through.
 sub put {
     my ( $self, @args ) = @_;
     return $self->_request( 'put', @args );
-} ## end sub put
+}
 
 =head2 delete( @args )
 
@@ -212,7 +212,7 @@ Invokes request() on LWP::UserAgent-like object; params are passed through.
 sub request {
     my ( $self, @args ) = @_;
     return $self->_request( 'request', @args );
-} ## end sub request
+}
 
 =head1 BUILDS
 
@@ -227,7 +227,7 @@ Retrieves information on all builds from artifactory.
 sub all_builds {
     my $self = shift;
     return $self->_get_build('');
-} ## end sub all_builds
+}
 
 =head2 build_runs( $build_name )
 
@@ -238,7 +238,7 @@ Retrieves information of a particular build from artifactory.
 sub build_runs {
     my ( $self, $build ) = @_;
     return $self->_get_build($build);
-} ## end sub build_runs
+}
 
 =head2 build_upload( $path_to_json )
 
@@ -270,7 +270,7 @@ Retrieves information of a particular build number.
 sub build_info {
     my ( $self, $build, $number ) = @_;
     return $self->_get_build("$build/$number");
-} ## end sub build_info
+}
 
 =head2 builds_diff( $build_name, $new_build_number, $old_build_number )
 
@@ -281,7 +281,7 @@ Retrieves diff of 2 builds
 sub builds_diff {
     my ( $self, $build, $new, $old ) = @_;
     return $self->_get_build("$build/$new?diff=$old");
-} ## end sub builds_diff
+}
 
 =head2 build_promotion( $build_name, $build_number, $payload )
 
@@ -298,7 +298,7 @@ sub build_promotion {
         "Content-Type" => 'application/json',
         Content        => $self->_json->encode($payload)
     );
-} ## end sub build_promotion
+}
 
 =head2 delete_builds( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
 
@@ -334,7 +334,7 @@ sub build_rename {
 
     my $url = $self->_api_url() . "/build/rename/$build?to=$new_build";
     return $self->post($url);
-} ## end sub build_rename
+}
 
 =head2 push_build_to_bintray( buildName => 'name', buildNumber => 1, gpgPassphrase => 'foo', gpgSign => 'true', payload => { subject => "myUser" ... } )
 
@@ -383,7 +383,7 @@ sub folder_info {
     my $url = $self->_api_url() . "/storage/$path";
 
     return $self->get($url);
-} ## end sub folder_info
+}
 
 =head2 file_info( $path )
 
@@ -407,7 +407,7 @@ sub item_last_modified {
     $path = $self->_merge_repo_and_path($path);
     my $url = $self->_api_url() . "/storage/$path?lastModified";
     return $self->get($url);
-} ## end sub item_last_modified
+}
 
 =head2 file_statistics( $path )
 
@@ -487,7 +487,7 @@ sub delete_item_properties {
     my $url = $self->_api_url() . "/storage/$path?properties=" . join( ",", @{$properties} );
     $url .= "&recursive=$recursive" if ( defined $recursive );
     return $self->delete($url);
-} ## end sub delete_item_properties
+}
 
 =head2 retrieve_artifact( $path, $filename )
 
@@ -503,7 +503,7 @@ sub retrieve_artifact {
     return ($filename)
       ? $self->get( $url, ":content_file" => $filename )
       : $self->get($url);
-} ## end sub retrieve_artifact
+}
 
 =head2 retrieve_latest_artifact( path => $path, version => $version, release => $release, integration => $integration,
  flag => 'snapshot', 'release', 'integration' )
@@ -547,7 +547,7 @@ sub retrieve_build_artifacts_archive {
         "Content-Type" => 'application/json',
         Content        => $self->_json->encode($payload)
     );
-} ## end sub retrieve_build_artifacts_archive
+}
 
 =head2 trace_artifact_retrieval( $path )
 
@@ -714,7 +714,7 @@ sub delete_item {
     $path = $self->_merge_repo_and_path($path);
     my $url = $self->_art_url() . "/$path";
     return $self->delete($url);
-} ## end sub delete_item
+}
 
 =head2 copy_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
@@ -744,7 +744,7 @@ sub move_item {
     my ( $self, %args ) = @_;
     $args{method} = 'move';
     return $self->_handle_item(%args);
-} ## end sub move_item
+}
 
 =head2 get_repository_replication_configuration
 
@@ -1031,7 +1031,7 @@ Search for artifacts with specified statuses
 sub license_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'license', %args );
-} ## end sub license_search
+}
 
 =head2 artifact_version_search( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
 
@@ -1043,7 +1043,7 @@ remote or virtual repositories
 sub artifact_version_search {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'versions', %args );
-} ## end sub artifact_version_search
+}
 
 =head2 artifact_latest_version_search_based_on_layout( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
 
@@ -1055,7 +1055,7 @@ layout defined in the repository
 sub artifact_latest_version_search_based_on_layout {
     my ( $self, %args ) = @_;
     return $self->_handle_search_props( 'latestVersion', %args );
-} ## end sub artifact_latest_version_search_based_on_layout
+}
 
 =head2 artifact_latest_version_search_based_on_properties( repo => '_any', path => '/a/b', listFiles => 1 )
 
@@ -1077,7 +1077,7 @@ sub artifact_latest_version_search_based_on_properties {
     my $url = $self->_api_url() . "/versions/$repo/$path?";
     $url .= $self->_stringify_hash( '&', %args );
     return $self->get($url);
-} ## end sub artifact_latest_version_search_based_on_properties
+}
 
 =head2 build_artifacts_search( buildNumber => 15, buildName => 'foobar' )
 
@@ -1094,7 +1094,7 @@ sub build_artifacts_search {
         'Content-Type' => 'application/json',
         content        => $self->_json->encode( \%args )
     );
-} ## end sub build_artifacts_search
+}
 
 =head1 SECURITY
 
@@ -1109,7 +1109,7 @@ Get the users list
 sub get_users {
     my $self = shift;
     return $self->_handle_security( undef, 'get', 'users' );
-} ## end sub get_users
+}
 
 =head2 get_user_details( $user )
 
@@ -1120,7 +1120,7 @@ Get the details of an Artifactory user
 sub get_user_details {
     my ( $self, $user ) = @_;
     return $self->_handle_security( $user, 'get', 'users' );
-} ## end sub get_user_details
+}
 
 =head2 get_user_encrypted_password
 
@@ -1142,7 +1142,7 @@ Creates a new user in Artifactory or replaces an existing user
 sub create_or_replace_user {
     my ( $self, $user, %args ) = @_;
     return $self->_handle_security( $user, 'put', 'users', %args );
-} ## end sub create_or_replace_user
+}
 
 =head2 update_user( $user, %args )
 
@@ -1153,7 +1153,7 @@ Updates an exiting user in Artifactory with the provided user details
 sub update_user {
     my ( $self, $user, %args ) = @_;
     return $self->_handle_security( $user, 'post', 'users', %args );
-} ## end sub update_user
+}
 
 =head2 delete_user( $user )
 
@@ -1164,7 +1164,7 @@ Removes an Artifactory user
 sub delete_user {
     my ( $self, $user ) = @_;
     return $self->_handle_security( $user, 'delete', 'users' );
-} ## end sub delete_user
+}
 
 =head2 get_groups
 
@@ -1175,7 +1175,7 @@ Get the groups list
 sub get_groups {
     my $self = shift;
     return $self->_handle_security( undef, 'get', 'groups' );
-} ## end sub get_groups
+}
 
 =head2 get_group_details( $group )
 
@@ -1186,7 +1186,7 @@ Get the details of an Artifactory Group
 sub get_group_details {
     my ( $self, $group ) = @_;
     return $self->_handle_security( $group, 'get', 'groups' );
-} ## end sub get_group_details
+}
 
 =head2 create_or_replace_group( $group, %args )
 
@@ -1197,7 +1197,7 @@ Creates a new group in Artifactory or replaces an existing group
 sub create_or_replace_group {
     my ( $self, $group, %args ) = @_;
     return $self->_handle_security( $group, 'put', 'groups', %args );
-} ## end sub create_or_replace_group
+}
 
 =head2 update_group( $group, %args )
 
@@ -1208,7 +1208,7 @@ Updates an exiting group in Artifactory with the provided group details
 sub update_group {
     my ( $self, $group, %args ) = @_;
     return $self->_handle_security( $group, 'post', 'groups', %args );
-} ## end sub update_group
+}
 
 =head2 delete_group( $group )
 
@@ -1219,7 +1219,7 @@ Removes an Artifactory group
 sub delete_group {
     my ( $self, $group ) = @_;
     return $self->_handle_security( $group, 'delete', 'groups' );
-} ## end sub delete_group
+}
 
 =head2 get_permission_targets
 
@@ -1230,7 +1230,7 @@ Get the permission targets list
 sub get_permission_targets {
     my $self = shift;
     return $self->_handle_security( undef, 'get', 'permissions' );
-} ## end sub get_permission_targets
+}
 
 =head2 get_permission_target_details( $name )
 
@@ -1241,7 +1241,7 @@ Get the details of an Artifactory Permission Target
 sub get_permission_target_details {
     my ( $self, $name ) = @_;
     return $self->_handle_security( $name, 'get', 'permissions' );
-} ## end sub get_permission_target_details
+}
 
 =head2 create_or_replace_permission_target( $name, %args )
 
@@ -1253,7 +1253,7 @@ permission target
 sub create_or_replace_permission_target {
     my ( $self, $name, %args ) = @_;
     return $self->_handle_security( $name, 'put', 'permissions', %args );
-} ## end sub create_or_replace_permission_target
+}
 
 =head2 delete_permission_target( $name )
 
@@ -1264,7 +1264,7 @@ Deletes an Artifactory permission target
 sub delete_permission_target {
     my ( $self, $name ) = @_;
     return $self->_handle_security( $name, 'delete', 'permissions' );
-} ## end sub delete_permission_target
+}
 
 =head2 effective_item_permissions( $path )
 
@@ -1277,7 +1277,7 @@ sub effective_item_permissions {
     $path = $self->_merge_repo_and_path($path);
     my $url = $self->_api_url() . "/storage/$path";
     return $self->get($url);
-} ## end sub effective_item_permissions
+}
 
 =head2 security_configuration
 
@@ -1290,7 +1290,7 @@ sub security_configuration {
 
     my $url = $self->_api_url() . "/system/security";
     return $self->get($url);
-} ## end sub security_configuration
+}
 
 =head2 activate_master_key_encryption
 
@@ -1379,7 +1379,7 @@ sub get_repositories {
     $url .= "?type=$type" if ($type);
 
     return $self->get($url);
-} ## end sub get_repositories
+}
 
 =head2 repository_configuration( $name, %args )
 
@@ -1399,7 +1399,7 @@ sub repository_configuration {
       : $self->_api_url() . "/repositories/$repo";
     $url .= $self->_stringify_hash( '&', %args ) if (%args);
     return $self->get($url);
-} ## end sub repository_configuration
+}
 
 =head2 create_or_replace_repository_configuration( $name, \%payload, %args )
 
@@ -1411,7 +1411,7 @@ replaces the configuration of an existing repository
 sub create_or_replace_repository_configuration {
     my ( $self, $repo, $payload, %args ) = @_;
     return $self->_handle_repositories( $repo, $payload, 'put', %args );
-} ## end sub create_or_replace_repository_configuration
+}
 
 =head2 update_repository_configuration( $name, \%payload )
 
@@ -1423,7 +1423,7 @@ configuration elements
 sub update_repository_configuration {
     my ( $self, $repo, $payload ) = @_;
     return $self->_handle_repositories( $repo, $payload, 'post' );
-} ## end sub update_repository_configuration
+}
 
 =head2 delete_repository( $name )
 
@@ -1434,7 +1434,7 @@ Removes a repository configuration together with the whole repository content
 sub delete_repository {
     my ( $self, $repo ) = @_;
     return $self->_handle_repositories( $repo, undef, 'delete' );
-} ## end sub delete_repository
+}
 
 =head2 calculate_yum_repository_metadata( async => 0/1 )
 
@@ -1488,7 +1488,7 @@ sub calculate_maven_index {
     my $url = $self->_api_url() . "/maven?";
     $url .= $self->_stringify_hash( '&', %args );
     return $self->post($url);
-} ## end sub calculate_maven_index
+}
 
 =head2 calculate_maven_metadata( $path )
 
@@ -1501,7 +1501,7 @@ sub calculate_maven_metadata {
     $path = $self->_merge_repo_and_path($path);
     my $url = $self->_api_url() . "/maven/calculateMetadata/$path";
     return $self->post($url);
-} ## end sub calculate_maven_metadata
+}
 
 =head2 calculate_debian_repository_metadata( async => 0/1 )
 
@@ -1529,7 +1529,7 @@ Get general system information
 sub system_info {
     my $self = shift;
     return $self->_handle_system();
-} ## end sub system_info
+}
 
 =head2 system_health_ping
 
@@ -1540,7 +1540,7 @@ Get a simple status response about the state of Artifactory
 sub system_health_ping {
     my $self = shift;
     return $self->_handle_system('ping');
-} ## end sub system_health_ping
+}
 
 =head2 general_configuration
 
@@ -1551,7 +1551,7 @@ Get the general configuration (artifactory.config.xml)
 sub general_configuration {
     my $self = shift;
     return $self->_handle_system('configuration');
-} ## end sub general_configuration
+}
 
 =head2 save_general_configuration( $file )
 
@@ -1569,7 +1569,7 @@ sub save_general_configuration {
         'Content-Type' => 'application/xml',
         content        => $file
     );
-} ## end sub save_general_configuration
+}
 
 =head2 license_information
 
@@ -1613,7 +1613,7 @@ sub version_and_addons_information {
 
     my $url = $self->_api_url() . "/system/version";
     return $self->get($url);
-} ## end sub version_and_addons_information
+}
 
 =head1 PLUGINS
 
@@ -1637,7 +1637,7 @@ sub execute_plugin_code {
     $url = $url . $self->_attach_properties( properties => $params );
     $url .= "&" . $self->_stringify_hash( '&', %{$async} ) if ($async);
     return $self->post($url);
-} ## end sub execute_plugin_code
+}
 
 =head2 retrieve_all_available_plugin_info
 
@@ -1649,7 +1649,7 @@ the provided credentials)
 sub retrieve_all_available_plugin_info {
     my $self = shift;
     return $self->_handle_plugins();
-} ## end sub retrieve_all_available_plugin_info
+}
 
 =head2 retrieve_plugin_info_of_a_certain_type( $type )
 
@@ -1661,7 +1661,7 @@ the provided credentials) of the specified type
 sub retrieve_plugin_info_of_a_certain_type {
     my ( $self, $type ) = @_;
     return $self->_handle_plugins($type);
-} ## end sub retrieve_plugin_info_of_a_certain_type
+}
 
 =head2 retrieve_build_staging_strategy( strategyName => 'strategy1', buildName => 'build1', %args )
 
@@ -1677,7 +1677,7 @@ sub retrieve_build_staging_strategy {
     my $url = $self->_api_url() . "/plugins/build/staging/$strategy_name?buildName=$build_name?params=";
     $url = $url . $self->_attach_properties( properties => \%args );
     return $self->get($url);
-} ## end sub retrieve_build_staging_strategy
+}
 
 =head2 execute_build_promotion( promotionName => 'promotion1', buildName => 'build1', buildNumber => 3, %args )
 
@@ -1695,7 +1695,7 @@ sub execute_build_promotion {
     my $url = $self->_api_url() . "/plugins/build/promote/$promotion_name/$build_name/$build_number?params=";
     $url = $url . $self->_attach_properties( properties => \%args );
     return $self->post($url);
-} ## end sub execute_build_promotion
+}
 
 =head1 IMPORT & EXPORT
 
@@ -1713,7 +1713,7 @@ sub import_repository_content {
     my $url = $self->_api_url() . "/import/repositories?";
     $url .= $self->_stringify_hash( '&', %args );
     return $self->post($url);
-} ## end sub import_repository_content
+}
 
 =head2 import_system_settings_example
 
@@ -1724,7 +1724,7 @@ Returned default Import Settings JSON
 sub import_system_settings_example {
     my $self = shift;
     return $self->_handle_system_settings('import');
-} ## end sub import_system_settings_example
+}
 
 =head2 full_system_import( importPath => '/import/path', includeMetadata => 'false' etc )
 
@@ -1735,7 +1735,7 @@ Import full system from a server local Artifactory export directory
 sub full_system_import {
     my ( $self, %args ) = @_;
     return $self->_handle_system_settings( 'import', %args );
-} ## end sub full_system_import
+}
 
 =head2 export_system_settings_example
 
@@ -1746,7 +1746,7 @@ Returned default Export Settings JSON
 sub export_system_settings_example {
     my $self = shift;
     return $self->_handle_system_settings('export');
-} ## end sub export_system_settings_example
+}
 
 =head2 export_system( exportPath => '/export/path', includeMetadata => 'true' etc )
 
@@ -1757,29 +1757,29 @@ Export full system to a server local directory
 sub export_system {
     my ( $self, %args ) = @_;
     return $self->_handle_system_settings( 'export', %args );
-} ## end sub export_system
+}
 
 sub _build_ua {
     my $self = shift;
     return LWP::UserAgent->new( agent => 'perl-artifactory-client/' . $VERSION, );
-} ## end sub _build_ua
+}
 
 sub _build_json {
     my ($self) = @_;
     return JSON::MaybeXS->new( utf8 => 1 );
-} ## end sub _build_json
+}
 
 sub _request {
     my ( $self, $method, @args ) = @_;
     return $self->ua->$method(@args);
-} ## end sub _request
+}
 
 sub _get_build {
     my ( $self, $path ) = @_;
 
     my $url = $self->_api_url() . "/build/$path";
     return $self->get($url);
-} ## end sub _get_build
+}
 
 sub _attach_properties {
     my ( $self, %args ) = @_;
@@ -1789,11 +1789,11 @@ sub _attach_properties {
 
     for my $key ( keys %{$properties} ) {
         push @strings, $self->_handle_prop_multivalue( $key, $properties->{$key}, $matrix );
-    } ## end for my $key ( keys %{$properties...})
+    }
 
     return join( ";", @strings ) if $matrix;
     return join( "|", @strings );
-} ## end sub _attach_properties
+}
 
 sub _handle_prop_multivalue {
     my ( $self, $key, $values, $matrix ) = @_;
@@ -1803,7 +1803,7 @@ sub _handle_prop_multivalue {
         return $self->_handle_matrix_props( $key, $values );
     }
     return $self->_handle_non_matrix_props( $key, $values );
-} ## end sub _handle_prop_multivalue
+}
 
 sub _handle_matrix_props {
     my ( $self, $key, $values ) = @_;
@@ -1815,9 +1815,9 @@ sub _handle_matrix_props {
 
         #$value = uri_escape( $value );
         push @strings, "$key=$value";
-    } ## end for my $value ( @{$values...})
+    }
     return join( ";", @strings );
-} ## end sub _handle_matrix_props
+}
 
 sub _handle_non_matrix_props {
     my ( $self, $key, $values ) = @_;
@@ -1829,10 +1829,10 @@ sub _handle_non_matrix_props {
         $value = '' if ( !defined $value );
         $value = uri_escape($value);
         push @value_holder, $value;
-    } ## end for my $value ( @{$values...})
+    }
     $str .= join( ",", @value_holder );
     return $str;
-} ## end sub _handle_non_matrix_props
+}
 
 sub _handle_item {
     my ( $self, %args ) = @_;
@@ -1882,7 +1882,7 @@ sub _handle_search_props {
 
     $url .= $self->_stringify_hash( '&', %args );
     return $self->get($url);
-} ## end sub _handle_search_props
+}
 
 sub _stringify_hash {
     my ( $self, $delimiter, %args ) = @_;
@@ -1895,9 +1895,9 @@ sub _stringify_hash {
             $val = join( ",", @{$val} );
         }
         push @strs, "$key=$val";
-    } ## end for my $key ( keys %args)
+    }
     return join( $delimiter, @strs );
-} ## end sub _stringify_hash
+}
 
 sub _handle_security {
     my ( $self, $label, $method, $element, %args ) = @_;
@@ -1913,9 +1913,9 @@ sub _handle_security {
             'Content-Type' => 'application/json',
             content        => $self->_json->encode( \%args )
         );
-    } ## end if (%args)
+    }
     return $self->$method($url);
-} ## end sub _handle_security
+}
 
 sub _handle_repositories {
     my ( $self, $repo, $payload, $method, %args ) = @_;
@@ -1935,9 +1935,9 @@ sub _handle_repositories {
             'Content-Type' => 'application/json',
             content        => $self->_json->encode($payload)
         );
-    } ## end if ($payload)
+    }
     return $self->$method($url);
-} ## end sub _handle_repositories
+}
 
 sub _handle_system {
     my ( $self, $arg ) = @_;
@@ -1947,7 +1947,7 @@ sub _handle_system {
       ? $self->_api_url() . "/system/$arg"
       : $self->_api_url() . "/system";
     return $self->get($url);
-} ## end sub _handle_system
+}
 
 sub _handle_plugins {
     my ( $self, $type ) = @_;
@@ -1957,7 +1957,7 @@ sub _handle_plugins {
       ? $self->_api_url() . "/plugins/$type"
       : $self->_api_url() . "/plugins";
     return $self->get($url);
-} ## end sub _handle_plugins
+}
 
 sub _handle_system_settings {
     my ( $self, $action, %args ) = @_;
@@ -1970,9 +1970,9 @@ sub _handle_system_settings {
             'Content-Type' => 'application/json',
             content        => $self->_json->encode( \%args )
         );
-    } ## end if (%args)
+    }
     return $self->get($url);
-} ## end sub _handle_system_settings
+}
 
 sub _handle_gpg_key {
     my ( $self, $type, $method, %args ) = @_;
