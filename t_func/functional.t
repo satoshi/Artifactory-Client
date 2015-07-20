@@ -482,6 +482,18 @@ subtest 'builds_for_dependency', sub {
     like( $url, qr|/search/dependency\?sha1=12345|, 'builds_for_dependency called' );
 };
 
+subtest 'license_search', sub {
+    my $client = setup();
+    my %args   = (
+        approved   => 1,
+        unapproved => 1,
+        repos      => ['testrepo']
+    );
+    my $resp = $client->license_search(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/license|, 'license_search called' );
+};
+
 done_testing();
 
 sub setup {
