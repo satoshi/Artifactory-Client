@@ -494,6 +494,19 @@ subtest 'license_search', sub {
     like( $url, qr|/api/search/license|, 'license_search called' );
 };
 
+subtest 'artifact_version_search', sub {
+    my $client = setup();
+    my %args   = (
+        g     => 'foo',
+        a     => 'bar',
+        v     => '1.0',
+        repos => ['testrepo']
+    );
+    my $resp = $client->artifact_version_search(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/versions|, 'artifact_version_search called' );
+};
+
 done_testing();
 
 sub setup {
