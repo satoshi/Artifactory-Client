@@ -507,6 +507,19 @@ subtest 'artifact_version_search', sub {
     like( $url, qr|/api/search/versions|, 'artifact_version_search called' );
 };
 
+subtest 'artifact_latest_version_search_based_on_layout', sub {
+    my $client = setup();
+    my %args   = (
+        g     => 'foo',
+        a     => 'bar',
+        v     => '1.0',
+        repos => ['testrepo']
+    );
+    my $resp = $client->artifact_latest_version_search_based_on_layout(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/latestVersion|, 'artifact_latest_version_search_based_on_layout called' );
+};
+
 done_testing();
 
 sub setup {
