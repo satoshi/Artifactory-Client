@@ -520,6 +520,20 @@ subtest 'artifact_latest_version_search_based_on_layout', sub {
     like( $url, qr|/api/search/latestVersion|, 'artifact_latest_version_search_based_on_layout called' );
 };
 
+subtest 'artifact_latest_version_search_based_on_properties', sub {
+    my $client = setup();
+    my %args   = (
+        os        => 'win',
+        license   => 'GPL',
+        listFiles => 1,
+        repo      => '_any',
+        path      => 'a/b',
+    );
+    my $resp = $client->artifact_latest_version_search_based_on_properties(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/artifactory/api/versions|, 'artifact_latest_version_search_based_on_properties called' );
+};
+
 done_testing();
 
 sub setup {
