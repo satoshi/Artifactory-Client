@@ -534,6 +534,17 @@ subtest 'artifact_latest_version_search_based_on_properties', sub {
     like( $url, qr|/artifactory/api/versions|, 'artifact_latest_version_search_based_on_properties called' );
 };
 
+subtest 'build_artifacts_search', sub {
+    my $client = setup();
+    my %args   = (
+        buildNumber => 15,
+        buildName   => 'foobar'
+    );
+    my $resp = $client->build_artifacts_search(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/search/buildArtifacts|, 'build_artifacts_search called' );
+};
+
 done_testing();
 
 sub setup {
