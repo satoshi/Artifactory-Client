@@ -545,6 +545,13 @@ subtest 'build_artifacts_search', sub {
     like( $url, qr|/api/search/buildArtifacts|, 'build_artifacts_search called' );
 };
 
+subtest 'get_users', sub {
+    my $client = setup();
+    my $resp   = $client->get_users();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/users|, 'get_users called' );
+};
+
 done_testing();
 
 sub setup {
