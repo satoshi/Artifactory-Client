@@ -552,6 +552,13 @@ subtest 'get_users', sub {
     like( $url, qr|/api/security/users|, 'get_users called' );
 };
 
+subtest 'get_user_details', sub {
+    my $client = setup();
+    my $resp   = $client->get_user_details('anonymous');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/users/anonymous|, 'get_user_details called' );
+};
+
 done_testing();
 
 sub setup {
