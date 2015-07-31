@@ -559,6 +559,13 @@ subtest 'get_user_details', sub {
     like( $url, qr|/api/security/users/anonymous|, 'get_user_details called' );
 };
 
+subtest 'get_user_encrypted_password', sub {
+    my $client = setup();
+    my $resp   = $client->get_user_encrypted_password();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/encryptedPassword|, 'get_user_encrypted_password called' );
+};
+
 done_testing();
 
 sub setup {
