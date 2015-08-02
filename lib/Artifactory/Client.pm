@@ -897,7 +897,7 @@ sub artifactory_query_language {
     );
 }
 
-=head2 artifact_search( name => $name, repos => [ @repos ] )
+=head2 artifact_search( name => $name, repos => [ @repos ], result_detail => [qw(info properties)], )
 
 Artifact search by part of file name
 
@@ -919,7 +919,7 @@ sub archive_entry_search {
     return $self->_handle_search( 'archive', %args );
 }
 
-=head2 gavc_search( g => 'foo', c => 'bar' )
+=head2 gavc_search( g => 'foo', c => 'bar', result_detail => [qw(info properties)], )
 
 Search by Maven coordinates: groupId, artifactId, version & classifier
 
@@ -930,7 +930,7 @@ sub gavc_search {
     return $self->_handle_search_props( 'gavc', %args );
 }
 
-=head2 property_search( p => [ 'v1', 'v2' ], repos => [ 'repo1', 'repo2' ]  )
+=head2 property_search( p => [ 'v1', 'v2' ], repos => [ 'repo1', 'repo2' ], result_detail => [qw(info properties)], )
 
 Search by properties
 
@@ -941,7 +941,7 @@ sub property_search {
     return $self->_handle_search_props( 'prop', %args );
 }
 
-=head2 checksum_search( md5 => '12345', repos => [ 'repo1', 'repo2' ]  )
+=head2 checksum_search( md5 => '12345', repos => [ 'repo1', 'repo2' ], result_detail => [qw(info properties)], )
 
 Artifact search by checksum (md5 or sha1)
 
@@ -1866,22 +1866,36 @@ sub _handle_search {
     my ( $self, $api, %args ) = @_;
     my $name  = $args{name};
     my $repos = $args{repos};
+    my $result_detail = $args{result_detail};
 
     my $url = $self->_api_url() . "/search/$api?name=$name";
 
     if ( ref($repos) eq 'ARRAY' ) {
         $url .= "&repos=" . join( ",", @{$repos} );
     }
-    return $self->get($url);
+
+    my %headers;
+    if ( ref($result_detail) eq 'ARRAY' ){
+        $headers{'X-Result-Detail'} = join(',', @{$result_detail});
+    }
+
+    return $self->get($url, %headers);
 }
 
 sub _handle_search_props {
     my ( $self, $method, %args ) = @_;
+    my $result_detail = delete $args{result_detail};
 
     my $url = $self->_api_url() . "/search/$method?";
 
     $url .= $self->_stringify_hash( '&', %args );
-    return $self->get($url);
+
+    my %headers;
+    if ( ref($result_detail) eq 'ARRAY' ){
+        $headers{'X-Result-Detail'} = join(',', @{$result_detail});
+    }
+
+    return $self->get($url, %headers);
 }
 
 sub _stringify_hash {
