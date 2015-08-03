@@ -1864,8 +1864,8 @@ sub _handle_repository_replication_configuration {
 
 sub _handle_search {
     my ( $self, $api, %args ) = @_;
-    my $name  = $args{name};
-    my $repos = $args{repos};
+    my $name          = $args{name};
+    my $repos         = $args{repos};
     my $result_detail = $args{result_detail};
 
     my $url = $self->_api_url() . "/search/$api?name=$name";
@@ -1875,11 +1875,11 @@ sub _handle_search {
     }
 
     my %headers;
-    if ( ref($result_detail) eq 'ARRAY' ){
-        $headers{'X-Result-Detail'} = join(',', @{$result_detail});
+    if ( ref($result_detail) eq 'ARRAY' ) {
+        $headers{'X-Result-Detail'} = join( ',', @{$result_detail} );
     }
 
-    return $self->get($url, %headers);
+    return $self->get( $url, %headers );
 }
 
 sub _handle_search_props {
@@ -1891,11 +1891,11 @@ sub _handle_search_props {
     $url .= $self->_stringify_hash( '&', %args );
 
     my %headers;
-    if ( ref($result_detail) eq 'ARRAY' ){
-        $headers{'X-Result-Detail'} = join(',', @{$result_detail});
+    if ( ref($result_detail) eq 'ARRAY' ) {
+        $headers{'X-Result-Detail'} = join( ',', @{$result_detail} );
     }
 
-    return $self->get($url, %headers);
+    return $self->get( $url, %headers );
 }
 
 sub _stringify_hash {
