@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 0.8.19
+Version 0.9.0
 
 # SYNOPSIS
 
@@ -101,9 +101,9 @@ Retrieves diff of 2 builds
 
 Promotes a build by POSTing payload
 
-## delete\_build( name => $build\_name, buildnumbers => \[ buildnumbers \], artifacts => 0,1, deleteall => 0,1 )
+## delete\_builds( name => $build\_name, buildnumbers => \[ buildnumbers \], artifacts => 0,1, deleteall => 0,1 )
 
-Promotes a build by POSTing payload
+Removes builds stored in Artifactory. Useful for cleaning up old build info data
 
 ## build\_rename( $build\_name, $new\_build\_name )
 
@@ -149,15 +149,15 @@ properties are a hashref with key-arrayref pairs, such as:
 Takes path and properties then delete item properties.  Supply recursive => 0
 if you want to suppress propagation of properties downstream.
 
-## retrieve\_artifact( $path, \[ $filename \] )
+## retrieve\_artifact( $path, $filename )
 
 Takes path and retrieves artifact on the path.  If $filename is given, artifact
 content goes into the $filename rather than the HTTP::Response object.
 
-## retrieve\_latest\_artifact( path => $path, snapshot => $snapshot, release => $release, integration => $integration,
-    version => $version )
+## retrieve\_latest\_artifact( path => $path, version => $version, release => $release, integration => $integration,
+ flag => 'snapshot', 'release', 'integration' )
 
-Takes path, version, snapshot / release / integration and makes a GET request
+Takes path, version, flag of 'snapshot', 'release' or 'integration' and retrieves artifact
 
 ## retrieve\_build\_artifacts\_archive( $payload )
 
@@ -196,11 +196,16 @@ properties are a hashref with key-arrayref pairs, such as:
 Path is the path on Artifactory, file is path to local archive.  Will deploy
 $file to $path.
 
-## push\_artifacts\_as\_a\_version\_to\_bintray( descriptor => 'foo', gpgPassphrase => 'top\_secret', gpgSign => 'true')
+## push\_a\_set\_of\_artifacts\_to\_bintray( descriptor => 'foo', gpgPassphrase => 'top\_secret', gpgSign => 'true' )
 
 Push a set of artifacts to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename
 and a .json extension) that was deployed to artifactory, the call accepts the full path to the descriptor as a
 parameter.
+
+## push\_docker\_tag\_to\_bintray( dockerImage => 'jfrog/ubuntu:latest', async => 'true', ... )
+
+Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.
+You will need to enter your Bintray credentials, for more details, please refer to Entering your Bintray credentials.
 
 ## file\_compliance\_info( $path )
 
@@ -248,6 +253,18 @@ Gets scheduled replication status of a repository
 
 Schedules immediate content replication between two Artifactory instances
 
+## create\_or\_replace\_local\_multi\_push\_replication( $payload )
+
+Creates or replaces a local multi-push replication configuration. Supported by local and local-cached repositories
+
+## update\_local\_multi\_push\_replication( $payload )
+
+Updates a local multi-push replication configuration. Supported by local and local-cached repositories
+
+## delete\_local\_multi\_push\_replication( $url )
+
+Deletes a local multi-push replication configuration. Supported by local and local-cached repositories
+
 ## file\_list( $dir, %opts )
 
 Get a flat (the default) or deep listing of the files and folders (not included
@@ -259,7 +276,7 @@ by default) within a folder
 
 Flexible and high performance search using Artifactory Query Language (AQL).
 
-## artifact\_search( name => $name, repos => \[ @repos \] )
+## artifact\_search( name => $name, repos => \[ @repos \], result\_detail => \[qw(info properties)\], )
 
 Artifact search by part of file name
 
@@ -267,24 +284,24 @@ Artifact search by part of file name
 
 Search archive entries for classes or any other jar resources
 
-## gavc\_search( groupId => 'foo', classifier => 'bar' )
+## gavc\_search( g => 'foo', c => 'bar', result\_detail => \[qw(info properties)\], )
 
 Search by Maven coordinates: groupId, artifactId, version & classifier
 
-## property\_search( p => \[ 'v1', 'v2' \], repos => \[ 'repo1', repo2' \]  )
+## property\_search( p => \[ 'v1', 'v2' \], repos => \[ 'repo1', 'repo2' \], result\_detail => \[qw(info properties)\], )
 
 Search by properties
 
-## checksum\_search( md5sum => '12345', repos => \[ 'repo1', repo2' \]  )
+## checksum\_search( md5 => '12345', repos => \[ 'repo1', 'repo2' \], result\_detail => \[qw(info properties)\], )
 
 Artifact search by checksum (md5 or sha1)
 
-## bad\_checksum\_search( type => 'md5', repos => \[ 'repo1', repo2' \]  )
+## bad\_checksum\_search( type => 'md5', repos => \[ 'repo1', 'repo2' \]  )
 
 Find all artifacts that have a bad or missing client checksum values (md5 or
 sha1)
 
-## artifacts\_not\_downloaded\_since( notUsedSince => 12345, createdBefore => 12345, repos => \[ 'repo1', repo2' \] )
+## artifacts\_not\_downloaded\_since( notUsedSince => 12345, createdBefore => 12345, repos => \[ 'repo1', 'repo2' \] )
 
 Retrieve all artifacts not downloaded since the specified Java epoch in msec.
 
@@ -293,7 +310,7 @@ Retrieve all artifacts not downloaded since the specified Java epoch in msec.
 Get all artifacts with specified dates within the given range. Search can be limited to specific repositories (local or
 caches).
 
-## artifacts\_created\_in\_date\_range( from => 12345, to => 12345, repos => \[ 'repo1', repo2' \] )
+## artifacts\_created\_in\_date\_range( from => 12345, to => 12345, repos => \[ 'repo1', 'repo2' \] )
 
 Get all artifacts created in date range
 
@@ -303,8 +320,7 @@ Get all artifacts matching the given Ant path pattern
 
 ## builds\_for\_dependency( sha1 => 'abcde' )
 
-Find all the builds an artifact is a dependency of (where the artifact is
-included in the build-info dependencies)
+Find all the builds an artifact is a dependency of (where the artifact is included in the build-info dependencies)
 
 ## license\_search( unapproved => 1, unknown => 1, notfound => 0, neutral => 0, repos => \[ 'foo', 'bar' \] )
 
