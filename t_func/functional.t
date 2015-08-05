@@ -566,6 +566,13 @@ subtest 'get_user_encrypted_password', sub {
     like( $url, qr|/api/security/encryptedPassword|, 'get_user_encrypted_password called' );
 };
 
+subtest 'create_or_replace_user', sub {
+    my $client = setup();
+    my $resp   = $client->create_or_replace_user( 'davids', password => 'foobar' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/users/davids|, 'create_or_replace_user called' );
+};
+
 done_testing();
 
 sub setup {
