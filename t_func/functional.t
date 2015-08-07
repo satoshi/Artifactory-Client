@@ -573,6 +573,13 @@ subtest 'create_or_replace_user', sub {
     like( $url, qr|/api/security/users/davids|, 'create_or_replace_user called' );
 };
 
+subtest 'update_user', sub {
+    my $client = setup();
+    my $resp   = $client->update_user( 'davids', password => 'foobar' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/users/davids|, 'update_user called' );
+};
+
 done_testing();
 
 sub setup {
