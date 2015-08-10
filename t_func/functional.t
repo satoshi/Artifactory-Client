@@ -580,6 +580,13 @@ subtest 'update_user', sub {
     like( $url, qr|/api/security/users/davids|, 'update_user called' );
 };
 
+subtest 'delete_user', sub {
+    my $client = setup();
+    my $resp   = $client->delete_user('davids');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/users/davids|, 'delete_user called' );
+};
+
 done_testing();
 
 sub setup {
