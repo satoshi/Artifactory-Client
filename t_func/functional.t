@@ -587,6 +587,13 @@ subtest 'delete_user', sub {
     like( $url, qr|/api/security/users/davids|, 'delete_user called' );
 };
 
+subtest 'get_groups', sub {
+    my $client = setup();
+    my $resp   = $client->get_groups();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/groups|, 'get_groups called' );
+};
+
 done_testing();
 
 sub setup {
