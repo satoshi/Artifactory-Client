@@ -594,6 +594,13 @@ subtest 'get_groups', sub {
     like( $url, qr|/api/security/groups|, 'get_groups called' );
 };
 
+subtest 'get_group_details', sub {
+    my $client = setup();
+    my $resp   = $client->get_group_details('dev-leads');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/groups/dev-leads|, 'get_group_details called' );
+};
+
 done_testing();
 
 sub setup {
