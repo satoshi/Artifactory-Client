@@ -601,6 +601,14 @@ subtest 'get_group_details', sub {
     like( $url, qr|/api/security/groups/dev-leads|, 'get_group_details called' );
 };
 
+subtest 'create_or_replace_group', sub {
+    my $client = setup();
+    my %args   = ( name => 'dev-leads' );
+    my $resp   = $client->create_or_replace_group( 'dev-leads', %args );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/groups/dev-leads|, 'create_or_replace_group called' );
+};
+
 done_testing();
 
 sub setup {
