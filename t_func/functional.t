@@ -617,6 +617,13 @@ subtest 'update_group', sub {
     like( $url, qr|/api/security/groups/dev-leads|, 'update_group called' );
 };
 
+subtest 'delete_group', sub {
+    my $client = setup();
+    my $resp   = $client->delete_group('dev-leads');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/groups/dev-leads|, 'delete_group called' );
+};
+
 done_testing();
 
 sub setup {
