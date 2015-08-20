@@ -624,6 +624,13 @@ subtest 'delete_group', sub {
     like( $url, qr|/api/security/groups/dev-leads|, 'delete_group called' );
 };
 
+subtest 'get_permission_targets', sub {
+    my $client = setup();
+    my $resp   = $client->get_permission_targets();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/permissions|, 'get_permission_targets called' );
+};
+
 done_testing();
 
 sub setup {
