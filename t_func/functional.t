@@ -631,6 +631,13 @@ subtest 'get_permission_targets', sub {
     like( $url, qr|/api/security/permissions|, 'get_permission_targets called' );
 };
 
+subtest 'get_permission_target_details', sub {
+    my $client = setup();
+    my $resp   = $client->get_permission_target_details('populateCaches');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/permissions/populateCaches|, 'get_permission_target_details called' );
+};
+
 done_testing();
 
 sub setup {
