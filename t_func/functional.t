@@ -638,6 +638,14 @@ subtest 'get_permission_target_details', sub {
     like( $url, qr|/api/security/permissions/populateCaches|, 'get_permission_target_details called' );
 };
 
+subtest 'create_or_replace_permission_target', sub {
+    my $client = setup();
+    my %args   = ( name => 'populateCaches' );
+    my $resp   = $client->create_or_replace_permission_target( 'populateCaches', %args );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/permissions/populateCaches|, 'create_or_replace_permission_target called' );
+};
+
 done_testing();
 
 sub setup {
