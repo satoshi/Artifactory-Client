@@ -646,6 +646,13 @@ subtest 'create_or_replace_permission_target', sub {
     like( $url, qr|/api/security/permissions/populateCaches|, 'create_or_replace_permission_target called' );
 };
 
+subtest 'delete_permission_target', sub {
+    my $client = setup();
+    my $resp   = $client->delete_permission_target('populateCaches');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/security/permissions/populateCaches|, 'delete_permission_target' );
+};
+
 done_testing();
 
 sub setup {
