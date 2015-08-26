@@ -653,6 +653,13 @@ subtest 'delete_permission_target', sub {
     like( $url, qr|/api/security/permissions/populateCaches|, 'delete_permission_target' );
 };
 
+subtest 'effective_item_permissions', sub {
+    my $client = setup();
+    my $resp   = $client->effective_item_permissions('foobar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/storage/testrepo/foobar?permissions|, 'effective_item_permissions called' );
+};
+
 done_testing();
 
 sub setup {

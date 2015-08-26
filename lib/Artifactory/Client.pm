@@ -1273,9 +1273,10 @@ Returns a list of effective permissions for the specified item (file or folder)
 =cut
 
 sub effective_item_permissions {
-    my ( $self, $path ) = @_;
-    $path = $self->_merge_repo_and_path($path);
-    my $url = $self->_api_url() . "/storage/$path";
+    my ( $self, $arg ) = @_;
+
+    my $path = $self->_merge_repo_and_path($arg);
+    my $url  = $self->_api_url() . "/storage/$path?permissions";
     return $self->get($url);
 }
 
