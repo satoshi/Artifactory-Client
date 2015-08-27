@@ -660,6 +660,13 @@ subtest 'effective_item_permissions', sub {
     like( $url, qr|/api/storage/testrepo/foobar?permissions|, 'effective_item_permissions called' );
 };
 
+subtest 'security_configuration', sub {
+    my $client = setup();
+    my $resp   = $client->security_configuration();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/security|, 'security_configuration called' );
+};
+
 done_testing();
 
 sub setup {
