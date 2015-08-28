@@ -667,6 +667,13 @@ subtest 'security_configuration', sub {
     like( $url, qr|/api/system/security|, 'security_configuration called' );
 };
 
+subtest 'activate_master_key_encryption', sub {
+    my $client = setup();
+    my $resp   = $client->activate_master_key_encryption();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/encrypt|, 'activate_master_key_encryption called' );
+};
+
 done_testing();
 
 sub setup {
