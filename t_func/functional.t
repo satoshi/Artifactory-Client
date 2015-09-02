@@ -657,7 +657,7 @@ subtest 'effective_item_permissions', sub {
     my $client = setup();
     my $resp   = $client->effective_item_permissions('foobar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/storage/testrepo/foobar?permissions|, 'effective_item_permissions called' );
+    like( $url, qr|/api/storage/testrepo/foobar\?permissions|, 'effective_item_permissions called' );
 };
 
 subtest 'security_configuration', sub {
@@ -684,10 +684,15 @@ subtest 'deactivate_master_key_encryption', sub {
 done_testing();
 
 sub setup {
+    my $h = HTTP::Headers->new();
+    $h->authorization_basic( 'admin', 'password' );
+    my $ua = LWP::UserAgent->new( default_headers => $h );
+
     my $args = {
         artifactory => 'http://' . $opts->{server},
         port        => 8081,
         repository  => 'testrepo',
+        ua          => $ua,
     };
 
     my $client = Artifactory::Client->new($args);
