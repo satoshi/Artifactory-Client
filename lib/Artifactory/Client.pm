@@ -37,12 +37,16 @@ method provided in this module returns a HTTP::Response object.
 
     use Artifactory::Client;
 
+    my $h = HTTP::Headers->new();
+    $h->authorization_basic( 'admin', 'password' );
+    my $ua = LWP::UserAgent->new( default_headers => $h );
+
     my $args = {
-        artifactory => 'http://artifactory.server.com',
-        port => 8080,
-        repository => 'myrepository',
+        artifactory  => 'http://artifactory.server.com',
+        port         => 8080,
+        repository   => 'myrepository',
         context_root => '/', # Context root for artifactory. Defaults to 'artifactory'.
-        ua => LWP::UserAgent->new() # LWP::UserAgent-like object is pluggable.  Default is LWP::UserAgent.
+        ua           => $ua  # Dropping in custom UA with default_headers set.  Default is a plain LWP::UserAgent.
     };
 
     my $client = Artifactory::Client->new( $args );
@@ -62,10 +66,6 @@ method provided in this module returns a HTTP::Response object.
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
-
-    # drop in a different UserAgent:
-    my $ua = WWW::Mechanize->new();
-    $client->ua( $ua ); # now uses WWW::Mechanize to make requests
 
 Note on testing: This module is developed using Test-Driven Development.  I
 have functional tests making real API calls, however they contain proprietary
