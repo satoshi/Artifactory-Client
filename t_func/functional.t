@@ -681,6 +681,17 @@ subtest 'deactivate_master_key_encryption', sub {
     like( $url, qr|/api/system/decrypt|, 'deactivate_master_key_encryption called' );
 };
 
+subtest 'set_gpg_public_key', sub {
+    my $client = setup();
+    my $key    = "$Bin/data/gpg_public.key";
+    open( my $fh, '<', $key );
+    chomp( my @lines = <$fh> );
+    my $string = join( "\n", @lines );
+    my $resp = $client->set_gpg_public_key( key => $string );
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/gpg/key/public|, 'set_gpg_public_key called' );
+};
+
 done_testing();
 
 sub setup {

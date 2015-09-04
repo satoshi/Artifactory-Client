@@ -1317,15 +1317,16 @@ sub deactivate_master_key_encryption {
     return $self->post($url);
 }
 
-=head2 set_gpg_public_key
+=head2 set_gpg_public_key( key => $string )
 
 Sets the public key that Artifactory provides to Debian clients to verify packages
 
 =cut
 
 sub set_gpg_public_key {
-    my $self = shift;
-    return $self->_handle_gpg_key( 'public', 'put' );
+    my ( $self, %args ) = @_;
+    my $key = $args{key};
+    return $self->_handle_gpg_key( 'public', 'put', content => $key );
 }
 
 =head2 get_gpg_public_key
