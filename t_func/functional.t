@@ -683,13 +683,8 @@ subtest 'deactivate_master_key_encryption', sub {
 
 subtest 'set_gpg_public_key', sub {
     my $client = setup();
-    my $key    = "$Bin/data/gpg_public.key";
-    open( my $fh, '<', $key );
-    chomp( my @lines = <$fh> );
-
-    my $string = join( "\n", @lines );
-    my $resp = $client->set_gpg_public_key( key => $string );
-    my $url = $resp->request->uri;
+    my $resp   = $client->set_gpg_public_key( key => read_key() );
+    my $url    = $resp->request->uri;
     like( $url, qr|/api/gpg/key/public|, 'set_gpg_public_key called' );
 };
 
@@ -698,6 +693,13 @@ subtest 'get_gpg_public_key', sub {
     my $resp   = $client->get_gpg_public_key();
     my $url    = $resp->request->uri;
     like( $url, qr|/api/gpg/key/public|, 'get_gpg_public_key called' );
+};
+
+subtest 'set_gpg_private_key', sub {
+    my $client = setup();
+    my $resp   = $client->set_gpg_private_key( key => read_key() );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/gpg/key/private|, 'set_gpg_private_key called' );
 };
 
 done_testing();
@@ -716,4 +718,10 @@ sub setup {
 
     my $client = Artifactory::Client->new($args);
     return $client;
+}
+
+sub read_key {
+    open( my $fh, '<', "$Bin/data/gpg_public.key" );
+    chomp( my @lines = <$fh> );
+    return join( "\n", @lines );
 }

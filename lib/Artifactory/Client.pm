@@ -1340,15 +1340,16 @@ sub get_gpg_public_key {
     return $self->_handle_gpg_key( 'public', 'get' );
 }
 
-=head2 set_gpg_private_key
+=head2 set_gpg_private_key( key => $string )
 
 Sets the private key that Artifactory will use to sign Debian packages
 
 =cut
 
 sub set_gpg_private_key {
-    my $self = shift;
-    return $self->_handle_gpg_key( 'private', 'put' );
+    my ( $self, %args ) = @_;
+    my $key = $args{key};
+    return $self->_handle_gpg_key( 'private', 'put', content => $key );
 }
 
 =head2 set_gpg_pass_phrase( $passphrase )
