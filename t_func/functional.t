@@ -702,6 +702,13 @@ subtest 'set_gpg_private_key', sub {
     like( $url, qr|/api/gpg/key/private|, 'set_gpg_private_key called' );
 };
 
+subtest 'set_gpg_pass_phrase', sub {
+    my $client = setup();
+    my $resp   = $client->set_gpg_pass_phrase('foobar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/gpg/key/passphrase|, 'set_gpg_pass_phrase called' );
+};
+
 done_testing();
 
 sub setup {

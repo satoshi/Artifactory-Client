@@ -1360,8 +1360,7 @@ Sets the pass phrase required signing Debian packages using the private key
 
 sub set_gpg_pass_phrase {
     my ( $self, $pass ) = @_;
-    my %header = ( 'X-GPG-PASSPHRASE' => $pass );
-    return $self->_handle_gpg_key( 'passphrase', 'put', %header );
+    return $self->_handle_gpg_key( 'passphrase', 'put', 'X-GPG-PASSPHRASE' => $pass );
 }
 
 =head1 REPOSITORIES
