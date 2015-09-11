@@ -709,6 +709,13 @@ subtest 'set_gpg_pass_phrase', sub {
     like( $url, qr|/api/gpg/key/passphrase|, 'set_gpg_pass_phrase called' );
 };
 
+subtest 'get_repositories', sub {
+    my $client = setup();
+    my $resp   = $client->get_repositories();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/repositories|, 'get_repositories called' );
+};
+
 done_testing();
 
 sub setup {
