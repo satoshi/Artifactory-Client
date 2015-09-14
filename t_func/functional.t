@@ -716,6 +716,13 @@ subtest 'get_repositories', sub {
     like( $url, qr|/api/repositories|, 'get_repositories called' );
 };
 
+subtest 'repository_configuration', sub {
+    my $client = setup();
+    my $resp   = $client->repository_configuration('libs-release-local');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/repositories/libs-release-local|, 'repository_configuration called' );
+};
+
 done_testing();
 
 sub setup {
