@@ -723,6 +723,14 @@ subtest 'repository_configuration', sub {
     like( $url, qr|/api/repositories/libs-release-local|, 'repository_configuration called' );
 };
 
+subtest 'create_or_replace_repository_configuration', sub {
+    my $client  = setup();
+    my $payload = { foo => 'bar' };
+    my $resp    = $client->create_or_replace_repository_configuration( 'foo', $payload, pos => 5 );
+    my $url     = $resp->request->uri;
+    like( $url, qr|/api/repositories/foo\?pos=5|, 'create_or_replace_repository_configuration called' );
+};
+
 done_testing();
 
 sub setup {
