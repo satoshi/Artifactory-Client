@@ -731,6 +731,14 @@ subtest 'create_or_replace_repository_configuration', sub {
     like( $url, qr|/api/repositories/foo\?pos=5|, 'create_or_replace_repository_configuration called' );
 };
 
+subtest 'update_repository_configuration', sub {
+    my $client  = setup();
+    my $payload = { foo => 'bar' };
+    my $resp    = $client->update_repository_configuration( 'foo', $payload );
+    my $url     = $resp->request->uri;
+    like( $url, qr|/api/repositories/foo|, 'update_repository_configuration called' );
+};
+
 done_testing();
 
 sub setup {
