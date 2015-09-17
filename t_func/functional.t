@@ -739,6 +739,13 @@ subtest 'update_repository_configuration', sub {
     like( $url, qr|/api/repositories/foo|, 'update_repository_configuration called' );
 };
 
+subtest 'delete_repository', sub {
+    my $client = setup();
+    my $resp   = $client->delete_repository('foobarbaz');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/repositories/foobarbaz|, 'delete_repository called' );
+};
+
 done_testing();
 
 sub setup {
