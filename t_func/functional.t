@@ -93,63 +93,63 @@ subtest 'folder_info', sub {
     my $client = setup();
     my $resp   = $client->folder_info('foo/bar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar|, 'folder_info called' );
+    like( $url, qr|/libs-release-local/foo/bar|, 'folder_info called' );
 };
 
 subtest 'file_info', sub {
     my $client = setup();
     my $resp   = $client->file_info('foo/bar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar|, 'file_info called' );
+    like( $url, qr|/libs-release-local/foo/bar|, 'file_info called' );
 };
 
 subtest 'item_last_modified', sub {
     my $client = setup();
     my $resp   = $client->item_last_modified('foo/bar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar\?lastModified|, 'file_info called' );
+    like( $url, qr|/libs-release-local/foo/bar\?lastModified|, 'file_info called' );
 };
 
 subtest 'file_statistics', sub {
     my $client = setup();
     my $resp   = $client->file_statistics('foo/bar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar\?stats|, 'file_statistics called' );
+    like( $url, qr|/libs-release-local/foo/bar\?stats|, 'file_statistics called' );
 };
 
 subtest 'item_properties', sub {
     my $client = setup();
     my $resp   = $client->item_properties( path => 'foo/bar', properties => [ 'foo', 'bar' ] );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar\?properties=foo,bar|, 'item_properties called' );
+    like( $url, qr|/libs-release-local/foo/bar\?properties=foo,bar|, 'item_properties called' );
 };
 
 subtest 'set_item_properties', sub {
     my $client = setup();
     my $resp   = $client->set_item_properties( path => 'foo/bar', properties => { foo => [ 'bar', 'baz' ] } );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar\?properties=foo=bar,baz|, 'set_item_properties called' );
+    like( $url, qr|/libs-release-local/foo/bar\?properties=foo=bar,baz|, 'set_item_properties called' );
 };
 
 subtest 'delete_item_properties', sub {
     my $client = setup();
     my $resp   = $client->delete_item_properties( path => 'foo/bar', properties => [ 'bar', 'baz' ] );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar\?properties=bar,baz|, 'delete item properties called' );
+    like( $url, qr|/libs-release-local/foo/bar\?properties=bar,baz|, 'delete item properties called' );
 };
 
 subtest 'retrieve_artifact', sub {
     my $client = setup();
     my $resp   = $client->retrieve_artifact('foo/bar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar|, 'retrieve_artifact called' );
+    like( $url, qr|/libs-release-local/foo/bar|, 'retrieve_artifact called' );
 };
 
 subtest 'retrieve_latest_artifact', sub {
     my $client = setup();
     my $resp   = $client->retrieve_latest_artifact( path => 'foo/bar', version => '1.0', flag => 'snapshot' );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar/1.0-SNAPSHOT/bar-1.0-SNAPSHOT.jar|, 'retrieve_latest_artifact called' );
+    like( $url, qr|/libs-release-local/foo/bar/1.0-SNAPSHOT/bar-1.0-SNAPSHOT.jar|, 'retrieve_latest_artifact called' );
 };
 
 subtest 'retrieve_build_artifacts_archive', sub {
@@ -168,21 +168,21 @@ subtest 'trace_artifact_retrieval', sub {
     my $client = setup();
     my $resp   = $client->trace_artifact_retrieval('foo/bar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar\?trace|, 'trace_artifact_retrieval called' );
+    like( $url, qr|/libs-release-local/foo/bar\?trace|, 'trace_artifact_retrieval called' );
 };
 
 subtest 'archive_entry_download', sub {
     my $client = setup();
     my $resp   = $client->archive_entry_download( 'foo/bar', 'baz/goo' );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar!baz/goo|, 'archive_entry_download called' );
+    like( $url, qr|/libs-release-local/foo/bar!baz/goo|, 'archive_entry_download called' );
 };
 
 subtest 'create_directory', sub {
     my $client = setup();
     my $resp   = $client->create_directory( path => 'foo/bar/' );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar/|, 'create_directory called' );
+    like( $url, qr|/libs-release-local/foo/bar/|, 'create_directory called' );
     $client->delete_item('foo');
 };
 
@@ -190,7 +190,7 @@ subtest 'deploy_artifact', sub {
     my $client = setup();
     my $resp   = $client->deploy_artifact( path => 'foo/bar' );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar|, 'deploy_artifact called' );
+    like( $url, qr|/libs-release-local/foo/bar|, 'deploy_artifact called' );
     $client->delete_item('foo');
 };
 
@@ -198,14 +198,14 @@ subtest 'deploy_artifact_by_checksum', sub {
     my $client = setup();
     my $resp   = $client->deploy_artifact_by_checksum( path => 'foo/bar', sha1 => 'abc' );    # would fail, and it's ok
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar|, 'deploy_artifact_by_checksum called' );
+    like( $url, qr|/libs-release-local/foo/bar|, 'deploy_artifact_by_checksum called' );
 };
 
 subtest 'deploy_artifacts_from_archive', sub {
     my $client = setup();
     my $resp   = $client->deploy_artifacts_from_archive( path => 'foo/bar.zip', file => "$Bin/data/foo.zip" );
     my $url    = $resp->request->uri;
-    like( $url, qr|/testrepo/foo/bar\.zip|, 'deploy_artifacts_from_archive called' );
+    like( $url, qr|/libs-release-local/foo/bar\.zip|, 'deploy_artifacts_from_archive called' );
     $client->delete_item('foo');
 };
 
@@ -227,14 +227,14 @@ subtest 'push_docker_tag_to_bintray', sub {
         async       => 'true'
     );
     my $url = $resp->request->uri;
-    like( $url, qr|/bintray/docker/push/testrepo|, 'push_docker_tag_to_bintray called' );
+    like( $url, qr|/bintray/docker/push/libs-release-local|, 'push_docker_tag_to_bintray called' );
 };
 
 subtest 'file_compliance_info', sub {
     my $client = setup();
     my $resp   = $client->file_compliance_info('foo/bar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/compliance/testrepo/foo/bar|, 'file_compliance_info called' );
+    like( $url, qr|/api/compliance/libs-release-local/foo/bar|, 'file_compliance_info called' );
 };
 
 subtest 'delete_item', sub {
@@ -242,15 +242,15 @@ subtest 'delete_item', sub {
     $client->deploy_artifact( path => 'foo/bar' );
     my $resp = $client->delete_item('foo');
     my $url  = $resp->request->uri;
-    like( $url, qr|/artifactory/testrepo/foo|, 'delete_item called' );
+    like( $url, qr|/artifactory/libs-release-local/foo|, 'delete_item called' );
 };
 
 subtest 'copy_item', sub {
     my $client = setup();
     $client->deploy_artifact( path => 'foo/bar' );
-    my $resp = $client->copy_item( from => '/testrepo/foo/bar', to => '/testrepo/bar/baz' );
+    my $resp = $client->copy_item( from => '/libs-release-local/foo/bar', to => '/libs-release-local/bar/baz' );
     my $url = $resp->request->uri;
-    like( $url, qr|/api/copy/testrepo/foo/bar\?to=/testrepo/bar/baz|, 'copy_item called' );
+    like( $url, qr|/api/copy/libs-release-local/foo/bar\?to=/libs-release-local/bar/baz|, 'copy_item called' );
     $client->delete_item('foo');
     $client->delete_item('bar');
 };
@@ -258,9 +258,9 @@ subtest 'copy_item', sub {
 subtest 'move_item', sub {
     my $client = setup();
     $client->deploy_artifact( path => 'foo/bar' );
-    my $resp = $client->move_item( from => '/testrepo/foo/bar', to => '/testrepo/bar/baz' );
+    my $resp = $client->move_item( from => '/libs-release-local/foo/bar', to => '/libs-release-local/bar/baz' );
     my $url = $resp->request->uri;
-    like( $url, qr|/api/move/testrepo/foo/bar\?to=/testrepo/bar/baz|, 'move_item called' );
+    like( $url, qr|/api/move/libs-release-local/foo/bar\?to=/libs-release-local/bar/baz|, 'move_item called' );
     $client->delete_item('foo');    # to kill off the directory
     $client->delete_item('bar');
 };
@@ -269,7 +269,7 @@ subtest 'get_repository_replication_configuration', sub {
     my $client = setup();
     my $resp   = $client->get_repository_replication_configuration();
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/replications/testrepo|, 'get_repository_replication_configuration called' );
+    like( $url, qr|/api/replications/libs-release-local|, 'get_repository_replication_configuration called' );
 };
 
 subtest 'set_repository_replication_configuration', sub {
@@ -277,7 +277,7 @@ subtest 'set_repository_replication_configuration', sub {
     my $payload = { foo => 'bar', };
     my $resp    = $client->set_repository_replication_configuration($payload);
     my $url     = $resp->request->uri;
-    like( $url, qr|/api/replications/testrepo|, 'set_repository_replication_configuration called' );
+    like( $url, qr|/api/replications/libs-release-local|, 'set_repository_replication_configuration called' );
 };
 
 subtest 'update_repository_replication_configuration', sub {
@@ -285,21 +285,21 @@ subtest 'update_repository_replication_configuration', sub {
     my $payload = { foo => 'bar', };
     my $resp    = $client->update_repository_replication_configuration($payload);
     my $url     = $resp->request->uri;
-    like( $url, qr|/api/replications/testrepo|, 'update_repository_replication_configuration called' );
+    like( $url, qr|/api/replications/libs-release-local|, 'update_repository_replication_configuration called' );
 };
 
 subtest 'delete_repository_replication_configuration', sub {
     my $client = setup();
     my $resp   = $client->delete_repository_replication_configuration();
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/replications/testrepo|, 'delete_repository_replication_configuration called' );
+    like( $url, qr|/api/replications/libs-release-local|, 'delete_repository_replication_configuration called' );
 };
 
 subtest 'scheduled_replication_status', sub {
     my $client = setup();
     my $resp   = $client->scheduled_replication_status();
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/replication/testrepo|, 'scheduled_replication_status called' );
+    like( $url, qr|/api/replication/libs-release-local|, 'scheduled_replication_status called' );
 };
 
 subtest 'pull_push_replication', sub {
@@ -310,7 +310,7 @@ subtest 'pull_push_replication', sub {
     };
     my $resp = $client->pull_push_replication( payload => $payload, path => '/foo' );
     my $url = $resp->request->uri;
-    like( $url, qr|/api/replication/testrepo/foo|, 'pull_push_replication called' );
+    like( $url, qr|/api/replication/libs-release-local/foo|, 'pull_push_replication called' );
 };
 
 subtest 'create_or_replace_local_multi_push_replication', sub {
@@ -341,7 +341,7 @@ subtest 'delete_local_multi_push_replication', sub {
     my $url    = $resp->request->uri;
     like(
         $url,
-        qr|/api/replications/testrepo\?url=http://10.0.0.1/artifactory/libs-release-local|,
+        qr|/api/replications/libs-release-local\?url=http://10.0.0.1/artifactory/libs-release-local|,
         'delete_local_multi_push_replication called'
     );
 };
@@ -350,7 +350,7 @@ subtest 'file_list', sub {
     my $client = setup();
     my $resp   = $client->file_list('/foo');
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/storage/testrepo/foo\?list|, 'file_list called' );
+    like( $url, qr|/api/storage/libs-release-local/foo\?list|, 'file_list called' );
 };
 
 subtest 'artifactory_query_language', sub {
@@ -369,22 +369,22 @@ subtest 'artifact_search', sub {
     my $client = setup();
     my %info   = (
         name  => 'foobar',
-        repos => ['testrepo'],
+        repos => ['libs-release-local'],
     );
     my $resp = $client->artifact_search(%info);
     my $url  = $resp->request->uri;
-    like( $url, qr|/api/search/artifact\?name=foobar&repos=testrepo|, 'artifact_search called' );
+    like( $url, qr|/api/search/artifact\?name=foobar&repos=libs-release-local|, 'artifact_search called' );
 };
 
 subtest 'archive_entry_search', sub {
     my $client = setup();
     my %info   = (
         name  => 'foobar',
-        repos => ['testrepo'],
+        repos => ['libs-release-local'],
     );
     my $resp = $client->archive_entry_search(%info);
     my $url  = $resp->request->uri;
-    like( $url, qr|/api/search/archive\?name=foobar&repos=testrepo|, 'archive_entry_search called' );
+    like( $url, qr|/api/search/archive\?name=foobar&repos=libs-release-local|, 'archive_entry_search called' );
 };
 
 subtest 'gavc_search', sub {
@@ -402,7 +402,7 @@ subtest 'property_search', sub {
     my $client = setup();
     my %info   = (
         p     => [ 'v1', 'v2' ],
-        repos => ['testrepo']
+        repos => ['libs-release-local']
     );
     my $resp = $client->property_search(%info);
     my $url  = $resp->request->uri;
@@ -413,7 +413,7 @@ subtest 'checksum_search', sub {
     my $client = setup();
     my %info   = (
         md5   => '12345',
-        repos => ['testrepo']
+        repos => ['libs-release-local']
     );
     my $resp = $client->checksum_search(%info);
     my $url  = $resp->request->uri;
@@ -424,7 +424,7 @@ subtest 'bad_checksum_search', sub {
     my $client = setup();
     my %info   = (
         type  => 'md5',
-        repos => ['testrepo']
+        repos => ['libs-release-local']
     );
     my $resp = $client->bad_checksum_search(%info);
     my $url  = $resp->request->uri;
@@ -448,7 +448,7 @@ subtest 'artifacts_with_date_in_date_range', sub {
     my %info   = (
         from       => 12345,
         to         => 23456,
-        repos      => ['testrepo'],
+        repos      => ['libs-release-local'],
         dateFields => [ 'created', 'lastModified' ]
     );
     my $resp = $client->artifacts_with_date_in_date_range(%info);
@@ -461,7 +461,7 @@ subtest 'artifacts_created_in_date_range', sub {
     my %info   = (
         from  => 12345,
         to    => 23456,
-        repos => ['testrepo']
+        repos => ['libs-release-local']
     );
     my $resp = $client->artifacts_created_in_date_range(%info);
     my $url  = $resp->request->uri;
@@ -472,7 +472,7 @@ subtest 'pattern_search', sub {
     my $client = setup();
     my $resp   = $client->pattern_search("some_pattern");
     my $url    = $resp->request->uri;
-    like( $url, qr|/pattern\?pattern=testrepo:some_pattern|, 'pattern_search called' );
+    like( $url, qr|/pattern\?pattern=libs-release-local:some_pattern|, 'pattern_search called' );
 };
 
 subtest 'builds_for_dependency', sub {
@@ -487,7 +487,7 @@ subtest 'license_search', sub {
     my %args   = (
         approved   => 1,
         unapproved => 1,
-        repos      => ['testrepo']
+        repos      => ['libs-release-local']
     );
     my $resp = $client->license_search(%args);
     my $url  = $resp->request->uri;
@@ -500,7 +500,7 @@ subtest 'artifact_version_search', sub {
         g     => 'foo',
         a     => 'bar',
         v     => '1.0',
-        repos => ['testrepo']
+        repos => ['libs-release-local']
     );
     my $resp = $client->artifact_version_search(%args);
     my $url  = $resp->request->uri;
@@ -513,7 +513,7 @@ subtest 'artifact_latest_version_search_based_on_layout', sub {
         g     => 'foo',
         a     => 'bar',
         v     => '1.0',
-        repos => ['testrepo']
+        repos => ['libs-release-local']
     );
     my $resp = $client->artifact_latest_version_search_based_on_layout(%args);
     my $url  = $resp->request->uri;
@@ -657,7 +657,7 @@ subtest 'effective_item_permissions', sub {
     my $client = setup();
     my $resp   = $client->effective_item_permissions('foobar');
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/storage/testrepo/foobar\?permissions|, 'effective_item_permissions called' );
+    like( $url, qr|/api/storage/libs-release-local/foobar\?permissions|, 'effective_item_permissions called' );
 };
 
 subtest 'security_configuration', sub {
@@ -746,6 +746,13 @@ subtest 'delete_repository', sub {
     like( $url, qr|/api/repositories/foobarbaz|, 'delete_repository called' );
 };
 
+subtest 'calculate_yum_repository_metadata', sub {
+    my $client = setup();
+    my $resp   = $client->calculate_yum_repository_metadata( async => 1 );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/yum/libs-release-local\?async=1|, 'calculate_yum_repository_metadata called' );
+};
+
 done_testing();
 
 sub setup {
@@ -756,7 +763,7 @@ sub setup {
     my $args = {
         artifactory => 'http://' . $opts->{server},
         port        => 8081,
-        repository  => 'testrepo',
+        repository  => 'libs-release-local',
         ua          => $ua,
     };
 
