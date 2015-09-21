@@ -753,6 +753,13 @@ subtest 'calculate_yum_repository_metadata', sub {
     like( $url, qr|/api/yum/libs-release-local\?async=1|, 'calculate_yum_repository_metadata called' );
 };
 
+subtest 'calculate_nuget_repository_metadata', sub {
+    my $client = setup();
+    my $resp   = $client->calculate_nuget_repository_metadata();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/nuget/libs-release-local/reindex|, 'calculate_nuget_repository_metadata called' );
+};
+
 done_testing();
 
 sub setup {
