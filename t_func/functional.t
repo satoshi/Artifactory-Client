@@ -760,6 +760,13 @@ subtest 'calculate_nuget_repository_metadata', sub {
     like( $url, qr|/api/nuget/libs-release-local/reindex|, 'calculate_nuget_repository_metadata called' );
 };
 
+subtest 'calculate_npm_repository_metadata', sub {
+    my $client = setup();
+    my $resp   = $client->calculate_npm_repository_metadata();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/npm/libs-release-local/reindex|, 'calculate_npm_repository_metadata called' );
+};
+
 done_testing();
 
 sub setup {
