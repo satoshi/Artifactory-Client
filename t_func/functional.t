@@ -774,6 +774,13 @@ subtest 'calculate_maven_index', sub {
     like( $url, qr|/api/maven\?repos=libs-release-local&force=1|, 'calculate_maven_index called' );
 };
 
+subtest 'calculate_maven_metadata', sub {
+    my $client = setup();
+    my $resp   = $client->calculate_maven_metadata('/org/acme');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/maven/calculateMetadata/libs-release-local/org/acme|, 'calculate_maven_metadata called' );
+};
+
 done_testing();
 
 sub setup {
