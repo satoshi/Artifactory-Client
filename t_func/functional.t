@@ -781,6 +781,13 @@ subtest 'calculate_maven_metadata', sub {
     like( $url, qr|/api/maven/calculateMetadata/libs-release-local/org/acme|, 'calculate_maven_metadata called' );
 };
 
+subtest 'calculate_debian_repository_metadata', sub {
+    my $client = setup();
+    my $resp   = $client->calculate_debian_repository_metadata();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/deb/reindex/libs-release-local|, 'calculate_debian_repository_metadata' );
+};
+
 done_testing();
 
 sub setup {
