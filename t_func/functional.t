@@ -785,7 +785,14 @@ subtest 'calculate_debian_repository_metadata', sub {
     my $client = setup();
     my $resp   = $client->calculate_debian_repository_metadata();
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/deb/reindex/libs-release-local|, 'calculate_debian_repository_metadata' );
+    like( $url, qr|/api/deb/reindex/libs-release-local|, 'calculate_debian_repository_metadata called' );
+};
+
+subtest 'system_info', sub {
+    my $client = setup();
+    my $resp   = $client->system_info();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system|, 'system_info called' );
 };
 
 done_testing();
