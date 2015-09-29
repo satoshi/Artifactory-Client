@@ -795,6 +795,13 @@ subtest 'system_info', sub {
     like( $url, qr|/api/system|, 'system_info called' );
 };
 
+subtest 'system_health_ping', sub {
+    my $client = setup();
+    my $resp   = $client->system_health_ping();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/ping|, 'system_health_ping called' );
+};
+
 done_testing();
 
 sub setup {
