@@ -802,6 +802,13 @@ subtest 'system_health_ping', sub {
     like( $url, qr|/api/system/ping|, 'system_health_ping called' );
 };
 
+subtest 'general_configuration', sub {
+    my $client = setup();
+    my $resp   = $client->general_configuration();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/configuration|, 'general_configuration called' );
+};
+
 done_testing();
 
 sub setup {
