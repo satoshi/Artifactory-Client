@@ -809,6 +809,13 @@ subtest 'general_configuration', sub {
     like( $url, qr|/api/system/configuration|, 'general_configuration called' );
 };
 
+subtest 'save_general_configuration', sub {
+    my $client = setup();
+    my $resp   = $client->save_general_configuration("$Bin/data/test.json");
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/configuration|, 'save_general_configuration called' );
+};
+
 done_testing();
 
 sub setup {
