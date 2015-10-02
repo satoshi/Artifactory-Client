@@ -2117,6 +2117,32 @@ subtest 'save_general_configuration', sub {
     like( $url_in_response, qr|/api/system/configuration|, 'requsted URL looks sane' );
 };
 
+subtest 'update_custom_url_base', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::put'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/system/configuration/baseUrl" ) }
+                            ,
+                            'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+
+    my $resp            = $client->update_custom_url_base('https://mycompany.com:444/artifactory');
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/configuration/baseUrl|, 'requested URL looks sane' );
+};
+
 subtest 'license_information', sub {
     my $client = setup();
 
@@ -2140,7 +2166,7 @@ subtest 'license_information', sub {
     like( $url_in_response, qr|/api/system/license|, 'requsted URL looks sane' );
 };
 
-subtest 'license_information', sub {
+subtest 'install_license', sub {
     my $client = setup();
 
     local *{'LWP::UserAgent::post'} = sub {

@@ -1573,6 +1573,22 @@ sub save_general_configuration {
     );
 }
 
+=head2 update_custom_url_base( $url )
+
+Changes the Custom URL base
+
+=cut
+
+sub update_custom_url_base {
+    my ( $self, $base ) = @_;
+    my $url = $self->_api_url() . '/system/configuration/baseUrl';
+    return $self->put(
+        $url,
+        'Content-Type' => 'text/plain',
+        content        => $base
+    );
+}
+
 =head2 license_information
 
 Retrieve information about the currently installed license
