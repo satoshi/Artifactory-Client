@@ -816,6 +816,13 @@ subtest 'save_general_configuration', sub {
     like( $url, qr|/api/system/configuration|, 'save_general_configuration called' );
 };
 
+subtest 'update_custom_url_base', sub {
+    my $client = setup();
+    my $resp   = $client->update_custom_url_base('https://mycompany.com:444/artifactory');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/configuration/baseUrl|, 'update_custom_url_base called' );
+};
+
 done_testing();
 
 sub setup {
