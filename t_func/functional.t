@@ -823,6 +823,13 @@ subtest 'update_custom_url_base', sub {
     like( $url, qr|/api/system/configuration/baseUrl|, 'update_custom_url_base called' );
 };
 
+subtest 'license_information', sub {
+    my $client = setup();
+    my $resp   = $client->license_information();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/license|, 'license_information called' );
+};
+
 done_testing();
 
 sub setup {
