@@ -830,6 +830,13 @@ subtest 'license_information', sub {
     like( $url, qr|/api/system/license|, 'license_information called' );
 };
 
+subtest 'install_license', sub {
+    my $client = setup();
+    my $resp   = $client->install_license('take that');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/license|, 'install_license called' );
+};
+
 done_testing();
 
 sub setup {
