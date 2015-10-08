@@ -837,6 +837,13 @@ subtest 'install_license', sub {
     like( $url, qr|/api/system/license|, 'install_license called' );
 };
 
+subtest 'version_and_addons_information', sub {
+    my $client = setup();
+    my $resp   = $client->version_and_addons_information();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/version|, 'version_and_addons_information called' );
+};
+
 done_testing();
 
 sub setup {
