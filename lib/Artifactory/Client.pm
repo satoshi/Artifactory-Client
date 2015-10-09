@@ -1639,8 +1639,7 @@ sub version_and_addons_information {
 
 =head2 execute_plugin_code( $execution_name, $params, $async )
 
-Executes a named execution closure found in the executions section of a user
-plugin
+Executes a named execution closure found in the executions section of a user plugin
 
 =cut
 

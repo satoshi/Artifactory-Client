@@ -844,6 +844,16 @@ subtest 'version_and_addons_information', sub {
     like( $url, qr|/api/system/version|, 'version_and_addons_information called' );
 };
 
+subtest 'execute_plugin_code', sub {
+    my $client = setup();
+    my $params = {
+        suffix => ['SNAPSHOT'],
+    };
+    my $resp = $client->execute_plugin_code( 'cleanup', $params, { async => 1 } );
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/plugins/execute/cleanup\?params=suffix=SNAPSHOT&async=1|, 'execute_plugin_code called' );
+};
+
 done_testing();
 
 sub setup {
