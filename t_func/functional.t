@@ -846,12 +846,17 @@ subtest 'version_and_addons_information', sub {
 
 subtest 'execute_plugin_code', sub {
     my $client = setup();
-    my $params = {
-        suffix => ['SNAPSHOT'],
-    };
-    my $resp = $client->execute_plugin_code( 'cleanup', $params, { async => 1 } );
-    my $url = $resp->request->uri;
+    my $params = { suffix => ['SNAPSHOT'], };
+    my $resp   = $client->execute_plugin_code( 'cleanup', $params, { async => 1 } );
+    my $url    = $resp->request->uri;
     like( $url, qr|/api/plugins/execute/cleanup\?params=suffix=SNAPSHOT&async=1|, 'execute_plugin_code called' );
+};
+
+subtest 'retrieve_all_available_plugin_info', sub {
+    my $client = setup();
+    my $resp   = $client->retrieve_all_available_plugin_info();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/plugins|, 'retrieve_all_available_plugin_info called' );
 };
 
 done_testing();

@@ -32,8 +32,8 @@ our $VERSION = 'v0.9.0';
 =head1 SYNOPSIS
 
 This is a Perl client for Artifactory REST API:
-https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API Every public
-method provided in this module returns a HTTP::Response object.
+https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API Every public method provided in this module returns a
+HTTP::Response object.
 
     use Artifactory::Client;
 
@@ -66,12 +66,6 @@ method provided in this module returns a HTTP::Response object.
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
-
-Note on testing: This module is developed using Test-Driven Development.  I
-have functional tests making real API calls, however they contain proprietary
-information and I am not allowed to open source them.  The unit tests included
-are dumbed-down version of my functional tests.  They should serve as a
-detailed guide on how to make API calls.
 
 =cut
 
@@ -446,9 +440,8 @@ sub item_properties {
 
 =head2 set_item_properties( path => $path, properties => { key => [ values ] }, recursive => 0,1 )
 
-Takes path and properties then set item properties.  Supply recursive => 0 if
-you want to suppress propagation of properties downstream.  Note that
-properties are a hashref with key-arrayref pairs, such as:
+Takes path and properties then set item properties.  Supply recursive => 0 if you want to suppress propagation of
+properties downstream.  Note that properties are a hashref with key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -471,8 +464,8 @@ sub set_item_properties {
 
 =head2 delete_item_properties( path => $path, properties => [ key_names ], recursive => 0,1 )
 
-Takes path and properties then delete item properties.  Supply recursive => 0
-if you want to suppress propagation of properties downstream.
+Takes path and properties then delete item properties.  Supply recursive => 0 if you want to suppress propagation of
+properties downstream.
 
 =cut
 
@@ -491,8 +484,8 @@ sub delete_item_properties {
 
 =head2 retrieve_artifact( $path, $filename )
 
-Takes path and retrieves artifact on the path.  If $filename is given, artifact
-content goes into the $filename rather than the HTTP::Response object.
+Takes path and retrieves artifact on the path.  If $filename is given, artifact content goes into the $filename rather
+than the HTTP::Response object.
 
 =cut
 
@@ -564,8 +557,7 @@ sub trace_artifact_retrieval {
 
 =head2 archive_entry_download( $path, $archive_path )
 
-Takes path and archive_path, retrieves an archived resource from the specified
-archive destination.
+Takes path and archive_path, retrieves an archived resource from the specified archive destination.
 
 =cut
 
@@ -578,8 +570,7 @@ sub archive_entry_download {
 
 =head2 create_directory( path => $path, properties => { key => [ values ] } )
 
-Takes path, properties then create a directory.  Directory needs to end with a
-/, such as "/some_dir/".
+Takes path, properties then create a directory.  Directory needs to end with a /, such as "/some_dir/".
 
 =cut
 
@@ -590,8 +581,8 @@ sub create_directory {
 
 =head2 deploy_artifact( path => $path, properties => { key => [ values ] }, file => $file )
 
-Takes path on Artifactory, properties and filename then deploys the file.  Note
-that properties are a hashref with key-arrayref pairs, such as:
+Takes path on Artifactory, properties and filename then deploys the file.  Note that properties are a hashref with
+key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -621,8 +612,8 @@ sub deploy_artifact {
 
 =head2 deploy_artifact_by_checksum( path => $path, properties => { key => [ values ] }, file => $file, sha1 => $sha1 )
 
-Takes path, properties, filename and sha1 then deploys the file.  Note that
-properties are a hashref with key-arrayref pairs, such as:
+Takes path, properties, filename and sha1 then deploys the file.  Note that properties are a hashref with key-arrayref
+pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
@@ -642,8 +633,7 @@ sub deploy_artifact_by_checksum {
 
 =head2 deploy_artifacts_from_archive( path => $path, file => $file )
 
-Path is the path on Artifactory, file is path to local archive.  Will deploy
-$file to $path.
+Path is the path on Artifactory, file is path to local archive.  Will deploy $file to $path.
 
 =cut
 
@@ -674,8 +664,8 @@ sub push_a_set_of_artifacts_to_bintray {
 
 =head2 push_docker_tag_to_bintray( dockerImage => 'jfrog/ubuntu:latest', async => 'true', ... )
 
-Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.
-You will need to enter your Bintray credentials, for more details, please refer to Entering your Bintray credentials.
+Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.  You will need to enter your
+Bintray credentials, for more details, please refer to Entering your Bintray credentials.
 
 =cut
 
@@ -718,9 +708,8 @@ sub delete_item {
 
 =head2 copy_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
-Copies an artifact from $from to $to.  Note that for this particular API call,
-the $from and $to must include repository names as copy source and destination
-may be different repositories.  You can also supply dry, suppressLayouts and
+Copies an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
+names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
 failFast values as specified in the documentation.
 
 =cut
@@ -733,9 +722,8 @@ sub copy_item {
 
 =head2 move_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
-Moves an artifact from $from to $to.  Note that for this particular API call,
-the $from and $to must include repository names as copy source and destination
-may be different repositories.  You can also supply dry, suppressLayouts and
+Moves an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
+names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
 failFast values as specified in the documentation.
 
 =cut
@@ -859,8 +847,7 @@ sub delete_local_multi_push_replication {
 
 =head2 file_list( $dir, %opts )
 
-Get a flat (the default) or deep listing of the files and folders (not included
-by default) within a folder
+Get a flat (the default) or deep listing of the files and folders (not included by default) within a folder
 
 =cut
 
@@ -1035,8 +1022,7 @@ sub license_search {
 
 =head2 artifact_version_search( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
 
-Search for all available artifact versions by GroupId and ArtifactId in local,
-remote or virtual repositories
+Search for all available artifact versions by GroupId and ArtifactId in local, remote or virtual repositories
 
 =cut
 
@@ -1047,8 +1033,7 @@ sub artifact_version_search {
 
 =head2 artifact_latest_version_search_based_on_layout( g => 'foo', a => 'bar', v => '1.0', repos => [ 'foo', 'bar' ] )
 
-Search for the latest artifact version by groupId and artifactId, based on the
-layout defined in the repository
+Search for the latest artifact version by groupId and artifactId, based on the layout defined in the repository
 
 =cut
 
@@ -1245,8 +1230,7 @@ sub get_permission_target_details {
 
 =head2 create_or_replace_permission_target( $name, %args )
 
-Creates a new permission target in Artifactory or replaces an existing
-permission target
+Creates a new permission target in Artifactory or replaces an existing permission target
 
 =cut
 
@@ -1369,8 +1353,7 @@ sub set_gpg_pass_phrase {
 
 =head2 get_repositories( $type )
 
-Returns a list of minimal repository details for all repositories of the
-specified type
+Returns a list of minimal repository details for all repositories of the specified type
 
 =cut
 
@@ -1405,8 +1388,8 @@ sub repository_configuration {
 
 =head2 create_or_replace_repository_configuration( $name, \%payload, %args )
 
-Creates a new repository in Artifactory with the provided configuration or
-replaces the configuration of an existing repository
+Creates a new repository in Artifactory with the provided configuration or replaces the configuration of an existing
+repository
 
 =cut
 
@@ -1417,8 +1400,7 @@ sub create_or_replace_repository_configuration {
 
 =head2 update_repository_configuration( $name, \%payload )
 
-Updates an exiting repository configuration in Artifactory with the provided
-configuration elements
+Updates an exiting repository configuration in Artifactory with the provided configuration elements
 
 =cut
 
@@ -1440,8 +1422,7 @@ sub delete_repository {
 
 =head2 calculate_yum_repository_metadata( async => 0/1 )
 
-Calculates/recalculates the YUM metdata for this repository, based on the RPM
-package currently hosted in the repository
+Calculates/recalculates the YUM metdata for this repository, based on the RPM package currently hosted in the repository
 
 =cut
 
@@ -1453,9 +1434,8 @@ sub calculate_yum_repository_metadata {
 
 =head2 calculate_nuget_repository_metadata
 
-Recalculates all the NuGet packages for this repository (local/cache/virtual),
-and re-annotate the NuGet properties for each NuGet package according to it's
-internal nuspec file
+Recalculates all the NuGet packages for this repository (local/cache/virtual), and re-annotate the NuGet properties for
+each NuGet package according to it's internal nuspec file
 
 =cut
 
@@ -1621,8 +1601,7 @@ sub install_license {
 
 =head2 version_and_addons_information
 
-Retrieve information about the current Artifactory version, revision, and
-currently installed Add-ons
+Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
 
 =cut
 
@@ -1658,8 +1637,7 @@ sub execute_plugin_code {
 
 =head2 retrieve_all_available_plugin_info
 
-Retrieves all available user plugin information (subject to the permissions of
-the provided credentials)
+Retrieves all available user plugin information (subject to the permissions of the provided credentials)
 
 =cut
 
@@ -1670,8 +1648,8 @@ sub retrieve_all_available_plugin_info {
 
 =head2 retrieve_plugin_info_of_a_certain_type( $type )
 
-Retrieves all available user plugin information (subject to the permissions of
-the provided credentials) of the specified type
+Retrieves all available user plugin information (subject to the permissions of the provided credentials) of the
+specified type
 
 =cut
 
@@ -1698,8 +1676,7 @@ sub retrieve_build_staging_strategy {
 
 =head2 execute_build_promotion( promotionName => 'promotion1', buildName => 'build1', buildNumber => 3, %args )
 
-Executes a named promotion closure found in the promotions section of a user
-plugin
+Executes a named promotion closure found in the promotions section of a user plugin
 
 =cut
 
