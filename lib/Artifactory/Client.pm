@@ -23,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 0.9.0
+Version 0.9.2
 
 =cut
 
-our $VERSION = 'v0.9.0';
+our $VERSION = 'v0.9.2';
 
 =head1 SYNOPSIS
 
@@ -1456,6 +1456,19 @@ sub calculate_npm_repository_metadata {
     my $self       = shift;
     my $repository = $self->repository();
     return $self->_handle_repository_reindex("/npm/$repository/reindex");
+}
+
+=head2 calculate_bower_repository_metadata
+
+Recalculates the bower search index for this repository (local/virtual). Please see the Bower integration documentation for
+more details.
+
+=cut
+
+sub calculate_bower_repository_metadata {
+    my $self       = shift;
+    my $repository = $self->repository();
+    return $self->_handle_repository_reindex("/bower/$repository/reindex");
 }
 
 =head2 calculate_maven_index( repos => [ 'repo1', 'repo2' ], force => 0/1 )

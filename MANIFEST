@@ -5,3 +5,4 @@ MANIFEST			This list of files
 README.md
 t/01_unit.t
 t/data/test.xml
+t/data/test.json

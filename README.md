@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 0.9.0
+Version 0.9.2
 
 # SYNOPSIS
 
@@ -16,12 +16,16 @@ method provided in this module returns a HTTP::Response object.
 
     use Artifactory::Client;
 
+    my $h = HTTP::Headers->new();
+    $h->authorization_basic( 'admin', 'password' );
+    my $ua = LWP::UserAgent->new( default_headers => $h );
+
     my $args = {
-        artifactory => 'http://artifactory.server.com',
-        port => 8080,
-        repository => 'myrepository',
+        artifactory  => 'http://artifactory.server.com',
+        port         => 8080,
+        repository   => 'myrepository',
         context_root => '/', # Context root for artifactory. Defaults to 'artifactory'.
-        ua => LWP::UserAgent->new() # LWP::UserAgent-like object is pluggable.  Default is LWP::UserAgent.
+        ua           => $ua  # Dropping in custom UA with default_headers set.  Default is a plain LWP::UserAgent.
     };
 
     my $client = Artifactory::Client->new( $args );
@@ -41,10 +45,6 @@ method provided in this module returns a HTTP::Response object.
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
-
-    # drop in a different UserAgent:
-    my $ua = WWW::Mechanize->new();
-    $client->ua( $ua ); # now uses WWW::Mechanize to make requests
 
 Note on testing: This module is developed using Test-Driven Development.  I
 have functional tests making real API calls, however they contain proprietary
@@ -423,7 +423,7 @@ Creates a new master key and activates master key encryption
 
 Removes the current master key and deactivates master key encryption
 
-## set\_gpg\_public\_key
+## set\_gpg\_public\_key( key => $string )
 
 Sets the public key that Artifactory provides to Debian clients to verify packages
 
@@ -431,7 +431,7 @@ Sets the public key that Artifactory provides to Debian clients to verify packag
 
 Gets the public key that Artifactory provides to Debian clients to verify packages
 
-## set\_gpg\_private\_key
+## set\_gpg\_private\_key( key => $string )
 
 Sets the private key that Artifactory will use to sign Debian packages
 
@@ -480,6 +480,11 @@ internal nuspec file
 Recalculates the npm search index for this repository (local/virtual). Please see the Npm integration documentation for
 more details.
 
+## calculate\_bower\_repository\_metadata
+
+Recalculates the bower search index for this repository (local/virtual). Please see the Bower integration documentation for
+more details.
+
 ## calculate\_maven\_index( repos => \[ 'repo1', 'repo2' \], force => 0/1 )
 
 Calculates/caches a Maven index for the specified repositories
@@ -511,6 +516,10 @@ Get the general configuration (artifactory.config.xml)
 
 Save the general configuration (artifactory.config.xml)
 
+## update\_custom\_url\_base( $url )
+
+Changes the Custom URL base
+
 ## license\_information
 
 Retrieve information about the currently installed license
@@ -528,8 +537,7 @@ currently installed Add-ons
 
 ## execute\_plugin\_code( $execution\_name, $params, $async )
 
-Executes a named execution closure found in the executions section of a user
-plugin
+Executes a named execution closure found in the executions section of a user plugin
 
 ## retrieve\_all\_available\_plugin\_info
 
