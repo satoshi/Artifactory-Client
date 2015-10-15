@@ -859,6 +859,13 @@ subtest 'retrieve_all_available_plugin_info', sub {
     like( $url, qr|/api/plugins|, 'retrieve_all_available_plugin_info called' );
 };
 
+subtest 'retrieve_plugin_info_of_a_certain_type', sub {
+    my $client = setup();
+    my $resp   = $client->retrieve_plugin_info_of_a_certain_type('staging');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/plugins/staging|, 'retrieve_plugin_info_of_a_certain_type' );
+};
+
 done_testing();
 
 sub setup {
