@@ -1682,7 +1682,7 @@ sub retrieve_build_staging_strategy {
     my $strategy_name = delete $args{strategyName};
     my $build_name    = delete $args{buildName};
 
-    my $url = $self->_api_url() . "/plugins/build/staging/$strategy_name?buildName=$build_name?params=";
+    my $url = $self->_api_url() . "/plugins/build/staging/$strategy_name?buildName=$build_name&params=";
     $url = $url . $self->_attach_properties( properties => \%args );
     return $self->get($url);
 }

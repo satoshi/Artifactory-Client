@@ -866,6 +866,22 @@ subtest 'retrieve_plugin_info_of_a_certain_type', sub {
     like( $url, qr|/api/plugins/staging|, 'retrieve_plugin_info_of_a_certain_type' );
 };
 
+subtest 'retrieve_build_staging_strategy', sub {
+    my $client = setup();
+    my %args   = (
+        strategyName => 'strategy1',
+        buildName    => 'build1',
+        foo          => [ 'a', 'b' ]
+    );
+    my $resp = $client->retrieve_build_staging_strategy(%args);
+    my $url  = $resp->request->uri;
+    like(
+        $url,
+        qr|/api/plugins/build/staging/strategy1\?buildName=build1&params=foo=a,b|,
+        'retrieve_build_staging_strategy called'
+    );
+};
+
 done_testing();
 
 sub setup {
