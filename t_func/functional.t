@@ -882,6 +882,19 @@ subtest 'retrieve_build_staging_strategy', sub {
     );
 };
 
+subtest 'execute_build_promotion', sub {
+    my $client = setup();
+    my %args   = (
+        promotionName => 'promote1',
+        buildName     => 'build1',
+        buildNumber   => 1,
+        foo           => [ 'a', 'b', 'c' ]
+    );
+    my $resp = $client->execute_build_promotion(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/plugins/build/promote/promote1/build1/1\?params=foo=a,b,c|, 'execute_build_promotion called' );
+};
+
 done_testing();
 
 sub setup {
