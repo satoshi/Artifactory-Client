@@ -2126,8 +2126,7 @@ subtest 'update_custom_url_base', sub {
                 '_request' => bless(
                     {
                         '_uri' => bless(
-                            do { \( my $o = "http://example.com:7777/artifactory/api/system/configuration/baseUrl" ) }
-                            ,
+                            do { \( my $o = "http://example.com:7777/artifactory/api/system/configuration/baseUrl" ) },
                             'URI::http'
                         ),
                     },
@@ -2282,6 +2281,32 @@ subtest 'execute_build_promotion', sub {
     my $resp            = $client->execute_build_promotion(%args);
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr|/api/plugins/build/promote/promotion1/build1/3|, 'requsted URL looks sane' );
+};
+
+subtest 'reload_plugins', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do {
+                                \( my $o = "http://example.com:7777/artifactory/api/plugins/reload" );
+                            },
+                            'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp            = $client->reload_plugins();
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/plugins/reload|, 'requested URL looks sane' );
 };
 
 subtest 'import_repository_content', sub {

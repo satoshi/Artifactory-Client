@@ -1704,6 +1704,19 @@ sub execute_build_promotion {
     return $self->post($url);
 }
 
+=head2 reload_plugins
+
+Reloads user plugins if there are modifications since the last user plugins reload. Works regardless of the automatic
+user plugins refresh interval
+
+=cut
+
+sub reload_plugins {
+    my $self = shift;
+    my $url  = $self->_api_url() . '/plugins/reload';
+    return $self->post($url);
+}
+
 =head1 IMPORT & EXPORT
 
 =cut
