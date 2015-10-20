@@ -895,6 +895,13 @@ subtest 'execute_build_promotion', sub {
     like( $url, qr|/api/plugins/build/promote/promote1/build1/1\?params=foo=a,b,c|, 'execute_build_promotion called' );
 };
 
+subtest 'reload_plugins', sub {
+    my $client = setup();
+    my $resp   = $client->reload_plugins();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/plugins/reload|, 'reload_plugins called' );
+};
+
 done_testing();
 
 sub setup {
