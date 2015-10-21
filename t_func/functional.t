@@ -902,6 +902,13 @@ subtest 'reload_plugins', sub {
     like( $url, qr|/api/plugins/reload|, 'reload_plugins called' );
 };
 
+subtest 'import_repository_content', sub {
+    my $client = setup();
+    my $resp   = $client->import_repository_content( path => 'foobar', repo => 'libs-release-local' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/import/repositories\?repo=libs-release-local&path=foobar|, 'import_repository_content called' );
+};
+
 done_testing();
 
 sub setup {
