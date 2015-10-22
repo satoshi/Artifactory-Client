@@ -909,6 +909,13 @@ subtest 'import_repository_content', sub {
     like( $url, qr|/api/import/repositories\?repo=libs-release-local&path=foobar|, 'import_repository_content called' );
 };
 
+subtest 'import_system_settings_example', sub {
+    my $client = setup();
+    my $resp   = $client->import_system_settings_example();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/import/system|, 'import_system_settings_example' );
+};
+
 done_testing();
 
 sub setup {
