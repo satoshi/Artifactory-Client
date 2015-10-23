@@ -913,7 +913,18 @@ subtest 'import_system_settings_example', sub {
     my $client = setup();
     my $resp   = $client->import_system_settings_example();
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/import/system|, 'import_system_settings_example' );
+    like( $url, qr|/api/import/system|, 'import_system_settings_example called' );
+};
+
+subtest 'full_system_import', sub {
+    my $client = setup();
+    my %args   = (
+        importPath      => '/root/repo',
+        includeMetadata => 'true'
+    );
+    my $resp = $client->full_system_import(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/import/system|, 'full_system_import called' );
 };
 
 done_testing();
