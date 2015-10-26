@@ -927,6 +927,13 @@ subtest 'full_system_import', sub {
     like( $url, qr|/api/import/system|, 'full_system_import called' );
 };
 
+subtest 'export_system_settings_example', sub {
+    my $client = setup();
+    my $resp   = $client->export_system_settings_example();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/export/system|, 'export_system_settings_example called' );
+};
+
 done_testing();
 
 sub setup {
