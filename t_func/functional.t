@@ -934,6 +934,14 @@ subtest 'export_system_settings_example', sub {
     like( $url, qr|/api/export/system|, 'export_system_settings_example called' );
 };
 
+subtest 'export_system', sub {
+    my $client = setup();
+    my %args = ( verbose => 'false' );
+    my $resp = $client->export_system(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/export/system|, 'export_system called' );
+};
+
 done_testing();
 
 sub setup {
