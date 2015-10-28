@@ -362,6 +362,15 @@ subtest 'file_info', sub {
     is( $resp->code, 200, 'file_info succeeded' );
 };
 
+subtest 'get_storage_summary_info', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->get_storage_summary_info();
+    is( $resp->code, 200, 'get_storage_summary_info succeeded' );
+};
+
 subtest 'item_last_modified', sub {
     my $client = setup();
 

@@ -390,6 +390,18 @@ sub file_info {
     return $self->folder_info($path);    # should be OK to do this
 }
 
+=head2 get_storage_summary_info
+
+Returns storage summary information regarding binaries, file store and repositories
+
+=cut
+
+sub get_storage_summary_info {
+    my $self = shift;
+    my $url  = $self->_api_url() . '/storageinfo';
+    return $self->get($url);
+}
+
 =head2 item_last_modified( $path )
 
 Returns item_last_modified for a given path
