@@ -103,6 +103,13 @@ subtest 'file_info', sub {
     like( $url, qr|/libs-release-local/foo/bar|, 'file_info called' );
 };
 
+subtest 'get_storage_summary_info', sub {
+    my $client = setup();
+    my $resp   = $client->get_storage_summary_info();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/storageinfo|, 'get_storage_summary_info called' );
+};
+
 subtest 'item_last_modified', sub {
     my $client = setup();
     my $resp   = $client->item_last_modified('foo/bar');
@@ -936,9 +943,9 @@ subtest 'export_system_settings_example', sub {
 
 subtest 'export_system', sub {
     my $client = setup();
-    my %args = ( verbose => 'false' );
-    my $resp = $client->export_system(%args);
-    my $url  = $resp->request->uri;
+    my %args   = ( verbose => 'false' );
+    my $resp   = $client->export_system(%args);
+    my $url    = $resp->request->uri;
     like( $url, qr|/api/export/system|, 'export_system called' );
 };
 
