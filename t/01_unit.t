@@ -401,6 +401,18 @@ subtest 'delete_item_properties', sub {
     is( $resp->code, 204, 'delete_item_properties succeeded' );
 };
 
+subtest 'set_item_sha256_checksum', sub {
+    my $client = setup();
+    my %args   = (
+        repoKey => 'libs-release-local',
+        path    => '/'
+    );
+
+    local *{'LWP::UserAgent::put'} = sub { return $mock_responses{http_200}; };
+    my $resp = $client->set_item_sha256_checksum(%args);
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'retrieve_latest_artifact', sub {
     my $client = setup();
     my $path   = '/unique_path';

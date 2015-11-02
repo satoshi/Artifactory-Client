@@ -494,6 +494,23 @@ sub delete_item_properties {
     return $self->delete($url);
 }
 
+=head2 set_item_sha256_checksum( repoKey => 'foo', path => 'bar' )
+
+Calculates an artifact's SHA256 checksum and attaches it as a property (with key "sha256"). If the artifact is a folder,
+then recursively calculates the SHA256 of each item in the folder and attaches the property to each item.
+
+=cut
+
+sub set_item_sha256_checksum {
+    my ( $self, %args ) = @_;
+    my $url = $self->_api_url() . '/checksum/sha256';
+    return $self->put(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode( \%args )
+    );
+}
+
 =head2 retrieve_artifact( $path, $filename )
 
 Takes path and retrieves artifact on the path.  If $filename is given, artifact content goes into the $filename rather
