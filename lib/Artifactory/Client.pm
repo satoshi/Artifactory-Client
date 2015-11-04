@@ -631,10 +631,11 @@ sub deploy_artifact {
     push @joiners, $props if ($props);    # if properties aren't passed in, the function returns empty string
 
     my $url = join( ";", @joiners );
+    my $fh = Path::Tiny::path($file)->openr_raw();
     my $req = HTTP::Request::StreamingUpload->new(
         PUT     => $url,
-        path    => $file,
-        headers => HTTP::Headers->new( %{$header} ),
+        fh      => $fh,
+        headers => HTTP::Headers->new( %{$header}, 'Content-Length' => -s $fh, ),
     );
     return $self->request($req);
 }
