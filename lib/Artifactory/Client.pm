@@ -633,8 +633,8 @@ sub deploy_artifact {
     my $url = join( ";", @joiners );
     my $req = HTTP::Request::StreamingUpload->new(
         PUT     => $url,
-        path    => $file,
         headers => HTTP::Headers->new( %{$header} ),
+        ( $file ? ( fh => Path::Tiny::path($file)->openr_raw() ) : () ),
     );
     return $self->request($req);
 }

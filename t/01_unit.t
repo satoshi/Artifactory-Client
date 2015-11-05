@@ -51,7 +51,7 @@ subtest 'deploy_artifact with properties and content', sub {
         return $mock_responses{http_201};
     };
 
-    my $resp = $client->deploy_artifact( path => $path, properties => $properties, content => $content );
+    my $resp = $client->deploy_artifact( path => $path, properties => $properties, file => "$Bin/data/test.json" );
     is( $resp->is_success, 1, 'request came back successfully' );
 
     local *{'LWP::UserAgent::get'} = sub {
