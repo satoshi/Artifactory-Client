@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+0.9.3   2015/11/5
+        Merged mithun's PR to work-around how HTTP::Request::StreamingUpload handles files
+
 0.9.2   2015/10/11
         Adding test data in manifest
 

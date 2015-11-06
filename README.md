@@ -6,13 +6,13 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 0.9.2
+Version 0.9.3
 
 # SYNOPSIS
 
 This is a Perl client for Artifactory REST API:
-https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API Every public
-method provided in this module returns a HTTP::Response object.
+https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API Every public method provided in this module returns a
+HTTP::Response object.
 
     use Artifactory::Client;
 
@@ -45,12 +45,6 @@ method provided in this module returns a HTTP::Response object.
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
-
-Note on testing: This module is developed using Test-Driven Development.  I
-have functional tests making real API calls, however they contain proprietary
-information and I am not allowed to open source them.  The unit tests included
-are dumbed-down version of my functional tests.  They should serve as a
-detailed guide on how to make API calls.
 
 # GENERIC METHODS
 
@@ -124,6 +118,10 @@ Returns folder info
 
 Returns file info
 
+## get\_storage\_summary\_info
+
+Returns storage summary information regarding binaries, file store and repositories
+
 ## item\_last\_modified( $path )
 
 Returns item\_last\_modified for a given path
@@ -138,21 +136,25 @@ Takes path and properties then get item properties.
 
 ## set\_item\_properties( path => $path, properties => { key => \[ values \] }, recursive => 0,1 )
 
-Takes path and properties then set item properties.  Supply recursive => 0 if
-you want to suppress propagation of properties downstream.  Note that
-properties are a hashref with key-arrayref pairs, such as:
+Takes path and properties then set item properties.  Supply recursive => 0 if you want to suppress propagation of
+properties downstream.  Note that properties are a hashref with key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
 ## delete\_item\_properties( path => $path, properties => \[ key\_names \], recursive => 0,1 )
 
-Takes path and properties then delete item properties.  Supply recursive => 0
-if you want to suppress propagation of properties downstream.
+Takes path and properties then delete item properties.  Supply recursive => 0 if you want to suppress propagation of
+properties downstream.
+
+## set\_item\_sha256\_checksum( repoKey => 'foo', path => 'bar' )
+
+Calculates an artifact's SHA256 checksum and attaches it as a property (with key "sha256"). If the artifact is a folder,
+then recursively calculates the SHA256 of each item in the folder and attaches the property to each item.
 
 ## retrieve\_artifact( $path, $filename )
 
-Takes path and retrieves artifact on the path.  If $filename is given, artifact
-content goes into the $filename rather than the HTTP::Response object.
+Takes path and retrieves artifact on the path.  If $filename is given, artifact content goes into the $filename rather
+than the HTTP::Response object.
 
 ## retrieve\_latest\_artifact( path => $path, version => $version, release => $release, integration => $integration,
  flag => 'snapshot', 'release', 'integration' )
@@ -169,32 +171,29 @@ Takes path and traces artifact retrieval
 
 ## archive\_entry\_download( $path, $archive\_path )
 
-Takes path and archive\_path, retrieves an archived resource from the specified
-archive destination.
+Takes path and archive\_path, retrieves an archived resource from the specified archive destination.
 
 ## create\_directory( path => $path, properties => { key => \[ values \] } )
 
-Takes path, properties then create a directory.  Directory needs to end with a
-/, such as "/some\_dir/".
+Takes path, properties then create a directory.  Directory needs to end with a /, such as "/some\_dir/".
 
 ## deploy\_artifact( path => $path, properties => { key => \[ values \] }, file => $file )
 
-Takes path on Artifactory, properties and filename then deploys the file.  Note
-that properties are a hashref with key-arrayref pairs, such as:
+Takes path on Artifactory, properties and filename then deploys the file.  Note that properties are a hashref with
+key-arrayref pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
 ## deploy\_artifact\_by\_checksum( path => $path, properties => { key => \[ values \] }, file => $file, sha1 => $sha1 )
 
-Takes path, properties, filename and sha1 then deploys the file.  Note that
-properties are a hashref with key-arrayref pairs, such as:
+Takes path, properties, filename and sha1 then deploys the file.  Note that properties are a hashref with key-arrayref
+pairs, such as:
 
     $prop = { key1 => ['a'], key2 => ['a', 'b'] }
 
 ## deploy\_artifacts\_from\_archive( path => $path, file => $file )
 
-Path is the path on Artifactory, file is path to local archive.  Will deploy
-$file to $path.
+Path is the path on Artifactory, file is path to local archive.  Will deploy $file to $path.
 
 ## push\_a\_set\_of\_artifacts\_to\_bintray( descriptor => 'foo', gpgPassphrase => 'top\_secret', gpgSign => 'true' )
 
@@ -204,8 +203,8 @@ parameter.
 
 ## push\_docker\_tag\_to\_bintray( dockerImage => 'jfrog/ubuntu:latest', async => 'true', ... )
 
-Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.
-You will need to enter your Bintray credentials, for more details, please refer to Entering your Bintray credentials.
+Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.  You will need to enter your
+Bintray credentials, for more details, please refer to Entering your Bintray credentials.
 
 ## file\_compliance\_info( $path )
 
@@ -217,16 +216,14 @@ Delete $path on artifactory.
 
 ## copy\_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
-Copies an artifact from $from to $to.  Note that for this particular API call,
-the $from and $to must include repository names as copy source and destination
-may be different repositories.  You can also supply dry, suppressLayouts and
+Copies an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
+names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
 failFast values as specified in the documentation.
 
 ## move\_item( from => $from, to => $to, dry => 1, suppressLayouts => 0/1, failFast => 0/1 )
 
-Moves an artifact from $from to $to.  Note that for this particular API call,
-the $from and $to must include repository names as copy source and destination
-may be different repositories.  You can also supply dry, suppressLayouts and
+Moves an artifact from $from to $to.  Note that for this particular API call, the $from and $to must include repository
+names as copy source and destination may be different repositories.  You can also supply dry, suppressLayouts and
 failFast values as specified in the documentation.
 
 ## get\_repository\_replication\_configuration
@@ -267,8 +264,7 @@ Deletes a local multi-push replication configuration. Supported by local and loc
 
 ## file\_list( $dir, %opts )
 
-Get a flat (the default) or deep listing of the files and folders (not included
-by default) within a folder
+Get a flat (the default) or deep listing of the files and folders (not included by default) within a folder
 
 # SEARCHES
 
@@ -328,13 +324,11 @@ Search for artifacts with specified statuses
 
 ## artifact\_version\_search( g => 'foo', a => 'bar', v => '1.0', repos => \[ 'foo', 'bar' \] )
 
-Search for all available artifact versions by GroupId and ArtifactId in local,
-remote or virtual repositories
+Search for all available artifact versions by GroupId and ArtifactId in local, remote or virtual repositories
 
 ## artifact\_latest\_version\_search\_based\_on\_layout( g => 'foo', a => 'bar', v => '1.0', repos => \[ 'foo', 'bar' \] )
 
-Search for the latest artifact version by groupId and artifactId, based on the
-layout defined in the repository
+Search for the latest artifact version by groupId and artifactId, based on the layout defined in the repository
 
 ## artifact\_latest\_version\_search\_based\_on\_properties( repo => '\_any', path => '/a/b', listFiles => 1 )
 
@@ -400,8 +394,7 @@ Get the details of an Artifactory Permission Target
 
 ## create\_or\_replace\_permission\_target( $name, %args )
 
-Creates a new permission target in Artifactory or replaces an existing
-permission target
+Creates a new permission target in Artifactory or replaces an existing permission target
 
 ## delete\_permission\_target( $name )
 
@@ -443,8 +436,7 @@ Sets the pass phrase required signing Debian packages using the private key
 
 ## get\_repositories( $type )
 
-Returns a list of minimal repository details for all repositories of the
-specified type
+Returns a list of minimal repository details for all repositories of the specified type
 
 ## repository\_configuration( $name, %args )
 
@@ -452,13 +444,12 @@ Retrieves the current configuration of a repository
 
 ## create\_or\_replace\_repository\_configuration( $name, \\%payload, %args )
 
-Creates a new repository in Artifactory with the provided configuration or
-replaces the configuration of an existing repository
+Creates a new repository in Artifactory with the provided configuration or replaces the configuration of an existing
+repository
 
 ## update\_repository\_configuration( $name, \\%payload )
 
-Updates an exiting repository configuration in Artifactory with the provided
-configuration elements
+Updates an exiting repository configuration in Artifactory with the provided configuration elements
 
 ## delete\_repository( $name )
 
@@ -466,14 +457,12 @@ Removes a repository configuration together with the whole repository content
 
 ## calculate\_yum\_repository\_metadata( async => 0/1 )
 
-Calculates/recalculates the YUM metdata for this repository, based on the RPM
-package currently hosted in the repository
+Calculates/recalculates the YUM metdata for this repository, based on the RPM package currently hosted in the repository
 
 ## calculate\_nuget\_repository\_metadata
 
-Recalculates all the NuGet packages for this repository (local/cache/virtual),
-and re-annotate the NuGet properties for each NuGet package according to it's
-internal nuspec file
+Recalculates all the NuGet packages for this repository (local/cache/virtual), and re-annotate the NuGet properties for
+each NuGet package according to it's internal nuspec file
 
 ## calculate\_npm\_repository\_metadata
 
@@ -530,8 +519,7 @@ Install new license key or change the current one
 
 ## version\_and\_addons\_information
 
-Retrieve information about the current Artifactory version, revision, and
-currently installed Add-ons
+Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
 
 # PLUGINS
 
@@ -541,13 +529,12 @@ Executes a named execution closure found in the executions section of a user plu
 
 ## retrieve\_all\_available\_plugin\_info
 
-Retrieves all available user plugin information (subject to the permissions of
-the provided credentials)
+Retrieves all available user plugin information (subject to the permissions of the provided credentials)
 
 ## retrieve\_plugin\_info\_of\_a\_certain\_type( $type )
 
-Retrieves all available user plugin information (subject to the permissions of
-the provided credentials) of the specified type
+Retrieves all available user plugin information (subject to the permissions of the provided credentials) of the
+specified type
 
 ## retrieve\_build\_staging\_strategy( strategyName => 'strategy1', buildName => 'build1', %args )
 
@@ -555,8 +542,12 @@ Retrieves a build staging strategy defined by a user plugin
 
 ## execute\_build\_promotion( promotionName => 'promotion1', buildName => 'build1', buildNumber => 3, %args )
 
-Executes a named promotion closure found in the promotions section of a user
-plugin
+Executes a named promotion closure found in the promotions section of a user plugin
+
+## reload\_plugins
+
+Reloads user plugins if there are modifications since the last user plugins reload. Works regardless of the automatic
+user plugins refresh interval
 
 # IMPORT & EXPORT
 
