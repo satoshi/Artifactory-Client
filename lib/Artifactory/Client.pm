@@ -504,7 +504,7 @@ then recursively calculates the SHA256 of each item in the folder and attaches t
 sub set_item_sha256_checksum {
     my ( $self, %args ) = @_;
     my $url = $self->_api_url() . '/checksum/sha256';
-    return $self->put(
+    return $self->post(
         $url,
         "Content-Type" => 'application/json',
         Content        => $self->_json->encode( \%args )

@@ -145,6 +145,13 @@ subtest 'delete_item_properties', sub {
     like( $url, qr|/libs-release-local/foo/bar\?properties=bar,baz|, 'delete item properties called' );
 };
 
+subtest 'set_item_sha256_checksum', sub {
+    my $client = setup();
+    my $resp   = $client->set_item_sha256_checksum( repoKey => 'libs-release-local', path => '/repodata' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/checksum/sha256|, 'set_item_sha256_checksum called' );
+};
+
 subtest 'retrieve_artifact', sub {
     my $client = setup();
     my $resp   = $client->retrieve_artifact('foo/bar');

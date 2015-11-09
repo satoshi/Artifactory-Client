@@ -408,7 +408,7 @@ subtest 'set_item_sha256_checksum', sub {
         path    => '/'
     );
 
-    local *{'LWP::UserAgent::put'} = sub { return $mock_responses{http_200}; };
+    local *{'LWP::UserAgent::post'} = sub { return $mock_responses{http_200}; };
     my $resp = $client->set_item_sha256_checksum(%args);
     is( $resp->code, 200, 'got 200 back' );
 };
