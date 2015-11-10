@@ -571,6 +571,20 @@ sub retrieve_build_artifacts_archive {
     );
 }
 
+=head2 retrieve_folder_or_repository_archive( path => '/foobar', archiveType => 'zip' )
+
+Retrieves an archive file (supports zip/tar/tar.gz/tgz) containing all the artifacts that reside under the specified
+path (folder or repository root). Requires Enable Folder Download to be set.
+
+=cut
+
+sub retrieve_folder_or_repository_archive {
+    my ( $self, %args ) = @_;
+    my $path = delete $args{path};
+    my $url = $self->_api_url() . '/archive/download' . $path . '?' . $self->_stringify_hash( '', %args );
+    return $self->get($url);
+}
+
 =head2 trace_artifact_retrieval( $path )
 
 Takes path and traces artifact retrieval

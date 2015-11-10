@@ -510,6 +510,20 @@ subtest 'retrieve_build_artifacts_archive', sub {
     is( $resp->code, 200, 'retrieve_build_artifacts_archive succeeded' );
 };
 
+subtest 'retrieve_folder_or_repository_archive', sub {
+    my $client = setup();
+    my %info   = (
+        path        => '/foobar',
+        archiveType => 'zip',
+    );
+
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->retrieve_folder_or_repository_archive(%info);
+    is( $resp->code, 200, 'retrieve_folder_or_repository_archive succeeded' );
+};
+
 subtest 'trace_artifact_retrieval', sub {
     my $client = setup();
 
