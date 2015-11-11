@@ -178,6 +178,17 @@ subtest 'retrieve_build_artifacts_archive', sub {
     like( $url, qr|/api/archive/buildArtifacts|, 'retrieve_build_artifacts_archive called' );
 };
 
+subtest 'retrieve_folder_or_repository_archive', sub {
+    my $client = setup();
+    my %args   = (
+        path        => '/foo',
+        archiveType => 'zip'
+    );
+    my $resp = $client->retrieve_folder_or_repository_archive(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/archive/download/foo\?archiveType=zip|, 'retrieve_folder_or_repository_archive called' );
+};
+
 subtest 'trace_artifact_retrieval', sub {
     my $client = setup();
     my $resp   = $client->trace_artifact_retrieval('foo/bar');
