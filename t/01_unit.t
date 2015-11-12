@@ -855,6 +855,19 @@ subtest 'delete_local_multi_push_replication', sub {
     );
 };
 
+subtest 'artifact_sync_download', sub {
+    my $client = setup();
+    my %args   = (
+        content => 'progress',
+        mark    => 1000,
+    );
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->artifact_sync_download( '/foobar', %args );
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'file_list', sub {
     my $client = setup();
     my %opts   = (

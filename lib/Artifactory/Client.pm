@@ -888,6 +888,24 @@ sub delete_local_multi_push_replication {
     return $self->delete($call_url);
 }
 
+=head2 artifact_sync_download( $path, content => 'progress', mark => 1000 )
+
+Downloads an artifact with or without returning the actual content to the client. When tracking the progress marks are
+printed (by default every 1024 bytes). This is extremely useful if you want to trigger downloads on a remote Artifactory
+server, for example to force eager cache population of large artifacts, but want to avoid the bandwidth consumption
+involved in transferring the artifacts to the triggering client. If no content parameter is specified the file content
+is downloaded to the client.
+
+=cut
+
+sub artifact_sync_download {
+    my ( $self, $path, %args ) = @_;
+    my $repo = $self->repository();
+    my $url  = $self->_api_url() . "/download/$repo" . $path;
+    $url .= "?" . $self->_stringify_hash( '&', %args ) if (%args);
+    return $self->get($url);
+}
+
 =head2 file_list( $dir, %opts )
 
 Get a flat (the default) or deep listing of the files and folders (not included by default) within a folder
