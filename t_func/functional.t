@@ -371,6 +371,21 @@ subtest 'delete_local_multi_push_replication', sub {
     );
 };
 
+subtest 'artifact_sync_download', sub {
+    my $client = setup();
+    my %args   = (
+        content => 'progress',
+        mark    => 1000
+    );
+    my $resp = $client->artifact_sync_download( '/foobar', %args );
+    my $url = $resp->request->uri;
+    like(
+        $url,
+        qr|/api/download/libs-release-local/foobar\?mark=1000&content=progress|,
+        'artifact_sync_download called'
+    );
+};
+
 subtest 'file_list', sub {
     my $client = setup();
     my $resp   = $client->file_list('/foo');
