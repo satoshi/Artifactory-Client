@@ -1519,19 +1519,6 @@ sub calculate_npm_repository_metadata {
     return $self->_handle_repository_reindex("/npm/$repository/reindex");
 }
 
-=head2 calculate_bower_repository_metadata
-
-Recalculates the bower search index for this repository (local/virtual). Please see the Bower integration documentation for
-more details.
-
-=cut
-
-sub calculate_bower_repository_metadata {
-    my $self       = shift;
-    my $repository = $self->repository();
-    return $self->_handle_repository_reindex("/bower/$repository/reindex");
-}
-
 =head2 calculate_maven_index( repos => [ 'repo1', 'repo2' ], force => 0/1 )
 
 Calculates/caches a Maven index for the specified repositories
