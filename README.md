@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 0.9.3
+Version 1.0.0
 
 # SYNOPSIS
 
@@ -165,6 +165,11 @@ Takes path, version, flag of 'snapshot', 'release' or 'integration' and retrieve
 
 Takes payload (hashref) then retrieve build artifacts archive.
 
+## retrieve\_folder\_or\_repository\_archive( path => '/foobar', archiveType => 'zip' )
+
+Retrieves an archive file (supports zip/tar/tar.gz/tgz) containing all the artifacts that reside under the specified
+path (folder or repository root). Requires Enable Folder Download to be set.
+
 ## trace\_artifact\_retrieval( $path )
 
 Takes path and traces artifact retrieval
@@ -261,6 +266,14 @@ Updates a local multi-push replication configuration. Supported by local and loc
 ## delete\_local\_multi\_push\_replication( $url )
 
 Deletes a local multi-push replication configuration. Supported by local and local-cached repositories
+
+## artifact\_sync\_download( $path, content => 'progress', mark => 1000 )
+
+Downloads an artifact with or without returning the actual content to the client. When tracking the progress marks are
+printed (by default every 1024 bytes). This is extremely useful if you want to trigger downloads on a remote Artifactory
+server, for example to force eager cache population of large artifacts, but want to avoid the bandwidth consumption
+involved in transferring the artifacts to the triggering client. If no content parameter is specified the file content
+is downloaded to the client.
 
 ## file\_list( $dir, %opts )
 
@@ -467,11 +480,6 @@ each NuGet package according to it's internal nuspec file
 ## calculate\_npm\_repository\_metadata
 
 Recalculates the npm search index for this repository (local/virtual). Please see the Npm integration documentation for
-more details.
-
-## calculate\_bower\_repository\_metadata
-
-Recalculates the bower search index for this repository (local/virtual). Please see the Bower integration documentation for
 more details.
 
 ## calculate\_maven\_index( repos => \[ 'repo1', 'repo2' \], force => 0/1 )

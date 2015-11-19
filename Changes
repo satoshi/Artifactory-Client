@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+1.0.0   2015/11/18
+        Done with functional tests, releasing as 1.0.0
+
 0.9.3   2015/11/5
         Merged mithun's PR to work-around how HTTP::Request::StreamingUpload handles files
 
