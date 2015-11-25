@@ -1416,6 +1416,16 @@ subtest 'delete_user', sub {
     like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
 };
 
+subtest 'create_api_key', sub {
+    my $client = setup();
+    my %data = ( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
+    local *{'LWP::UserAgent::post'} = sub {
+        return return $mock_responses{http_200};
+    };
+    my $resp = $client->create_api_key(%data);
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'get_groups', sub {
     my $client = setup();
 

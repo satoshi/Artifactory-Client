@@ -1212,6 +1212,22 @@ sub delete_user {
     return $self->_handle_security( $user, 'delete', 'users' );
 }
 
+=head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
+
+Create an API key for the current user
+
+=cut
+
+sub create_api_key {
+    my ( $self, %args ) = @_;
+    my $url = $self->_api_url() . "/apiKey/auth";
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%args )
+    );
+}
+
 =head2 get_groups
 
 Get the groups list
