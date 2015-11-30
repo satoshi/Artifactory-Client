@@ -627,6 +627,13 @@ subtest 'delete_user', sub {
     like( $url, qr|/api/security/users/davids|, 'delete_user called' );
 };
 
+subtest 'create_api_key', sub {
+    my $client = setup();
+    my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/apiKey/auth|, 'create_api_key called' );
+};
+
 subtest 'get_groups', sub {
     my $client = setup();
     my $resp   = $client->get_groups();
