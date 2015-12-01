@@ -1228,6 +1228,18 @@ sub create_api_key {
     );
 }
 
+=head2 get_api_key
+
+Get the current user's own API key
+
+=cut
+
+sub get_api_key {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/apiKey/auth";
+    return $self->get( $url, 'Content-Type' => 'application/json', );
+}
+
 =head2 get_groups
 
 Get the groups list

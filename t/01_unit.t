@@ -1426,6 +1426,15 @@ subtest 'create_api_key', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'get_api_key', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::get'} = sub {
+        return return $mock_responses{http_200};
+    };
+    my $resp = $client->get_api_key();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'get_groups', sub {
     my $client = setup();
 
