@@ -634,6 +634,13 @@ subtest 'create_api_key', sub {
     like( $url, qr|/api/apiKey/auth|, 'create_api_key called' );
 };
 
+subtest 'get_api_key', sub {
+    my $client = setup();
+    my $resp   = $client->get_api_key();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/artifactory/api/apiKey/auth|, 'get_api_key called' );
+};
+
 subtest 'get_groups', sub {
     my $client = setup();
     my $resp   = $client->get_groups();

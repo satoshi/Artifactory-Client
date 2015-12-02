@@ -1220,12 +1220,7 @@ Create an API key for the current user
 
 sub create_api_key {
     my ( $self, %args ) = @_;
-    my $url = $self->_api_url() . "/apiKey/auth";
-    return $self->post(
-        $url,
-        'Content-Type' => 'application/json',
-        content        => $self->_json->encode( \%args )
-    );
+    return $self->_handle_api_key( 'post', %args );
 }
 
 =head2 get_api_key
@@ -1236,8 +1231,7 @@ Get the current user's own API key
 
 sub get_api_key {
     my $self = shift;
-    my $url  = $self->_api_url() . "/apiKey/auth";
-    return $self->get( $url, 'Content-Type' => 'application/json', );
+    return $self->_handle_api_key('get');
 }
 
 =head2 get_groups
@@ -2132,6 +2126,17 @@ sub _gather_delete_builds_params {
     push @params, "artifacts=$artifacts" if ( defined $artifacts );
     push @params, "deleteAll=$deleteall" if ( defined $deleteall );
     return @params;
+}
+
+sub _handle_api_key {
+    my ( $self, $method, %args ) = @_;
+
+    my $url = $self->_api_url() . "/apiKey/auth";
+    return $self->$method(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%args )
+    );
 }
 
 __PACKAGE__->meta->make_immutable;
