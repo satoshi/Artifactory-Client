@@ -1234,6 +1234,18 @@ sub get_api_key {
     return $self->_handle_api_key('get');
 }
 
+=head2 revoke_api_key
+
+Revokes the current user's API key
+
+=cut
+
+sub revoke_api_key {
+    my $self = shift;
+    my $key  = $self->get_api_key();    # I think I just need to create X-Api-Key:<current-api-key> and pass it on
+    return $self->_handle_api_key('delete');
+}
+
 =head2 get_groups
 
 Get the groups list
