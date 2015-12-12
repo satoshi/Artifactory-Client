@@ -1242,8 +1242,15 @@ Revokes the current user's API key
 
 sub revoke_api_key {
     my $self = shift;
-    my $key  = $self->get_api_key();    # I think I just need to create X-Api-Key:<current-api-key> and pass it on
-    return $self->_handle_api_key('delete');
+    my $resp  = $self->get_api_key();    # I think I just need to create X-Api-Key:<current-api-key> and pass it on
+    my $content = $self->_json->decode($resp->decoded_content);
+    my %header;
+    $header{'X-Api-Key'} = $content->{apiKey};
+    my $url = $self->_api_url() . "/apiKey/auth";
+    return $self->delete(
+        $url,
+        %header
+    );
 }
 
 =head2 get_groups

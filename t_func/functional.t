@@ -638,7 +638,14 @@ subtest 'get_api_key', sub {
     my $client = setup();
     my $resp   = $client->get_api_key();
     my $url    = $resp->request->uri;
-    like( $url, qr|/artifactory/api/apiKey/auth|, 'get_api_key called' );
+    like( $url, qr|/api/apiKey/auth|, 'get_api_key called' );
+};
+
+subtest 'revoke_api_key', sub {
+    my $client = setup();
+    my $resp   = $client->revoke_api_key();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/apiKey/auth|, 'revoke_api_key called' );
 };
 
 subtest 'get_groups', sub {
