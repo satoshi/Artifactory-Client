@@ -1241,13 +1241,19 @@ Revokes the current user's API key
 =cut
 
 sub revoke_api_key {
-    my $self    = shift;
-    my $resp    = $self->get_api_key();
-    my $content = $self->_json->decode( $resp->content );
-    my %header;
-    $header{'X-Api-Key'} = $content->{apiKey};
-    my $url = $self->_api_url() . "/apiKey/auth";
-    return $self->delete( $url, %header );
+    my $self = shift;
+    return $self->_handle_revoke_api_key('');
+}
+
+=head2 revoke_user_api_key
+
+Revokes the API key of another user
+
+=cut
+
+sub revoke_user_api_key {
+    my ( $self, $user ) = @_;
+    return $self->_handle_revoke_api_key($user);
 }
 
 =head2 get_groups
@@ -2153,6 +2159,17 @@ sub _handle_api_key {
         'Content-Type' => 'application/json',
         content        => $self->_json->encode( \%args )
     );
+}
+
+sub _handle_revoke_api_key {
+    my ( $self, $user ) = @_;
+
+    my $resp    = $self->get_api_key();
+    my $content = $self->_json->decode( $resp->content );
+    my %header;
+    $header{'X-Api-Key'} = $content->{apiKey};
+    my $url = $self->_api_url() . "/apiKey/auth/$user";
+    return $self->delete( $url, %header );
 }
 
 __PACKAGE__->meta->make_immutable;

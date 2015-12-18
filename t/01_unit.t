@@ -22,8 +22,8 @@ my $port        = 7777;
 my $repository  = 'repository';
 
 my %mock_responses = (
-    http_404 => bless( { '_rc' => 404,   '_headers' => bless( {}, 'HTTP::Headers' ) }, 'HTTP::Response' ),
-    http_200 => bless( { '_rc' => 200, '_content' => '{ "foo" : "bar" }' }, 'HTTP::Response' ),
+    http_404 => bless( { '_rc' => 404, '_headers' => bless( {}, 'HTTP::Headers' ) }, 'HTTP::Response' ),
+    http_200 => bless( { '_rc' => 200,   '_content' => '{ "foo" : "bar" }' }, 'HTTP::Response' ),
     http_201 => bless( { '_rc' => 201 }, 'HTTP::Response' ),
     http_202 => bless( { '_rc' => 202 }, 'HTTP::Response' ),
     http_204 => bless( { '_rc' => 204 }, 'HTTP::Response' ),
@@ -1446,6 +1446,20 @@ subtest 'revoke_api_key', sub {
         return $mock_responses{http_200};
     };
     my $resp = $client->revoke_api_key();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'revoke_user_api_key', sub {
+    my $client = setup();
+
+    # makes 2 calls, one to get the current key and the other to delete it
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    local *{'LWP::UserAgent::delete'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->revoke_user_api_key("foobar_user");
     is( $resp->code, 200, 'request succeeded' );
 };
 
