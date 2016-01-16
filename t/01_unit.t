@@ -1463,6 +1463,20 @@ subtest 'revoke_user_api_key', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'revoke_all_api_keys', sub {
+    my $client = setup();
+
+    # makes 2 calls, one to get the current key and the other to delete it
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    local *{'LWP::UserAgent::delete'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->revoke_all_api_keys( deleteAll => 1 );
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'get_groups', sub {
     my $client = setup();
 

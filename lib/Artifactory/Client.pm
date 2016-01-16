@@ -1242,7 +1242,7 @@ Revokes the current user's API key
 
 sub revoke_api_key {
     my $self = shift;
-    return $self->_handle_revoke_api_key('');
+    return $self->_handle_revoke_api_key('/apiKey/auth');
 }
 
 =head2 revoke_user_api_key
@@ -1253,7 +1253,19 @@ Revokes the API key of another user
 
 sub revoke_user_api_key {
     my ( $self, $user ) = @_;
-    return $self->_handle_revoke_api_key($user);
+    return $self->_handle_revoke_api_key("/apiKey/auth/$user");
+}
+
+=head2 revoke_all_api_keys
+
+Revokes all API keys currently defined in the system
+
+=cut
+
+sub revoke_all_api_keys {
+    my ( $self, %args ) = @_;
+    my $deleteall = ( defined $args{deleteAll} ) ? $args{deleteAll} : 1;
+    return $self->_handle_revoke_api_key("/apiKey?deleteAll=$deleteall");
 }
 
 =head2 get_groups
@@ -2162,13 +2174,13 @@ sub _handle_api_key {
 }
 
 sub _handle_revoke_api_key {
-    my ( $self, $user ) = @_;
+    my ( $self, $endpoint ) = @_;
 
     my $resp    = $self->get_api_key();
     my $content = $self->_json->decode( $resp->content );
     my %header;
     $header{'X-Api-Key'} = $content->{apiKey};
-    my $url = $self->_api_url() . "/apiKey/auth/$user";
+    my $url = $self->_api_url() . $endpoint;
     return $self->delete( $url, %header );
 }
 
