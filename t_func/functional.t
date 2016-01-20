@@ -644,17 +644,25 @@ subtest 'get_api_key', sub {
 subtest 'revoke_api_key', sub {
     my $client = setup();
     $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
-    my $resp   = $client->revoke_api_key();
-    my $url    = $resp->request->uri;
+    my $resp = $client->revoke_api_key();
+    my $url  = $resp->request->uri;
     like( $url, qr|/api/apiKey/auth|, 'revoke_api_key called' );
 };
 
 subtest 'revoke_user_api_key', sub {
     my $client = setup();
     $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
-    my $resp   = $client->revoke_user_api_key('foobar');
-    my $url    = $resp->request->uri;
+    my $resp = $client->revoke_user_api_key('foobar');
+    my $url  = $resp->request->uri;
     like( $url, qr|/api/apiKey/auth/foobar|, 'revoke_user_api_key called' );
+};
+
+subtest 'revoke_all_api_keys', sub {
+    my $client = setup();
+    $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
+    my $resp = $client->revoke_all_api_keys();
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/apiKey\?deleteAll|, 'revoke_user_api_key called' );
 };
 
 subtest 'get_groups', sub {
