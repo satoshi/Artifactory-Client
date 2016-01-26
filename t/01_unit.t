@@ -2560,6 +2560,17 @@ subtest 'export_system', sub {
     like( $url_in_response, qr|/api/export/system|, 'requsted URL looks sane' );
 };
 
+subtest 'create_bundle', sub {
+    my $client = setup();
+    my %data   = ();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->create_bundle(%data);
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 done_testing();
 
 sub setup {

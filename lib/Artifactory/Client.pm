@@ -1883,6 +1883,24 @@ sub export_system {
     return $self->_handle_system_settings( 'export', %args );
 }
 
+=head2 create_bundle( %hash of data structure )
+
+Create a new support bundle
+
+=cut
+
+sub create_bundle {
+    my ( $self, %args ) = @_;
+    my $url = $self->_api_url() . '/support/bundles';
+    %args = () unless %args;
+
+    return $self->post(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode( \%args )
+    );
+}
+
 sub _build_ua {
     my $self = shift;
     return LWP::UserAgent->new( agent => 'perl-artifactory-client/' . $VERSION, );
