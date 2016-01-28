@@ -1020,6 +1020,13 @@ subtest 'export_system', sub {
     like( $url, qr|/api/export/system|, 'export_system called' );
 };
 
+subtest 'create_bundle', sub {
+    my $client = setup();
+    my %args   = ( storageSummaryConfiguration => { enabled => "true" } );
+    my $resp   = $client->create_bundle(%args);
+    like( $url, qr|/api/support/bundles|, 'create_bundle called' );
+};
+
 done_testing();
 
 sub setup {
