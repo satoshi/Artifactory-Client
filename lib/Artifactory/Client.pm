@@ -1901,6 +1901,18 @@ sub create_bundle {
     );
 }
 
+=head2 list_bundles
+
+Lists previously created bundle currently stored in the system
+
+=cut
+
+sub list_bundles {
+    my $self = shift;
+    my $url  = $self->_api_url() . '/support/bundles';
+    return $self->get( $url, "Content-Type" => 'application/json', );
+}
+
 sub _build_ua {
     my $self = shift;
     return LWP::UserAgent->new( agent => 'perl-artifactory-client/' . $VERSION, );
