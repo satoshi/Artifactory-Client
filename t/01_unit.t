@@ -2571,7 +2571,7 @@ subtest 'create_bundle', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
-subtest 'create_bundle', sub {
+subtest 'list_bundles', sub {
     my $client = setup();
 
     local *{'LWP::UserAgent::get'} = sub {

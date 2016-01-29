@@ -1024,7 +1024,15 @@ subtest 'create_bundle', sub {
     my $client = setup();
     my %args   = ( storageSummaryConfiguration => { enabled => "true" } );
     my $resp   = $client->create_bundle(%args);
+    my $url    = $resp->request->uri;
     like( $url, qr|/api/support/bundles|, 'create_bundle called' );
+};
+
+subtest 'list_bundles', sub {
+    my $client = setup();
+    my $resp   = $client->list_bundles();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/support/bundles|, 'list_bundles called' );
 };
 
 done_testing();
