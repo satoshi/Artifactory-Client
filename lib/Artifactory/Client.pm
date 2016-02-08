@@ -1913,6 +1913,18 @@ sub list_bundles {
     return $self->get( $url, "Content-Type" => 'application/json', );
 }
 
+=head2 get_bundle
+
+Downloads a previously created bundle currently stored in the system
+
+=cut
+
+sub get_bundle {
+    my ( $self, $bundle ) = @_;
+    my $url = $self->_api_url() . '/support/bundles/' . $bundle;
+    return $self->get( $url, "Content-Type" => 'application/json', );
+}
+
 sub _build_ua {
     my $self = shift;
     return LWP::UserAgent->new( agent => 'perl-artifactory-client/' . $VERSION, );

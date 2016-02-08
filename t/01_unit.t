@@ -2581,6 +2581,16 @@ subtest 'list_bundles', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'get_bundle', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->get_bundle('foobar');
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 done_testing();
 
 sub setup {
