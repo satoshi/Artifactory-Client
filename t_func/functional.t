@@ -1035,6 +1035,13 @@ subtest 'list_bundles', sub {
     like( $url, qr|/api/support/bundles|, 'list_bundles called' );
 };
 
+subtest 'get_bundle', sub {
+    my $client = setup();
+    my $resp   = $client->get_bundle('foobar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/support/bundles|, 'get_bundle called' );
+};
+
 done_testing();
 
 sub setup {
