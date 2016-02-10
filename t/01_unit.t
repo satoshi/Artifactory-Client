@@ -2591,6 +2591,16 @@ subtest 'get_bundle', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'delete_bundle', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::delete'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->delete_bundle('foobar');
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 done_testing();
 
 sub setup {

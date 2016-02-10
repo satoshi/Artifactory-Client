@@ -1913,7 +1913,7 @@ sub list_bundles {
     return $self->get( $url, "Content-Type" => 'application/json', );
 }
 
-=head2 get_bundle
+=head2 get_bundle( $name )
 
 Downloads a previously created bundle currently stored in the system
 
@@ -1923,6 +1923,18 @@ sub get_bundle {
     my ( $self, $bundle ) = @_;
     my $url = $self->_api_url() . '/support/bundles/' . $bundle;
     return $self->get( $url, "Content-Type" => 'application/json', );
+}
+
+=head2 delete_bundle( $name )
+
+Deletes a previously created bundle from the system.
+
+=cut
+
+sub delete_bundle {
+    my ( $self, $bundle ) = @_;
+    my $url = $self->_api_url() . '/support/bundles/' . $bundle;
+    return $self->delete( $url, "Content-Type" => 'application/json', );
 }
 
 sub _build_ua {
