@@ -1045,7 +1045,6 @@ subtest 'get_bundle', sub {
 subtest 'delete_bundle', sub {
     my $client = setup();
     my $resp   = $client->delete_bundle('foobar');
-    print Dumper($resp);
     my $url    = $resp->request->uri;
     like( $url, qr|/api/support/bundles|, 'delete_bundle called' );
 };
