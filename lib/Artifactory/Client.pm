@@ -1729,6 +1729,19 @@ sub version_and_addons_information {
     return $self->get($url);
 }
 
+=head2 get_reverse_proxy_configuration
+
+Retrieves the reverse proxy configuration
+
+=cut
+
+sub get_reverse_proxy_configuration {
+    my $self = shift;
+
+    my $url = $self->_api_url() . "/system/configuration/webServer";
+    return $self->get($url);
+}
+
 =head1 PLUGINS
 
 =cut

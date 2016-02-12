@@ -2307,6 +2307,16 @@ subtest 'version_and_addons_information', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'get_reverse_proxy_configuration', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->get_reverse_proxy_configuration();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'execute_plugin_code', sub {
     my $client         = setup();
     my $execution_name = 'cleanup';
