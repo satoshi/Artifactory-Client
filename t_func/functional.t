@@ -922,6 +922,13 @@ subtest 'version_and_addons_information', sub {
     like( $url, qr|/api/system/version|, 'version_and_addons_information called' );
 };
 
+subtest 'get_reverse_proxy_configuration', sub {
+    my $client = setup();
+    my $resp   = $client->get_reverse_proxy_configuration();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/configuration/webServer|, 'get_reverse_proxy_configuration called' );
+};
+
 subtest 'execute_plugin_code', sub {
     my $client = setup();
     my $params = { suffix => ['SNAPSHOT'], };
