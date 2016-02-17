@@ -1742,6 +1742,23 @@ sub get_reverse_proxy_configuration {
     return $self->get($url);
 }
 
+=head2 update_reverse_proxy_configuration(%data)
+
+Updates the reverse proxy configuration
+
+=cut
+
+sub update_reverse_proxy_configuration {
+    my ( $self, %data ) = @_;
+
+    my $url = $self->_api_url() . "/system/configuration/webServer";
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%data )
+    );
+}
+
 =head1 PLUGINS
 
 =cut
