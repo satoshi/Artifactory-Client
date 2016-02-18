@@ -929,6 +929,19 @@ subtest 'get_reverse_proxy_configuration', sub {
     like( $url, qr|/api/system/configuration/webServer|, 'get_reverse_proxy_configuration called' );
 };
 
+subtest 'update_reverse_proxy_configuration', sub {
+    my $client = setup();
+    my %data   = (
+        key           => "nginx",
+        webServerType => "NGINX",
+        sslPort       => "443",
+        httpPort      => "76"
+    );
+    my $resp = $client->update_reverse_proxy_configuration(%data);
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/system/configuration/webServer|, 'get_reverse_proxy_configuration called' );
+};
+
 subtest 'execute_plugin_code', sub {
     my $client = setup();
     my $params = { suffix => ['SNAPSHOT'], };
