@@ -924,6 +924,20 @@ sub file_list {
     return $self->get($url);
 }
 
+=head2 get_background_tasks
+
+Retrieves list of background tasks currently scheduled or running in Artifactory. In HA, the nodeId is added to each
+task. Task can be in one of few states: scheduled, running, stopped, canceled. Running task also shows the task start
+time.
+
+=cut
+
+sub get_background_tasks {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/tasks";
+    return $self->get($url);
+}
+
 =head1 SEARCHES
 
 =cut

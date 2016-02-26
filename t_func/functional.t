@@ -393,6 +393,13 @@ subtest 'file_list', sub {
     like( $url, qr|/api/storage/libs-release-local/foo\?list|, 'file_list called' );
 };
 
+subtest 'get_background_tasks', sub {
+    my $client = setup();
+    my $resp   = $client->get_background_tasks();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/tasks|, 'get_background_tasks called' );
+};
+
 subtest 'artifactory_query_language', sub {
     my $client = setup();
     my $aql    = q|items.find(
@@ -938,7 +945,7 @@ subtest 'update_reverse_proxy_configuration', sub {
         httpPort      => "76"
     );
     my $resp = $client->update_reverse_proxy_configuration(%data);
-    my $url = $resp->request->uri;
+    my $url  = $resp->request->uri;
     like( $url, qr|/api/system/configuration/webServer|, 'get_reverse_proxy_configuration called' );
 };
 

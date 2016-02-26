@@ -885,6 +885,16 @@ subtest 'file_list', sub {
     is( $resp->code, 200, 'got 200 back' );
 };
 
+subtest 'get_background_tasks', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->get_background_tasks();
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'artifactory_query_language', sub {
     my $client = setup();
     my $aql    = q|items.find({"repo":{"$eq":"testrepo"}}|;
