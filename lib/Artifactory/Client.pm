@@ -1226,6 +1226,18 @@ sub delete_user {
     return $self->_handle_security( $user, 'delete', 'users' );
 }
 
+=head2 expire_password_for_a_single_user( $user )
+
+Expires a user's password
+
+=cut
+
+sub expire_password_for_a_single_user {
+    my ( $self, $user ) = @_;
+    my $url = $self->_api_url() . "/security/users/authorization/expirePassword/$user";
+    return $self->post($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user

@@ -634,6 +634,15 @@ subtest 'delete_user', sub {
     like( $url, qr|/api/security/users/davids|, 'delete_user called' );
 };
 
+subtest 'expire_password_for_a_single_user', sub {
+    my $client = setup();
+    my $user   = 'davids';
+    my $resp   = $client->expire_password_for_a_single_user($user);
+    my $url    = $resp->request->uri;
+    print Dumper($resp);
+    like( $url, qr|/security/users/authorization/expirePassword/$user|, 'expire_password_for_a_single_user called' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );

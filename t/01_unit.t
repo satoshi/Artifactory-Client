@@ -1426,6 +1426,15 @@ subtest 'delete_user', sub {
     like( $url_in_response, qr|/api/security/users/$user|, 'requsted URL looks sane' );
 };
 
+subtest 'expire_password_for_a_single_user', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->expire_password_for_a_single_user('david');
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my %data = ( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
