@@ -942,6 +942,13 @@ subtest 'update_reverse_proxy_configuration', sub {
     like( $url, qr|/api/system/configuration/webServer|, 'get_reverse_proxy_configuration called' );
 };
 
+subtest 'get_reverse_proxy_snippet', sub {
+    my $client = setup();
+    my $resp   = $client->get_reverse_proxy_snippet();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/configuration/reverseProxy/nginx|, 'get_reverse_proxy_snippet called' );
+};
+
 subtest 'execute_plugin_code', sub {
     my $client = setup();
     my $params = { suffix => ['SNAPSHOT'], };

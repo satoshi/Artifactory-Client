@@ -1759,6 +1759,19 @@ sub update_reverse_proxy_configuration {
     );
 }
 
+=head2 get_reverse_proxy_snippet
+
+Gets the reverse proxy configuration snippet in text format
+
+=cut
+
+sub get_reverse_proxy_snippet {
+    my $self = shift;
+
+    my $url = $self->_api_url() . "/system/configuration/reverseProxy/nginx";
+    return $self->get($url);
+}
+
 =head1 PLUGINS
 
 =cut
