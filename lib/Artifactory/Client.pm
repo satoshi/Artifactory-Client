@@ -1254,6 +1254,18 @@ sub expire_password_for_multiple_users {
     );
 }
 
+=head2 expire_password_for_all_users
+
+Expires password for all users
+
+=cut
+
+sub expire_password_for_all_users {
+    my ( $self, @users ) = @_;
+    my $url = $self->_api_url() . "/security/users/authorization/expirePasswordForAllUsers";
+    return $self->post($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user

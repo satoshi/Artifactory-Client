@@ -649,6 +649,13 @@ subtest 'expire_password_for_multiple_users', sub {
     like( $url, qr|/security/users/authorization/expirePassword|, 'expire_password_for_multiple_users called' );
 };
 
+subtest 'expire_password_for_all_users', sub {
+    my $client = setup();
+    my $resp   = $client->expire_password_for_all_users();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/security/users/authorization/expirePasswordForAllUsers|, 'expire_password_for_all_users called' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
