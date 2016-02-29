@@ -639,8 +639,14 @@ subtest 'expire_password_for_a_single_user', sub {
     my $user   = 'davids';
     my $resp   = $client->expire_password_for_a_single_user($user);
     my $url    = $resp->request->uri;
-    print Dumper($resp);
     like( $url, qr|/security/users/authorization/expirePassword/$user|, 'expire_password_for_a_single_user called' );
+};
+
+subtest 'expire_password_for_multiple_users', sub {
+    my $client = setup();
+    my $resp   = $client->expire_password_for_multiple_users( 'davids', 'johnb' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/security/users/authorization/expirePassword|, 'expire_password_for_multiple_users called' );
 };
 
 subtest 'create_api_key', sub {

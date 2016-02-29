@@ -1435,6 +1435,15 @@ subtest 'expire_password_for_a_single_user', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'expire_password_for_multiple_users', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->expire_password_for_multiple_users('david', 'johnb');
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my %data = ( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );

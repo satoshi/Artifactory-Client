@@ -1238,6 +1238,22 @@ sub expire_password_for_a_single_user {
     return $self->post($url);
 }
 
+=head2 expire_password_for_multiple_users( $user1, $user2 )
+
+Expires password for a list of users
+
+=cut
+
+sub expire_password_for_multiple_users {
+    my ( $self, @users ) = @_;
+    my $url = $self->_api_url() . "/security/users/authorization/expirePassword";
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( [@users] )
+    );
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user
