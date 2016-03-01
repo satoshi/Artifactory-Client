@@ -665,6 +665,25 @@ subtest 'unexpire_password_for_a_single_user', sub {
         'unexpire_password_for_a_single_user called' );
 };
 
+subtest 'change_password', sub {
+    my $client = setup();
+    my %info   = (
+        userName    => 'david',
+        oldPassword => 'foo',
+        newPassword => 'bar',
+    );
+    my $resp = $client->change_password(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/security/users/authorization/changePassword|, 'change_password called' );
+};
+
+subtest 'get_password_expiration_policy', sub {
+    my $client = setup();
+    my $resp   = $client->get_password_expiration_policy();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/security/users/authorization/passwordExpirationPolicy|, 'get_password_expiration_policy called' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );

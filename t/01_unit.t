@@ -1440,7 +1440,7 @@ subtest 'expire_password_for_multiple_users', sub {
     local *{'LWP::UserAgent::post'} = sub {
         return $mock_responses{http_200};
     };
-    my $resp = $client->expire_password_for_multiple_users('david', 'johnb');
+    my $resp = $client->expire_password_for_multiple_users( 'david', 'johnb' );
     is( $resp->code, 200, 'request succeeded' );
 };
 
@@ -1459,6 +1459,29 @@ subtest 'unexpire_password_for_a_single_user', sub {
         return $mock_responses{http_200};
     };
     my $resp = $client->unexpire_password_for_a_single_user('david');
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'change_password', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my %info = (
+        userName    => 'david',
+        oldPassword => 'foo',
+        newPassword => 'bar',
+    );
+    my $resp = $client->change_password(%info);
+    is( $resp->code, 200, 'request succeeded' );
+};
+
+subtest 'get_password_expiration_policy', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->get_password_expiration_policy();
     is( $resp->code, 200, 'request succeeded' );
 };
 

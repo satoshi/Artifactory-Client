@@ -1278,6 +1278,38 @@ sub unexpire_password_for_a_single_user {
     return $self->post($url);
 }
 
+=head2 change_password( user => 'david', oldPassword => 'foo', newPassword => 'bar' )
+
+Changes a user's password
+
+=cut
+
+sub change_password {
+    my ( $self, %info ) = @_;
+    my $url         = $self->_api_url() . "/security/users/authorization/changePassword";
+    my $newpassword = delete $info{newPassword};
+    $info{newPassword1} = $newpassword;
+    $info{newPassword2} = $newpassword;    # API requires new passwords twice, once for verification
+
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%info )
+    );
+}
+
+=head2 get_password_expiration_policy
+
+Retrieves the password expiration policy
+
+=cut
+
+sub get_password_expiration_policy {
+    my $self = shift;
+    my $url = $self->_api_url() . "/security/users/authorization/passwordExpirationPolicy";
+    return $self->get($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user
