@@ -656,6 +656,15 @@ subtest 'expire_password_for_all_users', sub {
     like( $url, qr|/security/users/authorization/expirePasswordForAllUsers|, 'expire_password_for_all_users called' );
 };
 
+subtest 'unexpire_password_for_a_single_user', sub {
+    my $client = setup();
+    my $user   = 'davids';
+    my $resp   = $client->unexpire_password_for_a_single_user($user);
+    my $url    = $resp->request->uri;
+    like( $url, qr|/security/users/authorization/unexpirePassword/$user|,
+        'unexpire_password_for_a_single_user called' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );

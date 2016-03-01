@@ -1266,6 +1266,18 @@ sub expire_password_for_all_users {
     return $self->post($url);
 }
 
+=head2 unexpire_password_for_a_single_user( $user )
+
+Unexpires a user's password
+
+=cut
+
+sub unexpire_password_for_a_single_user {
+    my ( $self, $user ) = @_;
+    my $url = $self->_api_url() . "/security/users/authorization/unexpirePassword/$user";
+    return $self->post($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user
