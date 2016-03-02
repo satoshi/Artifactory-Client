@@ -888,6 +888,23 @@ sub delete_local_multi_push_replication {
     return $self->delete($call_url);
 }
 
+=head2 enable_or_disable_multiple_replications( 'enable|disable', include => [ ], exclude => [ ] )
+
+Enables/disables multiple replication tasks by repository or Artifactory server based in include and exclude patterns.
+
+=cut
+
+sub enable_or_disable_multiple_replications {
+    my ( $self, $flag, %info ) = @_;
+    my $repo     = $self->repository();
+    my $url = $self->_api_url() . "/replications/$flag";
+    return $self->post(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode( \%info )
+    );
+}
+
 =head2 artifact_sync_download( $path, content => 'progress', mark => 1000 )
 
 Downloads an artifact with or without returning the actual content to the client. When tracking the progress marks are

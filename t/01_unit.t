@@ -855,6 +855,19 @@ subtest 'delete_local_multi_push_replication', sub {
     );
 };
 
+subtest 'enable_or_disable_multiple_replications', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my %info = (
+        include => ["**"],
+        exclude => [ "http://artimaster:port/artifactory/**", "https://somearti:port/artifactory/local-repo" ]
+    );
+    my $resp = $client->enable_or_disable_multiple_replications( 'enable', %info );
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'artifact_sync_download', sub {
     my $client = setup();
     my %args   = (

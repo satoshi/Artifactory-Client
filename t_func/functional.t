@@ -371,6 +371,17 @@ subtest 'delete_local_multi_push_replication', sub {
     );
 };
 
+subtest 'enable_or_disable_multiple_replications', sub {
+    my $client = setup();
+    my %info   = (
+        include => ["**"],
+        exclude => [ "http://artimaster:port/artifactory/**", "https://somearti:port/artifactory/local-repo" ]
+    );
+    my $resp = $client->enable_or_disable_multiple_replications( 'enable', %info );
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/replications/enable|, 'enable_or_disable_multiple_replications called' );
+};
+
 subtest 'artifact_sync_download', sub {
     my $client = setup();
     my %args   = (
