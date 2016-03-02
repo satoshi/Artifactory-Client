@@ -681,7 +681,19 @@ subtest 'get_password_expiration_policy', sub {
     my $client = setup();
     my $resp   = $client->get_password_expiration_policy();
     my $url    = $resp->request->uri;
-    like( $url, qr|/security/users/authorization/passwordExpirationPolicy|, 'get_password_expiration_policy called' );
+    like( $url, qr|/security/configuration/passwordExpirationPolicy|, 'get_password_expiration_policy called' );
+};
+
+subtest 'set_password_expiration_policy', sub {
+    my $client = setup();
+    my %info   = (
+        enabled        => 'true',
+        passwordMaxAge => 999,
+        notifyByEmail  => 'true'
+    );
+    my $resp = $client->set_password_expiration_policy(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/security/configuration/passwordExpirationPolicy|, 'get_password_expiration_policy called' );
 };
 
 subtest 'create_api_key', sub {

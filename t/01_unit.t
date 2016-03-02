@@ -1485,6 +1485,20 @@ subtest 'get_password_expiration_policy', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'set_password_expiration_policy', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::put'} = sub {
+        return $mock_responses{http_200};
+    };
+    my %info = (
+        enabled        => 'true',
+        passwordMaxAge => 999,
+        notifyByEmail  => 'true'
+    );
+    my $resp = $client->set_password_expiration_policy(%info);
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my %data = ( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );

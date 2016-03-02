@@ -1306,8 +1306,24 @@ Retrieves the password expiration policy
 
 sub get_password_expiration_policy {
     my $self = shift;
-    my $url = $self->_api_url() . "/security/users/authorization/passwordExpirationPolicy";
+    my $url  = $self->_api_url() . "/security/configuration/passwordExpirationPolicy";
     return $self->get($url);
+}
+
+=head2 set_password_expiration_policy
+
+Sets the password expiration policy
+
+=cut
+
+sub set_password_expiration_policy {
+    my ( $self, %info ) = @_;
+    my $url = $self->_api_url() . "/security/configuration/passwordExpirationPolicy";
+    return $self->put(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%info )
+    );
 }
 
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
