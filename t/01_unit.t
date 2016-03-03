@@ -928,6 +928,16 @@ subtest 'delete_item_from_trash_can', sub {
     is( $resp->code, 200, 'got 200 back' );
 };
 
+subtest 'restore_item_from_trash_can', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->restore_item_from_trash_can( 'npm_local', 'npm_local2' );
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'artifactory_query_language', sub {
     my $client = setup();
     my $aql    = q|items.find({"repo":{"$eq":"testrepo"}}|;

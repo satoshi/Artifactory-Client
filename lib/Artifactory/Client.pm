@@ -979,6 +979,18 @@ sub delete_item_from_trash_can {
     return $self->delete($url);
 }
 
+=head2 restore_item_from_trash_can( $from, $to )
+
+Restore an item from the trash can.
+
+=cut
+
+sub restore_item_from_trash_can {
+    my ( $self, $from, $to ) = @_;
+    my $url = $self->_api_url() . "/trash/restore/$from?to=$to";
+    return $self->post($url);
+}
+
 =head1 SEARCHES
 
 =cut
