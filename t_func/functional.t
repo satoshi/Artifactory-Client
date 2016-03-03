@@ -418,6 +418,13 @@ subtest 'empty_trash_can', sub {
     like( $url, qr|/api/trash/empty|, 'empty_trash_can called' );
 };
 
+subtest 'delete_item_from_trash_can', sub {
+    my $client = setup();
+    my $resp   = $client->delete_item_from_trash_can('foobar');
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/trash/foobar|, 'delete_item_from_trash_can called' );
+};
+
 subtest 'artifactory_query_language', sub {
     my $client = setup();
     my $aql    = q|items.find(

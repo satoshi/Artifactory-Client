@@ -896,8 +896,8 @@ Enables/disables multiple replication tasks by repository or Artifactory server 
 
 sub enable_or_disable_multiple_replications {
     my ( $self, $flag, %info ) = @_;
-    my $repo     = $self->repository();
-    my $url = $self->_api_url() . "/replications/$flag";
+    my $repo = $self->repository();
+    my $url  = $self->_api_url() . "/replications/$flag";
     return $self->post(
         $url,
         "Content-Type" => 'application/json',
@@ -965,6 +965,18 @@ sub empty_trash_can {
     my $self = shift;
     my $url  = $self->_api_url() . "/trash/empty";
     return $self->post($url);
+}
+
+=head2 delete_item_from_trash_can($path)
+
+Permanently deletes an item from the trash can.
+
+=cut
+
+sub delete_item_from_trash_can {
+    my ( $self, $path ) = @_;
+    my $url = $self->_api_url() . "/trash/$path";
+    return $self->delete($url);
 }
 
 =head1 SEARCHES

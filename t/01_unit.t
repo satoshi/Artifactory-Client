@@ -918,6 +918,16 @@ subtest 'empty_trash_can', sub {
     is( $resp->code, 200, 'got 200 back' );
 };
 
+subtest 'delete_item_from_trash_can', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::delete'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->delete_item_from_trash_can('foobar');
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'artifactory_query_language', sub {
     my $client = setup();
     my $aql    = q|items.find({"repo":{"$eq":"testrepo"}}|;
