@@ -411,6 +411,13 @@ subtest 'get_background_tasks', sub {
     like( $url, qr|/api/tasks|, 'get_background_tasks called' );
 };
 
+subtest 'empty_trash_can', sub {
+    my $client = setup();
+    my $resp   = $client->empty_trash_can();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/trash/empty|, 'empty_trash_can called' );
+};
+
 subtest 'artifactory_query_language', sub {
     my $client = setup();
     my $aql    = q|items.find(

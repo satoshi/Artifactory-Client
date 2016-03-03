@@ -955,6 +955,18 @@ sub get_background_tasks {
     return $self->get($url);
 }
 
+=head2 empty_trash_can
+
+Empties the trash can permanently deleting all its current contents.
+
+=cut
+
+sub empty_trash_can {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/trash/empty";
+    return $self->post($url);
+}
+
 =head1 SEARCHES
 
 =cut
