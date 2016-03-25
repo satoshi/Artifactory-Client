@@ -1320,6 +1320,15 @@ subtest 'build_artifacts_search', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'list_docker_repositories', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::get'} = sub {
+        return return $mock_responses{http_200};
+    };
+    my $resp = $client->list_docker_repositories();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'get_users', sub {
     my $client = setup();
 

@@ -1209,6 +1209,19 @@ sub build_artifacts_search {
     );
 }
 
+=head2 list_docker_repositories
+
+Lists all Docker repositories hosted in under an Artifactory Docker repository.
+
+=cut
+
+sub list_docker_repositories {
+    my $self       = shift;
+    my $repository = $self->repository();
+    my $url        = $self->_api_url() . "/docker/$repository/v2/_catalog";
+    return $self->get($url);
+}
+
 =head1 SECURITY
 
 =cut
