@@ -624,6 +624,13 @@ subtest 'build_artifacts_search', sub {
     like( $url, qr|/api/search/buildArtifacts|, 'build_artifacts_search called' );
 };
 
+subtest 'list_docker_repositories', sub {
+    my $client = setup();
+    my $resp   = $client->list_docker_repositories();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/docker/libs-release-local/v2/_catalog|, 'list_docker_repositories called' );
+};
+
 subtest 'get_users', sub {
     my $client = setup();
     my $resp   = $client->get_users();
