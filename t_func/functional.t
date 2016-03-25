@@ -432,6 +432,14 @@ subtest 'restore_item_from_trash_can', sub {
     like( $url, qr|/api/trash/restore/foobar\?to=foobar2|, 'restore_item_from_trash_can called' );
 };
 
+subtest 'optimize_system_storage', sub {
+    my $client = setup();
+    my $resp   = $client->optimize_system_storage();
+    my $url    = $resp->request->uri;
+    print Dumper($resp);
+    like( $url, qr|/api/system/storage/optimize|, 'optimize_system_storage called' );
+};
+
 subtest 'artifactory_query_language', sub {
     my $client = setup();
     my $aql    = q|items.find(

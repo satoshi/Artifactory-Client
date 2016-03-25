@@ -991,6 +991,19 @@ sub restore_item_from_trash_can {
     return $self->post($url);
 }
 
+=head2 optimize_system_storage
+
+Raises a flag to invoke balancing between redundant storage units of a sharded filestore following the next garbage
+collection.
+
+=cut
+
+sub optimize_system_storage {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/system/storage/optimize";
+    return $self->post($url);
+}
+
 =head1 SEARCHES
 
 =cut
