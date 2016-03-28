@@ -294,6 +294,24 @@ sub build_promotion {
     );
 }
 
+=head2 promote_docker_image( targetRepo => "target_repo", dockerRepository => "dockerRepository", tag => "tag", copy => 'false' )
+
+Promotes a Docker image from one repository to another
+
+=cut
+
+sub promote_docker_image {
+    my ( $self, %data ) = @_;
+
+    my $repo = $self->repository();
+    my $url  = $self->_api_url() . "/docker/$repo/v2/promote";
+    return $self->post(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode( \%data )
+    );
+}
+
 =head2 delete_builds( name => $build_name, buildnumbers => [ buildnumbers ], artifacts => 0,1, deleteall => 0,1 )
 
 Removes builds stored in Artifactory. Useful for cleaning up old build info data

@@ -55,6 +55,19 @@ subtest 'build_promotion', sub {
     like( $url, qr|/api/build/promote/foo/2|, 'build_promotion called' );
 };
 
+subtest 'promote_docker_image', sub {
+    my $client = setup();
+    my %data   = (
+        targetRepo       => "target_repo",
+        dockerRepository => "dockerRepository",
+        tag              => "tag",
+        copy             => 'false',
+    );
+    my $resp = $client->promote_docker_image(%data);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/docker/libs-release-local/v2/promote|, 'promote_docker_image called' );
+};
+
 subtest 'delete_builds', sub {
     my $client = setup();
     my %args   = (
@@ -436,7 +449,6 @@ subtest 'optimize_system_storage', sub {
     my $client = setup();
     my $resp   = $client->optimize_system_storage();
     my $url    = $resp->request->uri;
-    print Dumper($resp);
     like( $url, qr|/api/system/storage/optimize|, 'optimize_system_storage called' );
 };
 

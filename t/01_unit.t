@@ -260,6 +260,21 @@ subtest 'build_promotion', sub {
     is( $resp->code, 200, 'build_promotion succeeded' );
 };
 
+subtest 'promote_docker_image', sub {
+    my $client = setup();
+    my %data   = (
+        targetRepo       => "target_repo",
+        dockerRepository => "dockerRepository",
+        tag              => "tag",
+        copy             => 'false',
+    );
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->promote_docker_image(%data);
+    is( $resp->code, 200, 'promote_docker_image succeeded' );
+};
+
 subtest 'delete_builds', sub {
     my $client = setup();
 
