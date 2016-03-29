@@ -1576,6 +1576,19 @@ subtest 'set_password_expiration_policy', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'configure_user_lock_policy', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::put'} = sub {
+        return $mock_responses{http_200};
+    };
+    my %info = (
+        enabled       => 'true',
+        loginAttempts => 3
+    );
+    my $resp = $client->configure_user_lock_policy(%info);
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my %data = ( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );

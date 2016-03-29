@@ -1423,6 +1423,23 @@ sub set_password_expiration_policy {
     );
 }
 
+=head2 configure_user_lock_policy( enabled => 'true|false', loginAttempts => $num )
+
+Configures the user lock policy that locks users out of their account if the number of repeated incorrect login attempts
+exceeds the configured maximum allowed.
+
+=cut
+
+sub configure_user_lock_policy {
+    my ( $self, %info ) = @_;
+    my $url = $self->_api_url() . "/security/userLockPolicy";
+    return $self->put(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%info )
+    );
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user

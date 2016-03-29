@@ -755,6 +755,17 @@ subtest 'set_password_expiration_policy', sub {
     like( $url, qr|/security/configuration/passwordExpirationPolicy|, 'get_password_expiration_policy called' );
 };
 
+subtest 'configure_user_lock_policy', sub {
+    my $client = setup();
+    my %info   = (
+        enabled       => 'true',
+        loginAttempts => 3,
+    );
+    my $resp = $client->configure_user_lock_policy(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/security/userLockPolicy|, 'get_password_expiration_policy called' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
