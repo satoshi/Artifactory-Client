@@ -776,7 +776,6 @@ subtest 'retrieve_user_lock_policy', sub {
 subtest 'get_locked_out_users', sub {
     my $client = setup();
     my $resp   = $client->get_locked_out_users();
-    print Dumper($resp);
     my $url    = $resp->request->uri;
     like( $url, qr|/security/lockedUsers|, 'get_locked_out_users called' );
 };
