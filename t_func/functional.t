@@ -773,6 +773,14 @@ subtest 'retrieve_user_lock_policy', sub {
     like( $url, qr|/security/userLockPolicy|, 'retrieve_user_lock_policy called' );
 };
 
+subtest 'get_locked_out_users', sub {
+    my $client = setup();
+    my $resp   = $client->get_locked_out_users();
+    print Dumper($resp);
+    my $url    = $resp->request->uri;
+    like( $url, qr|/security/lockedUsers|, 'get_locked_out_users called' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );

@@ -1452,6 +1452,18 @@ sub retrieve_user_lock_policy {
     return $self->get($url);
 }
 
+=head2 get_locked_out_users
+
+If locking out users is enabled, lists all users that were locked out due to recurrent incorrect login attempts.
+
+=cut
+
+sub get_locked_out_users {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/security/lockedUsers";
+    return $self->get($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user
