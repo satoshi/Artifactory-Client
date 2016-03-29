@@ -1440,6 +1440,18 @@ sub configure_user_lock_policy {
     );
 }
 
+=head2 retrieve_user_lock_policy
+
+Retrieves the currently configured user lock policy.
+
+=cut
+
+sub retrieve_user_lock_policy {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/security/userLockPolicy";
+    return $self->get($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user

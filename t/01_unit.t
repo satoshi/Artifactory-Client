@@ -1589,6 +1589,15 @@ subtest 'configure_user_lock_policy', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'retrieve_user_lock_policy', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->retrieve_user_lock_policy();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my %data = ( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
