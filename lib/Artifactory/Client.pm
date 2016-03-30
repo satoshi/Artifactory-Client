@@ -1476,6 +1476,34 @@ sub unlock_locked_out_user {
     return $self->post($url);
 }
 
+=head2 unlock_locked_out_users
+
+Unlocks a list of users that were locked out due to recurrent incorrect login attempts.
+
+=cut
+
+sub unlock_locked_out_users {
+    my ( $self, @users ) = @_;
+    my $url = $self->_api_url() . "/security/unlockUsers";
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \@users )
+    );
+}
+
+=head2 unlock_all_locked_out_users
+
+Unlocks all users that were locked out due to recurrent incorrect login attempts.
+
+=cut
+
+sub unlock_all_locked_out_users {
+    my $self = shift;
+    my $url  = $self->_api_url() . "/security/unlockAllUsers";
+    return $self->post($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user

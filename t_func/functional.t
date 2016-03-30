@@ -787,6 +787,20 @@ subtest 'unlock_locked_out_user', sub {
     like( $url, qr|/security/unlockUsers|, 'unlock_locked_out_user called' );
 };
 
+subtest 'unlock_locked_out_users', sub {
+    my $client = setup();
+    my $resp   = $client->unlock_locked_out_users( 'admin', 'davids' );
+    my $url    = $resp->request->uri;
+    like( $url, qr|/security/unlockUsers|, 'unlock_locked_out_users called' );
+};
+
+subtest 'unlock_all_locked_out_users', sub {
+    my $client = setup();
+    my $resp   = $client->unlock_all_locked_out_users();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/security/unlockAllUsers|, 'unlock_all_locked_out_users called' );
+};
+
 subtest 'create_api_key', sub {
     my $client = setup();
     my $resp   = $client->create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' );
