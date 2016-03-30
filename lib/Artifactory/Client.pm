@@ -1464,6 +1464,18 @@ sub get_locked_out_users {
     return $self->get($url);
 }
 
+=head2 unlock_locked_out_user
+
+Unlocks a single user that was locked out due to recurrent incorrect login attempts.
+
+=cut
+
+sub unlock_locked_out_user {
+    my ( $self, $name ) = @_;
+    my $url = $self->_api_url() . "/security/unlockUsers/$name";
+    return $self->post($url);
+}
+
 =head2 create_api_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
 
 Create an API key for the current user
