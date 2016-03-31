@@ -1051,6 +1051,13 @@ subtest 'calculate_opkg_repository_metadata', sub {
     like( $url, qr|/api/opkg/reindex/libs-release-local|, 'calculate_opkg_repository_metadata called' );
 };
 
+subtest 'calculate_bower_index', sub {
+    my $client = setup();
+    my $resp = $client->calculate_bower_index();
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/bower/libs-release-local/reindex|, 'calculate_bower_index called' );
+};
+
 subtest 'system_info', sub {
     my $client = setup();
     my $resp   = $client->system_info();

@@ -1920,6 +1920,18 @@ sub calculate_opkg_repository_metadata {
     return $self->_handle_repository_reindex( "/opkg/reindex/$repository", %args );
 }
 
+=head2 calculate_bower_index
+
+Recalculates the index for a Bower repository.
+
+=cut
+
+sub calculate_bower_index {
+    my $self       = shift;
+    my $repository = $self->repository();
+    return $self->_handle_repository_reindex("/bower/$repository/reindex");
+}
+
 =head1 SYSTEM & CONFIGURATION
 
 =cut

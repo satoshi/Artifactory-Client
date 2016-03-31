@@ -2373,6 +2373,15 @@ subtest 'calculate_opkg_repository_metadata', sub {
     is( $resp->code, 200, 'request succeeded' );
 };
 
+subtest 'calculate_bower_index', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->calculate_bower_index();
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'system_info', sub {
     my $client = setup();
     local *{'LWP::UserAgent::get'} = sub {
