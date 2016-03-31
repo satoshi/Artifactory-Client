@@ -1907,6 +1907,19 @@ sub calculate_debian_repository_metadata {
     return $self->_handle_repository_reindex( "/deb/reindex/$repository", %args );
 }
 
+=head2 calculate_opkg_repository_metadata( async => 0/1, writeProps => 1 )
+
+Calculates/recalculates the Packages and Release metadata for this repository,based on the ipk packages in it (in each
+feed location).
+
+=cut
+
+sub calculate_opkg_repository_metadata {
+    my ( $self, %args ) = @_;
+    my $repository = $self->repository();
+    return $self->_handle_repository_reindex( "/opkg/reindex/$repository", %args );
+}
+
 =head1 SYSTEM & CONFIGURATION
 
 =cut

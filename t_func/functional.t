@@ -1040,6 +1040,17 @@ subtest 'calculate_debian_repository_metadata', sub {
     like( $url, qr|/api/deb/reindex/libs-release-local|, 'calculate_debian_repository_metadata called' );
 };
 
+subtest 'calculate_opkg_repository_metadata', sub {
+    my $client = setup();
+    my %args   = (
+        async      => 1,
+        writeProps => 0,
+    );
+    my $resp = $client->calculate_opkg_repository_metadata(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/opkg/reindex/libs-release-local|, 'calculate_opkg_repository_metadata called' );
+};
+
 subtest 'system_info', sub {
     my $client = setup();
     my $resp   = $client->system_info();

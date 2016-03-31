@@ -2360,6 +2360,19 @@ subtest 'calculate_debian_repository_metadata', sub {
     like( $url_in_response, qr|/api/deb/reindex/$repository\?async=1|, 'requsted URL looks sane' );
 };
 
+subtest 'calculate_opkg_repository_metadata', sub {
+    my $client = setup();
+    my %args   = (
+        async      => 1,
+        writeProps => 0
+    );
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->calculate_opkg_repository_metadata(%args);
+    is( $resp->code, 200, 'request succeeded' );
+};
+
 subtest 'system_info', sub {
     my $client = setup();
     local *{'LWP::UserAgent::get'} = sub {
