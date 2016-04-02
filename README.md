@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.0.0
+Version 1.1.0
 
 # SYNOPSIS
 
@@ -94,6 +94,10 @@ Retrieves diff of 2 builds
 ## build\_promotion( $build\_name, $build\_number, $payload )
 
 Promotes a build by POSTing payload
+
+## promote\_docker\_image( targetRepo => "target\_repo", dockerRepository => "dockerRepository", tag => "tag", copy => 'false' )
+
+Promotes a Docker image from one repository to another
 
 ## delete\_builds( name => $build\_name, buildnumbers => \[ buildnumbers \], artifacts => 0,1, deleteall => 0,1 )
 
@@ -267,6 +271,10 @@ Updates a local multi-push replication configuration. Supported by local and loc
 
 Deletes a local multi-push replication configuration. Supported by local and local-cached repositories
 
+## enable\_or\_disable\_multiple\_replications( 'enable|disable', include => \[ \], exclude => \[ \] )
+
+Enables/disables multiple replication tasks by repository or Artifactory server based in include and exclude patterns.
+
 ## artifact\_sync\_download( $path, content => 'progress', mark => 1000 )
 
 Downloads an artifact with or without returning the actual content to the client. When tracking the progress marks are
@@ -278,6 +286,29 @@ is downloaded to the client.
 ## file\_list( $dir, %opts )
 
 Get a flat (the default) or deep listing of the files and folders (not included by default) within a folder
+
+## get\_background\_tasks
+
+Retrieves list of background tasks currently scheduled or running in Artifactory. In HA, the nodeId is added to each
+task. Task can be in one of few states: scheduled, running, stopped, canceled. Running task also shows the task start
+time.
+
+## empty\_trash\_can
+
+Empties the trash can permanently deleting all its current contents.
+
+## delete\_item\_from\_trash\_can($path)
+
+Permanently deletes an item from the trash can.
+
+## restore\_item\_from\_trash\_can( $from, $to )
+
+Restore an item from the trash can.
+
+## optimize\_system\_storage
+
+Raises a flag to invoke balancing between redundant storage units of a sharded filestore following the next garbage
+collection.
 
 # SEARCHES
 
@@ -351,6 +382,10 @@ Search for artifacts with the latest value in the "version" property
 
 Find all the artifacts related to a specific build
 
+## list\_docker\_repositories
+
+Lists all Docker repositories hosted in under an Artifactory Docker repository.
+
 # SECURITY
 
 ## get\_users
@@ -376,6 +411,79 @@ Updates an exiting user in Artifactory with the provided user details
 ## delete\_user( $user )
 
 Removes an Artifactory user
+
+## expire\_password\_for\_a\_single\_user( $user )
+
+Expires a user's password
+
+## expire\_password\_for\_multiple\_users( $user1, $user2 )
+
+Expires password for a list of users
+
+## expire\_password\_for\_all\_users
+
+Expires password for all users
+
+## unexpire\_password\_for\_a\_single\_user( $user )
+
+Unexpires a user's password
+
+## change\_password( user => 'david', oldPassword => 'foo', newPassword => 'bar' )
+
+Changes a user's password
+
+## get\_password\_expiration\_policy
+
+Retrieves the password expiration policy
+
+## set\_password\_expiration\_policy
+
+Sets the password expiration policy
+
+## configure\_user\_lock\_policy( enabled => 'true|false', loginAttempts => $num )
+
+Configures the user lock policy that locks users out of their account if the number of repeated incorrect login attempts
+exceeds the configured maximum allowed.
+
+## retrieve\_user\_lock\_policy
+
+Retrieves the currently configured user lock policy.
+
+## get\_locked\_out\_users
+
+If locking out users is enabled, lists all users that were locked out due to recurrent incorrect login attempts.
+
+## unlock\_locked\_out\_user
+
+Unlocks a single user that was locked out due to recurrent incorrect login attempts.
+
+## unlock\_locked\_out\_users
+
+Unlocks a list of users that were locked out due to recurrent incorrect login attempts.
+
+## unlock\_all\_locked\_out\_users
+
+Unlocks all users that were locked out due to recurrent incorrect login attempts.
+
+## create\_api\_key( apiKey => '3OloposOtVFyCMrT+cXmCAScmVMPrSYXkWIjiyDCXsY=' )
+
+Create an API key for the current user
+
+## get\_api\_key
+
+Get the current user's own API key
+
+## revoke\_api\_key
+
+Revokes the current user's API key
+
+## revoke\_user\_api\_key
+
+Revokes the API key of another user
+
+## revoke\_all\_api\_keys
+
+Revokes all API keys currently defined in the system
 
 ## get\_groups
 
@@ -495,6 +603,15 @@ Calculates Maven metadata on the specified path (local repositories only)
 Calculates/recalculates the Packages and Release metadata for this repository,based on the Debian packages in it.
 Calculation can be synchronous (the default) or asynchronous.
 
+## calculate\_opkg\_repository\_metadata( async => 0/1, writeProps => 1 )
+
+Calculates/recalculates the Packages and Release metadata for this repository,based on the ipk packages in it (in each
+feed location).
+
+## calculate\_bower\_index
+
+Recalculates the index for a Bower repository.
+
 # SYSTEM & CONFIGURATION
 
 ## system\_info
@@ -528,6 +645,18 @@ Install new license key or change the current one
 ## version\_and\_addons\_information
 
 Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
+
+## get\_reverse\_proxy\_configuration
+
+Retrieves the reverse proxy configuration
+
+## update\_reverse\_proxy\_configuration(%data)
+
+Updates the reverse proxy configuration
+
+## get\_reverse\_proxy\_snippet
+
+Gets the reverse proxy configuration snippet in text format
 
 # PLUGINS
 
@@ -578,6 +707,22 @@ Returned default Export Settings JSON
 ## export\_system( exportPath => '/export/path', includeMetadata => 'true' etc )
 
 Export full system to a server local directory
+
+## create\_bundle( %hash of data structure )
+
+Create a new support bundle
+
+## list\_bundles
+
+Lists previously created bundle currently stored in the system
+
+## get\_bundle( $name )
+
+Downloads a previously created bundle currently stored in the system
+
+## delete\_bundle( $name )
+
+Deletes a previously created bundle from the system.
 
 # AUTHOR
 
