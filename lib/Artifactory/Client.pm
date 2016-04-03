@@ -23,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 1.1.1
+Version 1.1.2
 
 =cut
 
-our $VERSION = 'v1.1.1';
+our $VERSION = 'v1.1.2';
 
 =head1 SYNOPSIS
 
@@ -566,7 +566,7 @@ sub retrieve_latest_artifact {
     my $basename = basename($path);
     my $url;
     $url = "$base_url/$version-SNAPSHOT/$basename-$version-SNAPSHOT.jar" if ( $version && $flag eq 'snapshot' );
-    $url = "$base_url/$release/$basename-$release.jar"                   if ( $flag             eq 'release' );
+    $url = "$base_url/$release/$basename-$release.jar"                   if ( $flag eq 'release' );
     $url = "$base_url/$version-$integration/$basename-$version-$integration.jar"
       if ( $version && $flag eq 'integration' );
     return $self->get($url);
