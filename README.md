@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.1.0
+Version 1.1.1
 
 # SYNOPSIS
 

@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+1.1.1   2016/4/2
+        Switching back from Module::Build to ExtUtils::MakeMaker as Module::Build has been removed from the core
+
 1.1.0   2016/4/1
         Added API calls up to 4.6.0
 
