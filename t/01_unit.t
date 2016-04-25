@@ -892,6 +892,21 @@ subtest 'get_system_replication_status', sub {
     is( $resp->code, 200, 'got 200 back' );
 };
 
+subtest 'block_system_replication', sub {
+    my $client = setup();
+
+    my %info = (
+        push => 'false',
+        pull => 'false'
+    );
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->block_system_replication(%info);
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'artifact_sync_download', sub {
     my $client = setup();
     my %args   = (

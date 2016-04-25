@@ -936,6 +936,26 @@ sub get_system_replication_status {
     return $self->get($url);
 }
 
+=head2 block_system_replication( push => 'false', pull => 'true' )
+
+Blocks replications globally. Push and pull are true by default. If false, replication for the corresponding type is not
+blocked.
+
+=cut
+
+sub block_system_replication {
+    my ( $self, %args ) = @_;
+
+    my %merged = (
+        push => 'true',
+        pull => 'true',
+        %args    # overriding defaults
+    );
+    my $repo = $self->repository();
+    my $url = $self->_api_url() . "/system/replications/block?" . $self->_stringify_hash( '&', %merged );
+    return $self->post($url);
+}
+
 =head2 artifact_sync_download( $path, content => 'progress', mark => 1000 )
 
 Downloads an artifact with or without returning the actual content to the client. When tracking the progress marks are
