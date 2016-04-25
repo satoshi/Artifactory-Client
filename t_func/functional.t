@@ -395,6 +395,13 @@ subtest 'enable_or_disable_multiple_replications', sub {
     like( $url, qr|/api/replications/enable|, 'enable_or_disable_multiple_replications called' );
 };
 
+subtest 'get_system_replication_status', sub {
+    my $client = setup();
+    my $resp   = $client->get_system_replication_status();
+    my $url    = $resp->request->uri;
+    like( $url, qr|/api/system/replications|, 'get_system_replication_status called' );
+};
+
 subtest 'artifact_sync_download', sub {
     my $client = setup();
     my %args   = (
@@ -1053,8 +1060,8 @@ subtest 'calculate_opkg_repository_metadata', sub {
 
 subtest 'calculate_bower_index', sub {
     my $client = setup();
-    my $resp = $client->calculate_bower_index();
-    my $url  = $resp->request->uri;
+    my $resp   = $client->calculate_bower_index();
+    my $url    = $resp->request->uri;
     like( $url, qr|/api/bower/libs-release-local/reindex|, 'calculate_bower_index called' );
 };
 

@@ -883,6 +883,15 @@ subtest 'enable_or_disable_multiple_replications', sub {
     is( $resp->code, 200, 'got 200 back' );
 };
 
+subtest 'get_system_replication_status', sub {
+    my $client = setup();
+    local *{'LWP::UserAgent::get'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->get_system_replication_status();
+    is( $resp->code, 200, 'got 200 back' );
+};
+
 subtest 'artifact_sync_download', sub {
     my $client = setup();
     my %args   = (

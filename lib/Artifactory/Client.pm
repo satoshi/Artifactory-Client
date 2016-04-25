@@ -566,7 +566,7 @@ sub retrieve_latest_artifact {
     my $basename = basename($path);
     my $url;
     $url = "$base_url/$version-SNAPSHOT/$basename-$version-SNAPSHOT.jar" if ( $version && $flag eq 'snapshot' );
-    $url = "$base_url/$release/$basename-$release.jar"                   if ( $flag eq 'release' );
+    $url = "$base_url/$release/$basename-$release.jar"                   if ( $flag             eq 'release' );
     $url = "$base_url/$version-$integration/$basename-$version-$integration.jar"
       if ( $version && $flag eq 'integration' );
     return $self->get($url);
@@ -921,6 +921,19 @@ sub enable_or_disable_multiple_replications {
         "Content-Type" => 'application/json',
         Content        => $self->_json->encode( \%info )
     );
+}
+
+=head2 get_system_replication_status
+
+Returns the global system replication status (blocked or unblocked).
+
+=cut
+
+sub get_system_replication_status {
+    my $self = shift;
+    my $repo = $self->repository();
+    my $url  = $self->_api_url() . "/system/replications";
+    return $self->get($url);
 }
 
 =head2 artifact_sync_download( $path, content => 'progress', mark => 1000 )
