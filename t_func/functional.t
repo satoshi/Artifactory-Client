@@ -402,6 +402,18 @@ subtest 'get_system_replication_status', sub {
     like( $url, qr|/api/system/replications|, 'get_system_replication_status called' );
 };
 
+subtest 'block_system_replication', sub {
+    my $client = setup();
+
+    my %info = (
+        push => 'false',
+        pull => 'false'
+    );
+    my $resp = $client->block_system_replication(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/system/replications/block|, 'block_system_replication called' );
+};
+
 subtest 'artifact_sync_download', sub {
     my $client = setup();
     my %args   = (
