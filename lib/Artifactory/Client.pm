@@ -945,15 +945,19 @@ blocked.
 
 sub block_system_replication {
     my ( $self, %args ) = @_;
+    return $self->_handle_block_system_replication( 'block', %args );
+}
 
-    my %merged = (
-        push => 'true',
-        pull => 'true',
-        %args    # overriding defaults
-    );
-    my $repo = $self->repository();
-    my $url = $self->_api_url() . "/system/replications/block?" . $self->_stringify_hash( '&', %merged );
-    return $self->post($url);
+=head2 unblock_system_replication( push => 'false', pull => 'true' )
+
+Unblocks replications globally. Push and pull are true by default. If false, replication for the corresponding type is
+not unblocked.
+
+=cut
+
+sub unblock_system_replication {
+    my ( $self, %args ) = @_;
+    return $self->_handle_block_system_replication( 'unblock', %args );
 }
 
 =head2 artifact_sync_download( $path, content => 'progress', mark => 1000 )
@@ -2629,6 +2633,18 @@ sub _handle_revoke_api_key {
     $header{'X-Api-Key'} = $content->{apiKey};
     my $url = $self->_api_url() . $endpoint;
     return $self->delete( $url, %header );
+}
+
+sub _handle_block_system_replication {
+    my ( $self, $ep, %args ) = @_;
+    my %merged = (
+        push => 'true',
+        pull => 'true',
+        %args              # overriding defaults
+    );
+    my $repo = $self->repository();
+    my $url = $self->_api_url() . "/system/replications/$ep?" . $self->_stringify_hash( '&', %merged );
+    return $self->post($url);
 }
 
 __PACKAGE__->meta->make_immutable;
