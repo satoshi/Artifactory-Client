@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.1.2
+Version 1.1.3
 
 # SYNOPSIS
 
@@ -274,6 +274,20 @@ Deletes a local multi-push replication configuration. Supported by local and loc
 ## enable\_or\_disable\_multiple\_replications( 'enable|disable', include => \[ \], exclude => \[ \] )
 
 Enables/disables multiple replication tasks by repository or Artifactory server based in include and exclude patterns.
+
+## get\_system\_replication\_status
+
+Returns the global system replication status (blocked or unblocked).
+
+## block\_system\_replication( push => 'false', pull => 'true' )
+
+Blocks replications globally. Push and pull are true by default. If false, replication for the corresponding type is not
+blocked.
+
+## unblock\_system\_replication( push => 'false', pull => 'true' )
+
+Unblocks replications globally. Push and pull are true by default. If false, replication for the corresponding type is
+not unblocked.
 
 ## artifact\_sync\_download( $path, content => 'progress', mark => 1000 )
 
