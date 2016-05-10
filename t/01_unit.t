@@ -766,7 +766,7 @@ subtest 'pull_push_replication', sub {
                 '_request' => bless(
                     {
                         '_uri' => bless(
-                            do { \( my $o = "http://example.com:7777/artifactory/api/replication/foobar" ) },
+                            do { \( my $o = "http://example.com:7777/artifactory/api/replication/execute/foobar" ) },
                             'URI::http'
                         ),
                     },
@@ -778,7 +778,7 @@ subtest 'pull_push_replication', sub {
     };
     my $resp = $client->pull_push_replication( payload => $payload, path => $path );
     my $url_in_response = $resp->request->uri;
-    like( $url_in_response, qr|/api/replication|, 'requsted URL looks sane' );
+    like( $url_in_response, qr|/api/replication/execute/foobar|, 'requsted URL looks sane' );
 };
 
 subtest 'create_or_replace_local_multi_push_replication', sub {

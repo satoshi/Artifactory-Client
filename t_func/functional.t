@@ -348,7 +348,7 @@ subtest 'pull_push_replication', sub {
     };
     my $resp = $client->pull_push_replication( payload => $payload, path => '/foo' );
     my $url = $resp->request->uri;
-    like( $url, qr|/api/replication/libs-release-local/foo|, 'pull_push_replication called' );
+    like( $url, qr|/api/replication/execute/libs-release-local/foo|, 'pull_push_replication called' );
 };
 
 subtest 'create_or_replace_local_multi_push_replication', sub {

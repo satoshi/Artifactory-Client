@@ -863,7 +863,7 @@ sub pull_push_replication {
     my $payload = $args{payload};
     my $path    = $args{path};
     $path = $self->_merge_repo_and_path($path);
-    my $url = $self->_api_url() . "/replication/$path";
+    my $url = $self->_api_url() . "/replication/execute/$path";
     return $self->post(
         $url,
         "Content-Type" => 'application/json',
