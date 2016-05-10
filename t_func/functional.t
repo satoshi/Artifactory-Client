@@ -395,11 +395,11 @@ subtest 'enable_or_disable_multiple_replications', sub {
     like( $url, qr|/api/replications/enable|, 'enable_or_disable_multiple_replications called' );
 };
 
-subtest 'get_system_replication_status', sub {
+subtest 'get_global_system_replication_configuration', sub {
     my $client = setup();
-    my $resp   = $client->get_system_replication_status();
+    my $resp   = $client->get_global_system_replication_configuration();
     my $url    = $resp->request->uri;
-    like( $url, qr|/api/system/replications|, 'get_system_replication_status called' );
+    like( $url, qr|/api/system/replications|, 'get_global_system_replication_configuration called' );
 };
 
 subtest 'block_system_replication', sub {

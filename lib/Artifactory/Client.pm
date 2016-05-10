@@ -923,13 +923,13 @@ sub enable_or_disable_multiple_replications {
     );
 }
 
-=head2 get_system_replication_status
+=head2 get_global_system_replication_configuration
 
-Returns the global system replication status (blocked or unblocked).
+Returns the global system replication configuration status, i.e. if push and pull replications are blocked or unblocked.
 
 =cut
 
-sub get_system_replication_status {
+sub get_global_system_replication_configuration {
     my $self = shift;
     my $repo = $self->repository();
     my $url  = $self->_api_url() . "/system/replications";
@@ -2640,7 +2640,7 @@ sub _handle_block_system_replication {
     my %merged = (
         push => 'true',
         pull => 'true',
-        %args              # overriding defaults
+        %args    # overriding defaults
     );
     my $repo = $self->repository();
     my $url = $self->_api_url() . "/system/replications/$ep?" . $self->_stringify_hash( '&', %merged );

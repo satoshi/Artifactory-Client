@@ -883,12 +883,12 @@ subtest 'enable_or_disable_multiple_replications', sub {
     is( $resp->code, 200, 'got 200 back' );
 };
 
-subtest 'get_system_replication_status', sub {
+subtest 'get_global_system_replication_configuration', sub {
     my $client = setup();
     local *{'LWP::UserAgent::get'} = sub {
         return $mock_responses{http_200};
     };
-    my $resp = $client->get_system_replication_status();
+    my $resp = $client->get_global_system_replication_configuration();
     is( $resp->code, 200, 'got 200 back' );
 };
 
