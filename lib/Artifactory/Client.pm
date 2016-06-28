@@ -566,7 +566,7 @@ sub retrieve_latest_artifact {
     my $basename = basename($path);
     my $url;
     $url = "$base_url/$version-SNAPSHOT/$basename-$version-SNAPSHOT.jar" if ( $version && $flag eq 'snapshot' );
-    $url = "$base_url/$release/$basename-$release.jar"                   if ( $flag             eq 'release' );
+    $url = "$base_url/$release/$basename-$release.jar"                   if ( $flag eq 'release' );
     $url = "$base_url/$version-$integration/$basename-$version-$integration.jar"
       if ( $version && $flag eq 'integration' );
     return $self->get($url);
@@ -734,6 +734,24 @@ sub push_docker_tag_to_bintray {
     my ( $self, %args ) = @_;
 
     my $url = $self->_api_url() . '/bintray/docker/push/' . $self->repository();
+    return $self->post(
+        $url,
+        "Content-Type" => 'application/json',
+        Content        => $self->_json->encode( \%args )
+    );
+}
+
+=head2 distribute_artifact( publish => 'true', async => 'false' )
+
+Deploys artifacts from Artifactory to Bintray, and creates an entry in the corresponding Artifactory distribution
+repository specified
+
+=cut
+
+sub distribute_artifact {
+    my ( $self, %args ) = @_;
+
+    my $url = $self->_api_url() . '/distribute';
     return $self->post(
         $url,
         "Content-Type" => 'application/json',

@@ -268,6 +268,18 @@ subtest 'push_docker_tag_to_bintray', sub {
     like( $url, qr|/bintray/docker/push/libs-release-local|, 'push_docker_tag_to_bintray called' );
 };
 
+subtest 'distribute_artifact', sub {
+    my $client = setup();
+    my %info   = (
+        publish       => 'true',
+        async         => 'false',
+        gpgPassphrase => 'abc',
+    );
+    my $resp = $client->distribute_artifact(%info);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/distribute|, 'distribute_artifact called' );
+};
+
 subtest 'file_compliance_info', sub {
     my $client = setup();
     my $resp   = $client->file_compliance_info('foo/bar');

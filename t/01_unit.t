@@ -617,6 +617,21 @@ subtest 'push_a_set_of_artifacts_to_bintray', sub {
     is( $resp->code, 200, 'push_a_set_of_artifacts_to_bintray' );
 };
 
+subtest 'distribute_artifact', sub {
+    my $client = setup();
+    my %info   = (
+        publish       => 'true',
+        gpgPassphrase => 'abc',
+    );
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+
+    my $resp = $client->distribute_artifact(%info);
+    is( $resp->code, 200, 'distribute_artifact' );
+};
+
 subtest 'file_compliance_info', sub {
     my $client = setup();
 
@@ -1236,7 +1251,8 @@ subtest 'builds_for_dependency', sub {
                 '_request' => bless(
                     {
                         '_uri' => bless(
-                            do { \( my $o = "http://example.com:7777/artifactory/api/search/dependency" ) }, 'URI::http'
+                            do { \( my $o = "http://example.com:7777/artifactory/api/search/dependency" ) },
+                            'URI::http'
                         ),
                     },
                     'HTTP::Request'
