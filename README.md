@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.1.4
+Version 1.1.5
 
 # SYNOPSIS
 
@@ -214,6 +214,11 @@ parameter.
 
 Push Docker tag to Bintray.  Calculation can be synchronous (the default) or asynchronous.  You will need to enter your
 Bintray credentials, for more details, please refer to Entering your Bintray credentials.
+
+## distribute\_artifact( publish => 'true', async => 'false' )
+
+Deploys artifacts from Artifactory to Bintray, and creates an entry in the corresponding Artifactory distribution
+repository specified
 
 ## file\_compliance\_info( $path )
 
