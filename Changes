@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+1.1.6   2016/7/2
+        Adding Makefile.PL in MANIFEST
+
 1.1.5   2016/6/28
         Added 4.8 endpoints
 

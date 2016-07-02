@@ -1,4 +1,4 @@
-Build.PL
+Makefile.PL
 Changes
 lib/Artifactory/Client.pm
 MANIFEST			This list of files
