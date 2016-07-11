@@ -316,28 +316,19 @@ subtest 'build_rename', sub {
     is( $resp->code, 200, 'build_rename succeeded' );
 };
 
-subtest 'push_build_to_bintray', sub {
+subtest 'distribute_build', sub {
     my $client = setup();
     my %info   = (
-        buildName     => 'testBuild',
-        buildNumber   => 1,
-        gpgPassphrase => 'password',
-        gpgSign       => 'true',
-        payload       => {
-            subject     => "myUser",
-            repoName    => "test",
-            packageName => "overridePkg",
-            versionName => "overrideVer",
-            licenses    => ["MIT"]
-        }
+        gpgPassphrase => 'foobar',
+        'targetRepo'  => 'foobar',
     );
 
     local *{'LWP::UserAgent::post'} = sub {
         return $mock_responses{http_200};
     };
 
-    my $resp = $client->push_build_to_bintray(%info);
-    is( $resp->code, 200, 'push_build_to_bintray_succeeded' );
+    my $resp = $client->distribute_build( 'build_name', 5, %info );
+    is( $resp->code, 200, 'distribute_build succeeded' );
 };
 
 subtest 'push_docker_tag_to_bintray', sub {

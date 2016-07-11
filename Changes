@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+1.1.7   2016/7/11
+        Added distribute_build while deprecating push_build_to_bintray
+
 1.1.6   2016/7/2
         Adding Makefile.PL in MANIFEST
 

@@ -348,33 +348,21 @@ sub build_rename {
     return $self->post($url);
 }
 
-=head2 push_build_to_bintray( buildName => 'name', buildNumber => 1, gpgPassphrase => 'foo', gpgSign => 'true', payload => { subject => "myUser" ... } )
+=head2 distribute_build( 'build_name', $build_number, %hash_of_json_payload )
 
-Push a build to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename and a
-.json extension) that is included with the build artifacts. For more details, please refer to Pushing a Build.
+Deploys builds from Artifactory to Bintray, and creates an entry in the corresponding Artifactory distribution
+repository specified.
 
 =cut
 
-sub push_build_to_bintray {
-    my ( $self, %info ) = @_;
+sub distribute_build {
+    my ( $self, $build_name, $build_number, %args ) = @_;
 
-    my $build_name   = $info{buildName};
-    my $build_number = $info{buildNumber};
-    my $url          = $self->_api_url() . "/build/pushToBintray/$build_name/$build_number";
-    my @extra;
-
-    for my $key ( 'gpgPassphrase', 'gpgSign' ) {
-        my $val = $info{$key};
-        push @extra, "$key=$val";
-    }
-
-    $url .= "?" . join( '&', @extra ) if (@extra);
-
-    my $payload = $info{payload} || "";
+    my $url = $self->_api_url() . "/build/distribute/$build_name/$build_number";
     return $self->post(
         $url,
         'Content-Type' => 'application/json',
-        content        => $self->_json->encode($payload)
+        content        => $self->_json->encode( \%args )
     );
 }
 

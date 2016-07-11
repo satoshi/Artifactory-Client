@@ -88,18 +88,16 @@ subtest 'build_rename', sub {
     like( $url, qr|/api/build/rename/foo\?to=bar|, 'build_rename called' );
 };
 
-subtest 'push_build_to_bintray', sub {
+subtest 'distribute_build', sub {
     my $client = setup();
     my %args   = (
-        buildName     => 'name',
-        buildNumber   => 1,
         gpgPassphrase => 'foo',
-        gpgSign       => 'true',
-        payload       => { subject => "myUser" },
+        targetRepo    => 'testrepo',
+        async         => 'false',
     );
-    my $resp = $client->push_build_to_bintray(%args);
-    my $url  = $resp->request->uri;
-    like( $url, qr|/api/build/pushToBintray/name/1\?gpgPassphrase=foo&gpgSign=true|, 'push_to_bintray called' );
+    my $resp = $client->distribute_build( 'foobar', 5, %args );
+    my $url = $resp->request->uri;
+    like( $url, qr|/api/build/distribute/foobar/5|, 'distribute_build called' );
 };
 
 subtest 'folder_info', sub {
