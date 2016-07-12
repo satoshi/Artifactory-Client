@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.1.6
+Version 1.1.7
 
 # SYNOPSIS
 
@@ -107,10 +107,10 @@ Removes builds stored in Artifactory. Useful for cleaning up old build info data
 
 Renames a build
 
-## push\_build\_to\_bintray( buildName => 'name', buildNumber => 1, gpgPassphrase => 'foo', gpgSign => 'true', payload => { subject => "myUser" ... } )
+## distribute\_build( 'build\_name', $build\_number, %hash\_of\_json\_payload )
 
-Push a build to Bintray as a version.  Uses a descriptor file (that must have 'bintray-info' in it's filename and a
-.json extension) that is included with the build artifacts. For more details, please refer to Pushing a Build.
+Deploys builds from Artifactory to Bintray, and creates an entry in the corresponding Artifactory distribution
+repository specified.
 
 # ARTIFACTS & STORAGE
 
