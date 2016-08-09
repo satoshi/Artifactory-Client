@@ -1880,7 +1880,7 @@ Calculates/recalculates the YUM metdata for this repository, based on the RPM pa
 
 sub calculate_yum_repository_metadata {
     my ( $self, %args ) = @_;
-    my $repository = $self->repository();
+    my $repository = $args{repository} || $self->repository();
     return $self->_handle_repository_reindex( "/yum/$repository", %args );
 }
 
@@ -1892,8 +1892,8 @@ each NuGet package according to it's internal nuspec file
 =cut
 
 sub calculate_nuget_repository_metadata {
-    my $self       = shift;
-    my $repository = $self->repository();
+    my ( $self, %args ) = @_;
+    my $repository = $args{repository} || $self->repository();
     return $self->_handle_repository_reindex("/nuget/$repository/reindex");
 }
 
@@ -1905,8 +1905,8 @@ more details.
 =cut
 
 sub calculate_npm_repository_metadata {
-    my $self       = shift;
-    my $repository = $self->repository();
+    my ( $self, %args ) = @_;
+    my $repository = $args{repository} || $self->repository();
     return $self->_handle_repository_reindex("/npm/$repository/reindex");
 }
 
@@ -1946,7 +1946,7 @@ Calculation can be synchronous (the default) or asynchronous.
 
 sub calculate_debian_repository_metadata {
     my ( $self, %args ) = @_;
-    my $repository = $self->repository();
+    my $repository = $args{repository} || $self->repository();
     return $self->_handle_repository_reindex( "/deb/reindex/$repository", %args );
 }
 
@@ -1959,7 +1959,7 @@ feed location).
 
 sub calculate_opkg_repository_metadata {
     my ( $self, %args ) = @_;
-    my $repository = $self->repository();
+    my $repository = $args{repository} || $self->repository();
     return $self->_handle_repository_reindex( "/opkg/reindex/$repository", %args );
 }
 
@@ -1970,8 +1970,8 @@ Recalculates the index for a Bower repository.
 =cut
 
 sub calculate_bower_index {
-    my $self       = shift;
-    my $repository = $self->repository();
+    my ( $self, %args ) = @_;
+    my $repository = $args{repository} || $self->repository();
     return $self->_handle_repository_reindex("/bower/$repository/reindex");
 }
 
