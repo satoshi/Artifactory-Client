@@ -301,14 +301,14 @@ Promotes a Docker image from one repository to another
 =cut
 
 sub promote_docker_image {
-    my ( $self, %data ) = @_;
+    my ( $self, %args ) = @_;
 
-    my $repo = $self->repository();
-    my $url  = $self->_api_url() . "/docker/$repo/v2/promote";
+    my $repo = $args{repository} || $self->repository();
+    my $url = $self->_api_url() . "/docker/$repo/v2/promote";
     return $self->post(
         $url,
         "Content-Type" => 'application/json',
-        Content        => $self->_json->encode( \%data )
+        Content        => $self->_json->encode( \%args )
     );
 }
 

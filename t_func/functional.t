@@ -66,6 +66,11 @@ subtest 'promote_docker_image', sub {
     my $resp = $client->promote_docker_image(%data);
     my $url  = $resp->request->uri;
     like( $url, qr|/api/docker/libs-release-local/v2/promote|, 'promote_docker_image called' );
+
+    $data{repository} = 'foobar';
+    my $resp2 = $client->promote_docker_image(%data);
+    my $url2  = $resp2->request->uri;
+    like( $url2, qr|/api/docker/foobar/v2/promote|, 'promote_docker_image called with overwritten repository' );
 };
 
 subtest 'delete_builds', sub {
