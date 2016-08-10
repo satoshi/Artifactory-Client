@@ -23,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 1.1.7
+Version 1.1.8
 
 =cut
 
-our $VERSION = 'v1.1.7';
+our $VERSION = 'v1.1.8';
 
 =head1 SYNOPSIS
 
