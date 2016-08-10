@@ -23,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 1.1.7
+Version 1.1.8
 
 =cut
 
-our $VERSION = 'v1.1.7';
+our $VERSION = 'v1.1.8';
 
 =head1 SYNOPSIS
 
@@ -852,9 +852,9 @@ Gets scheduled replication status of a repository
 =cut
 
 sub scheduled_replication_status {
-    my $self       = shift;
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/replication/$repository";
+    my ( $self, %args ) = @_;
+    my $repository = $args{repository} || $self->repository();
+    my $url = $self->_api_url() . "/replication/$repository";
     return $self->get($url);
 }
 
@@ -906,9 +906,9 @@ Deletes a local multi-push replication configuration. Supported by local and loc
 =cut
 
 sub delete_local_multi_push_replication {
-    my ( $self, $url ) = @_;
-    my $repo     = $self->repository();
-    my $call_url = $self->_api_url() . "/replications/$repo?url=$url";
+    my ( $self, $url, %args ) = @_;
+    my $repository = $args{repository} || $self->repository();
+    my $call_url = $self->_api_url() . "/replications/$repository?url=$url";
     return $self->delete($call_url);
 }
 
@@ -919,13 +919,12 @@ Enables/disables multiple replication tasks by repository or Artifactory server 
 =cut
 
 sub enable_or_disable_multiple_replications {
-    my ( $self, $flag, %info ) = @_;
-    my $repo = $self->repository();
-    my $url  = $self->_api_url() . "/replications/$flag";
+    my ( $self, $flag, %args ) = @_;
+    my $url = $self->_api_url() . "/replications/$flag";
     return $self->post(
         $url,
         "Content-Type" => 'application/json',
-        Content        => $self->_json->encode( \%info )
+        Content        => $self->_json->encode( \%args )
     );
 }
 
@@ -937,7 +936,6 @@ Returns the global system replication configuration status, i.e. if push and pul
 
 sub get_global_system_replication_configuration {
     my $self = shift;
-    my $repo = $self->repository();
     my $url  = $self->_api_url() . "/system/replications";
     return $self->get($url);
 }
@@ -978,8 +976,8 @@ is downloaded to the client.
 
 sub artifact_sync_download {
     my ( $self, $path, %args ) = @_;
-    my $repo = $self->repository();
-    my $url  = $self->_api_url() . "/download/$repo" . $path;
+    my $repository = $args{repository} || $self->repository();
+    my $url = $self->_api_url() . "/download/$repository" . $path;
     $url .= "?" . $self->_stringify_hash( '&', %args ) if (%args);
     return $self->get($url);
 }
@@ -1194,9 +1192,9 @@ Get all artifacts matching the given Ant path pattern
 =cut
 
 sub pattern_search {
-    my ( $self, $pattern ) = @_;
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/search/pattern?pattern=$repository:$pattern";
+    my ( $self, $pattern, %args ) = @_;
+    my $repository = $args{repository} || $self->repository();
+    my $url = $self->_api_url() . "/search/pattern?pattern=$repository:$pattern";
     return $self->get($url);
 }
 
@@ -1290,9 +1288,9 @@ Lists all Docker repositories hosted in under an Artifactory Docker repository.
 =cut
 
 sub list_docker_repositories {
-    my $self       = shift;
-    my $repository = $self->repository();
-    my $url        = $self->_api_url() . "/docker/$repository/v2/_catalog";
+    my ( $self, %args ) = @_;
+    my $repository = $args{repository} || $self->repository();
+    my $url = $self->_api_url() . "/docker/$repository/v2/_catalog";
     return $self->get($url);
 }
 
