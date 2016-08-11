@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+1.2.0   2016/8/10
+        Added repository overrides for the rest of method calls that have repository as part of endpoint
+
 1.1.8   2016/8/9
         Adding repository override via cmdline param for some methods
 

@@ -23,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 1.1.8
+Version 1.2.0
 
 =cut
 
-our $VERSION = 'v1.1.8';
+our $VERSION = 'v1.2.0';
 
 =head1 SYNOPSIS
 
@@ -66,6 +66,9 @@ HTTP::Response object.
 
     # Custom requests can also be made via usual get / post / put / delete requests.
     my $resp = $client->get( 'http://artifactory.server.com/path/to/resource' );
+
+    # Repository override for calls that have a repository in the endpoint.  The passed-in repository will not persist.
+    my $resp = $client->calculate_yum_repository_metadata( repository => 'different_repo', async => 1 );
 
 =cut
 
