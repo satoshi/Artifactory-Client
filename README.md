@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/satoshi/Artifactory-Client.svg?branch=master)](https://travis-ci.org/satoshi/Artifactory-Client)
 
-# NAME
+# NAME2
 
 Artifactory::Client - Perl client for Artifactory REST API
 
