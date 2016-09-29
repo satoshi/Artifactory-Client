@@ -15,7 +15,6 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     BUILD_REQUIRES => {
-        'Test::More'     => 0,
         'JSON'           => 0,
         'WWW::Mechanize' => 0,
     },

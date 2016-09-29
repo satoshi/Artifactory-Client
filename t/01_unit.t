@@ -4,12 +4,12 @@ use strict;
 use warnings;
 use Test::More;
 use Data::Dumper;
-use JSON;
 use FindBin qw($Bin);
+use lib "$Bin/../lib", "$Bin/../local/lib/perl5";
+use JSON;
 use WWW::Mechanize;
 use URI::http;
 use HTTP::Request;
-use lib "$Bin/../lib";
 use Artifactory::Client;
 use Path::Tiny;
 

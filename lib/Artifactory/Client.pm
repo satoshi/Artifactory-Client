@@ -23,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 1.2.0
+Version 1.3.0
 
 =cut
 
-our $VERSION = 'v1.2.0';
+our $VERSION = 'v1.3.0';
 
 =head1 SYNOPSIS
 
@@ -69,6 +69,18 @@ HTTP::Response object.
 
     # Repository override for calls that have a repository in the endpoint.  The passed-in repository will not persist.
     my $resp = $client->calculate_yum_repository_metadata( repository => 'different_repo', async => 1 );
+
+=cut
+
+=head1 Dev Env Setup / Running Tests
+
+    carton install
+
+    # to run unit tests
+    prove -r t
+
+    # to run functional tests (requires Artifactory running somewhere)
+    perl t_func/functional.t --server <hostname>
 
 =cut
 

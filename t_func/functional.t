@@ -6,7 +6,7 @@ use Test::More;
 use Getopt::Long;
 use Data::Dumper;
 use FindBin qw($Bin);
-use lib "$Bin/../lib";
+use lib "$Bin/../lib", "$Bin/../local/lib/perl5";
 use Artifactory::Client;
 
 my $opts = {};
