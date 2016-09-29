@@ -15,7 +15,6 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     BUILD_REQUIRES => {
-        'JSON'           => 0,
         'WWW::Mechanize' => 0,
     },
     PREREQ_PM => {

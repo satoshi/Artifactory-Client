@@ -6,7 +6,7 @@ use Test::More;
 use Data::Dumper;
 use FindBin qw($Bin);
 use lib "$Bin/../lib", "$Bin/../local/lib/perl5";
-use JSON;
+use JSON::MaybeXS;
 use WWW::Mechanize;
 use URI::http;
 use HTTP::Request;
@@ -85,7 +85,7 @@ subtest 'deploy_artifact with properties and content', sub {
     };
 
     my $resp2 = $client->item_properties( path => $path );
-    my $scalar = from_json( $resp2->decoded_content );
+    my $scalar = decode_json( $resp2->decoded_content );
     is_deeply( $scalar->{properties}, $properties, 'properties are correct' );
     my $artifact_url = "$artifactory:$port/$repository$path";
     my $resp3        = $client->get($artifact_url);
@@ -165,7 +165,7 @@ subtest 'item properties', sub {
     };
 
     my $resp = $client->item_properties( path => '/unique_path', properties => ['that'] );
-    my $scalar = from_json( $resp->decoded_content );
+    my $scalar = decode_json( $resp->decoded_content );
     is_deeply( $scalar->{properties}, { that => ['one'] }, 'property content is correct' );
 };
 
