@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.3.0
+Version 1.3.1
 
 # SYNOPSIS
 
@@ -649,6 +649,10 @@ Recalculates the index for a Bower repository.
 ## system\_info
 
 Get general system information
+
+## verify\_connection( endpoint => 'http://server/foobar', username => 'admin', password => 'password' )
+
+Verifies a two-way connection between Artifactory and another product
 
 ## system\_health\_ping
 

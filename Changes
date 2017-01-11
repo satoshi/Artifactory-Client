@@ -1,5 +1,8 @@
 Revision history for Artifactory-Client
 
+1.3.1   2017/1/11
+        Added verify_connection call, created .gitignore file to ignore carton files & snapshot
+
 1.3.0   2016/9/28
         Added cpanfile for carton
 
