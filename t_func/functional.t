@@ -1114,6 +1114,18 @@ subtest 'system_health_ping', sub {
     like( $url, qr|/api/system/ping|, 'system_health_ping called' );
 };
 
+subtest 'verify_connection', sub {
+    my $client = setup();
+    my %args   = (
+        endpoint => 'http://www.yahoo.com',
+        username => 'admin',
+        password => 'password'
+    );
+    my $resp = $client->verify_connection(%args);
+    my $url  = $resp->request->uri;
+    like( $url, qr|/api/system/verifyconnection|, 'verify_connection called' );
+};
+
 subtest 'general_configuration', sub {
     my $client = setup();
     my $resp   = $client->general_configuration();
