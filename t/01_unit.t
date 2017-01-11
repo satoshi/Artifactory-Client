@@ -2449,6 +2449,20 @@ subtest 'system_info', sub {
     like( $url_in_response, qr|/api/system|, 'requsted URL looks sane' );
 };
 
+subtest 'verify_connection', sub {
+    my $client = setup();
+    my %args   = (
+        endpoint => 'http://localhost/foobar',
+        username => 'admin',
+        password => 'password'
+    );
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->verify_connection(%args);
+    is( $resp->code, 200, 'verify_connection succeeded' );
+};
+
 subtest 'system_health_ping', sub {
     my $client = setup();
 

@@ -2003,6 +2003,23 @@ sub system_info {
     return $self->_handle_system();
 }
 
+=head2 verify_connection( endpoint => 'http://server/foobar', username => 'admin', password => 'password' )
+
+Verifies a two-way connection between Artifactory and another product
+
+=cut
+
+sub verify_connection {
+    my ( $self, %args ) = @_;
+    my $url = $self->_api_url() . "/system/verifyconnection";
+
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%args )
+    );
+}
+
 =head2 system_health_ping
 
 Get a simple status response about the state of Artifactory
