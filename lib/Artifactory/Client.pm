@@ -79,9 +79,6 @@ HTTP::Response object.
     # to run unit tests
     prove -r t
 
-    # to run functional tests (requires Artifactory running somewhere)
-    perl t_func/functional.t --server <hostname>
-
 =cut
 
 has 'artifactory' => (
