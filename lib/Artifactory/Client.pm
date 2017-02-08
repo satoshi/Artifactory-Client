@@ -2103,6 +2103,19 @@ sub install_license {
     );
 }
 
+=head2 ha_license_information
+
+Retrieve information about the currently installed licenses in an HA cluster
+
+=cut
+
+sub ha_license_information {
+    my $self = shift;
+
+    my $url = $self->_api_url() . "/system/licenses";
+    return $self->get($url);
+}
+
 =head2 version_and_addons_information
 
 Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
