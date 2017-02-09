@@ -2620,6 +2620,30 @@ subtest 'ha_license_information', sub {
     like( $url_in_response, qr|/api/system/licenses|, 'requsted URL looks sane' );
 };
 
+subtest 'install_ha_cluster_licenses', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/system/licenses" ) }, 'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp =
+      $client->install_ha_cluster_licenses( [ { licenseKey => "foobar" }, { licenseKey => "barbaz" } ] );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/licenses|, 'requsted URL looks sane' );
+};
+
 subtest 'version_and_addons_information', sub {
     my $client = setup();
 

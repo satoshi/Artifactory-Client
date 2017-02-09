@@ -2116,6 +2116,23 @@ sub ha_license_information {
     return $self->get($url);
 }
 
+=head2 install_ha_cluster_licenses( [ { licenseKey => 'foobar' }, { licenseKey => 'barbaz' } ] )
+
+Install a new license key(s) on an HA cluster
+
+=cut
+
+sub install_ha_cluster_licenses {
+    my ( $self, $ref ) = @_;
+    my $url = $self->_api_url() . "/system/licenses";
+
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode($ref)
+    );
+}
+
 =head2 version_and_addons_information
 
 Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
