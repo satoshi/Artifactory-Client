@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.3.1
+Version 1.4.0
 
 # SYNOPSIS
 
@@ -55,9 +55,6 @@ HTTP::Response object.
 
     # to run unit tests
     prove -r t
-
-    # to run functional tests (requires Artifactory running somewhere)
-    perl t_func/functional.t --server <hostname>
 
 # GENERIC METHODS
 
@@ -678,6 +675,18 @@ Retrieve information about the currently installed license
 
 Install new license key or change the current one
 
+## ha\_license\_information
+
+Retrieve information about the currently installed licenses in an HA cluster
+
+## install\_ha\_cluster\_licenses( \[ { licenseKey => 'foobar' }, { licenseKey => 'barbaz' } \] )
+
+Install a new license key(s) on an HA cluster
+
+## delete\_ha\_cluster\_license( 'licenseHash1', 'licenseHash2' )
+
+Deletes a license key from an HA cluster
+
 ## version\_and\_addons\_information
 
 Retrieve information about the current Artifactory version, revision, and currently installed Add-ons
@@ -693,6 +702,13 @@ Updates the reverse proxy configuration
 ## get\_reverse\_proxy\_snippet
 
 Gets the reverse proxy configuration snippet in text format
+
+## create\_bootstrap\_bundle
+
+This rest is relevant for High Availability set up. It will create a bootstrap bundle on the primary node of an
+Artifactory HA installation that will include all the relevant keys so a new node can access the database and fetch all
+the relevant configuration files. The same bundle must be installed on all nodes during an installation of new nodes or
+if upgrading from a version older than 5.0. For more details, please refer to Installing Artifactory HA.
 
 # PLUGINS
 
