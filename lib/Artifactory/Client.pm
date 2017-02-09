@@ -2133,6 +2133,19 @@ sub install_ha_cluster_licenses {
     );
 }
 
+=head2 delete_ha_cluster_license( 'licenseHash1', 'licenseHash2' )
+
+Deletes a license key from an HA cluster
+
+=cut
+
+sub delete_ha_cluster_license {
+    my ( $self, @licenses ) = @_;
+    my $url = $self->_api_url() . "/system/licenses?";
+    $url .= $self->_handle_non_matrix_props( 'licenseHash', \@licenses );
+    return $self->delete( $url, 'Content-Type' => 'application/json' );
+}
+
 =head2 version_and_addons_information
 
 Retrieve information about the current Artifactory version, revision, and currently installed Add-ons

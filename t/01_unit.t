@@ -2644,6 +2644,29 @@ subtest 'install_ha_cluster_licenses', sub {
     like( $url_in_response, qr|/api/system/licenses|, 'requsted URL looks sane' );
 };
 
+subtest 'delete_ha_cluster_license', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::delete'} = sub {
+        return bless(
+            {
+                '_request' => bless(
+                    {
+                        '_uri' => bless(
+                            do { \( my $o = "http://example.com:7777/artifactory/api/system/licenses" ) }, 'URI::http'
+                        ),
+                    },
+                    'HTTP::Request'
+                )
+            },
+            'HTTP::Response'
+        );
+    };
+    my $resp = $client->delete_ha_cluster_license( 'hash1', 'hash2' );
+    my $url_in_response = $resp->request->uri;
+    like( $url_in_response, qr|/api/system/licenses|, 'requsted URL looks sane' );
+};
+
 subtest 'version_and_addons_information', sub {
     my $client = setup();
 
