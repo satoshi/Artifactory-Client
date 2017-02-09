@@ -2202,6 +2202,26 @@ sub get_reverse_proxy_snippet {
     return $self->get($url);
 }
 
+=head2 create_bootstrap_bundle
+
+This rest is relevant for High Availability set up. It will create a bootstrap bundle on the primary node of an
+Artifactory HA installation that will include all the relevant keys so a new node can access the database and fetch all
+the relevant configuration files. The same bundle must be installed on all nodes during an installation of new nodes or
+if upgrading from a version older than 5.0. For more details, please refer to Installing Artifactory HA.
+
+=cut
+
+sub create_bootstrap_bundle {
+    my ( $self, $file ) = @_;
+    my $url = $self->_api_url() . "/system/bootstrap_bundle";
+
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( { file => $file } )
+    );
+}
+
 =head1 PLUGINS
 
 =cut
