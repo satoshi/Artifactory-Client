@@ -331,6 +331,24 @@ subtest 'distribute_build', sub {
     is( $resp->code, 200, 'distribute_build succeeded' );
 };
 
+subtest 'control_build_retention', sub {
+    my $client = setup();
+
+    my %info = (
+        deleteBuildArtifacts         => 'true',
+        count                        => 2,
+        minimumBuildDate             => 1407345768020,
+        buildNumbersNotToBeDiscarded => [8],
+    );
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+
+    my $resp = $client->control_build_retention( 'build_name', %info );
+    is( $resp->code, 200, 'control_build_retention succeeded' );
+};
+
 subtest 'push_docker_tag_to_bintray', sub {
     my $client = setup();
     my %info   = (
@@ -2732,7 +2750,7 @@ subtest 'create_bootstrap_bundle', sub {
             'HTTP::Response'
         );
     };
-    my $resp = $client->create_bootstrap_bundle('/opt/jfrog/artifactory/etc/bootstrap.bundle.tar.gz');
+    my $resp            = $client->create_bootstrap_bundle('/opt/jfrog/artifactory/etc/bootstrap.bundle.tar.gz');
     my $url_in_response = $resp->request->uri;
     like( $url_in_response, qr|/api/system/bootstrap_bundle|, 'requsted URL looks sane' );
 };

@@ -6,7 +6,7 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 # VERSION
 
-Version 1.4.0
+Version 1.4.1
 
 # SYNOPSIS
 
@@ -121,6 +121,10 @@ Renames a build
 
 Deploys builds from Artifactory to Bintray, and creates an entry in the corresponding Artifactory distribution
 repository specified.
+
+## control\_build\_retention( 'build\_name', deleteBuildArtifacts => 'true', count => 100, ... )
+
+Specifies retention parameters for build info.
 
 # ARTIFACTS & STORAGE
 

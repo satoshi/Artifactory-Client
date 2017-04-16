@@ -23,11 +23,11 @@ Artifactory::Client - Perl client for Artifactory REST API
 
 =head1 VERSION
 
-Version 1.4.0
+Version 1.4.1
 
 =cut
 
-our $VERSION = 'v1.4.0';
+our $VERSION = 'v1.4.1';
 
 =head1 SYNOPSIS
 
@@ -371,6 +371,23 @@ sub distribute_build {
     my ( $self, $build_name, $build_number, %args ) = @_;
 
     my $url = $self->_api_url() . "/build/distribute/$build_name/$build_number";
+    return $self->post(
+        $url,
+        'Content-Type' => 'application/json',
+        content        => $self->_json->encode( \%args )
+    );
+}
+
+=head2 control_build_retention( 'build_name', deleteBuildArtifacts => 'true', count => 100, ... )
+
+Specifies retention parameters for build info.
+
+=cut
+
+sub control_build_retention {
+    my ( $self, $build_name, %args ) = @_;
+
+    my $url = $self->_api_url() . "/build/retention/$build_name";
     return $self->post(
         $url,
         'Content-Type' => 'application/json',
