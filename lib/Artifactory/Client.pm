@@ -1826,6 +1826,18 @@ sub set_gpg_pass_phrase {
     return $self->_handle_gpg_key( 'passphrase', 'put', 'X-GPG-PASSPHRASE' => $pass );
 }
 
+=head2 create_token( username => 'johnq', scope => 'member-of-groups:readers' )
+
+Creates an access token
+
+=cut
+
+sub create_token {
+    my ( $self, %data ) = @_;
+    my $url = $self->_api_url() . "/security/token";
+    return $self->post( $url, content => \%data );
+}
+
 =head1 REPOSITORIES
 
 =cut

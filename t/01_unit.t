@@ -2159,6 +2159,16 @@ subtest 'set_gpg_pass_phrase', sub {
     like( $url_in_response, qr|/api/gpg/key/passphrase|, 'requsted URL looks sane' );
 };
 
+subtest 'create_token', sub {
+    my $client = setup();
+
+    local *{'LWP::UserAgent::post'} = sub {
+        return $mock_responses{http_200};
+    };
+    my $resp = $client->create_token( username => 'johnq', scope => 'member-of-groups:readers' );
+    is( $resp->code, 200, 'got repositories' );
+};
+
 subtest 'get_repositories', sub {
     my $client = setup();
 

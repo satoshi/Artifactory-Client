@@ -12,6 +12,11 @@ use Artifactory::Client;
 
 my $client = setup_client();
 
+subtest 'test tokens', sub {
+    my $resp = $client->create_token( username => 'admin' );
+    print Dumper($resp);
+};
+
 sub setup_client {
     my $h = HTTP::Headers->new();
     $h->authorization_basic( 'admin', 'password' );
