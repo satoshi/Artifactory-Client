@@ -12,8 +12,8 @@ use Artifactory::Client;
 
 my $client = setup_client();
 
-subtest 'test tokens', sub {
-    my $resp = $client->create_token( username => 'admin' );
+subtest 'test_function', sub {
+    my $resp = $client->delete_certificate( 'foobar' );
     print Dumper($resp);
 };
 
